@@ -1,0 +1,17 @@
+*.iml
+.gradle
+/local.properties
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+/.gradle/
+/.idea/
+/models/src/main/assets/images/
+/app/src/main/res/raw/
+/Python/dataParisTotal/
+/Python/dataParis/
