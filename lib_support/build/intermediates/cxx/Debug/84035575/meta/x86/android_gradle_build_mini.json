@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Lorenzo\\AppData\\Local\\Android\\Sdk\\cmake\\3.18.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\84035575\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Lorenzo\\AppData\\Local\\Android\\Sdk\\cmake\\3.18.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\84035575\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "faiss::@6890427a1f51a3e7e1df": {
+      "artifactName": "faiss",
+      "abi": "x86",
+      "output": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\build\\intermediates\\cxx\\Debug\\84035575\\obj\\x86\\libfaiss.so",
+      "runtimeFiles": []
+    }
+  }
+}

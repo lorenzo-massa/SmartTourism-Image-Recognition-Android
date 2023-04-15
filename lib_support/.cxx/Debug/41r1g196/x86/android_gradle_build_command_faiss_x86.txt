@@ -1,0 +1,7 @@
+Executable : C:\Users\Lorenzo\AppData\Local\Android\Sdk\cmake\3.18.1\bin\ninja.exe
+arguments : 
+-C
+C:\Users\Lorenzo\StudioProjects\SmartTourism\lib_support\.cxx\Debug\41r1g196\x86
+faiss
+jvmArgs : 
+

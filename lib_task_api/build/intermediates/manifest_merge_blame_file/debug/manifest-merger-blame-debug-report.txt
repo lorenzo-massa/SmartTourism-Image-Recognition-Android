@@ -1,0 +1,11 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.tensorflow.lite.examples.classification.tflite" >
+4
+5    <uses-sdk
+6        android:minSdkVersion="21"
+6-->C:\Users\Lorenzo\StudioProjects\SmartTourism v2\lib_task_api\src\main\AndroidManifest.xml
+7        android:targetSdkVersion="29" />
+7-->C:\Users\Lorenzo\StudioProjects\SmartTourism v2\lib_task_api\src\main\AndroidManifest.xml
+8
+9</manifest>
