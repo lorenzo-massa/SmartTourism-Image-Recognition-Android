@@ -65,6 +65,7 @@ import androidx.annotation.UiThread;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -73,6 +74,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
@@ -148,6 +153,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
     //To check if help (ORB or OBJ_DET) is needed
     private int nClearedList = 0;
+
+    private final String TAG = "Camera Activity";
 
     private static boolean allPermissionsGranted(final int[] grantResults) {
         for (int result : grantResults) {
@@ -458,7 +465,44 @@ public abstract class CameraActivity extends AppCompatActivity
         handlerThread = new HandlerThread("inference");
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
+
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+        } else {
+            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
     }
+
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS: {
+                    Log.i(TAG, "OpenCV loaded successfully");
+                    //mOpenCvCameraView.enableView();
+
+                    //init after OpenCV is loaded
+                    //descriptors = new Mat();
+                    //descriptorsExample = new Mat();
+
+                    //Creating descriptors example
+                    //try {
+                    //    createDescriptorsExample();
+                    //} catch (IOException e) {
+                    //    throw new RuntimeException(e);
+                    //}
+                }
+                break;
+                default: {
+                    super.onManagerConnected(status);
+                }
+                break;
+            }
+        }
+    };
 
     @Override
     public synchronized void onPause() {
@@ -669,6 +713,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 //You use ORB or OBJ_DET
 
                 nClearedList += 1;
+                Log.i(TAG, "Pre-Helping classifier using mode " + mode.toString());
                 helped = checkIfHelpIsNeeded(bitmap,sensorOrientation, firstPosition);
 
             }
@@ -705,7 +750,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
             //If you recognize the same monument 3 times in a row, you show the popup
-            if (recognitionList.size() >= 3) {
+            if (recognitionList.size() >= 3 || helped) {
 
                 //Reset cleanings
                 nClearedList = 0;
@@ -769,7 +814,15 @@ public abstract class CameraActivity extends AppCompatActivity
     protected Boolean checkIfHelpIsNeeded(final Bitmap bitmap, int sensorOrientation, String firstPosition){
         if(nClearedList >= 3 && mode != Mode.Standard){
 
+            Log.i(TAG, "Helping classifier using mode " + mode.toString());
             DetectionHelper dH = new DetectionHelper(getApplicationContext(),mode, bitmap, firstPosition);
+            float good_ratio = dH.help();
+
+            Log.i(TAG, "Good ratio: " + good_ratio);
+
+            if (good_ratio >= 0.1){
+                return true;
+            }
 
 
             return true;

@@ -1,11 +1,27 @@
 package org.tensorflow.lite.examples.classification.tflite;
 
+import static org.opencv.imgproc.Imgproc.INTER_AREA;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.TextView;
+
+import org.opencv.android.Utils;
+import org.opencv.calib3d.Calib3d;
+import org.opencv.core.DMatch;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfDMatch;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.features2d.DescriptorMatcher;
+import org.opencv.features2d.Features2d;
+import org.opencv.features2d.ORB;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,41 +38,74 @@ public class DetectionHelper {
 
     private Bitmap bitmapExample;
 
+    private Mat descriptors;
+    private Mat descriptorsExample;
+    private MatOfKeyPoint keyPointsExample;
+    private Mat input_rgba_example;
+
+    private final String TAG = "DetectionHelper";
+
     public DetectionHelper(Context context, Classifier.Mode mode, Bitmap bitmap, String exampleString) {
         this.context = context;
         this.mode = mode;
         this.bitmap = bitmap;
         this.exampleString = exampleString;
 
-        loadImage(exampleString);
-    }
 
-    private void loadImage(String fileName) {
-        AssetManager am = context.getAssets();
-        InputStream is = null;
-        try {
-            is = am.open(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(mode == Classifier.Mode.ORB){
+            descriptors = new Mat();
+            descriptorsExample = new Mat();
+            try{
+                createDescriptorsExample(exampleString);
+            }catch (Exception e){
+
+            }
         }
 
-        bitmapExample = BitmapFactory.decodeStream(is);
     }
 
-    public void help(){
+    public float help(){
         if(mode == Classifier.Mode.ORB){
-            //orb();
+            return orb();
         }else if(mode == Classifier.Mode.OBJ){
             //obj();
+            return 0; //TODO
         }
+
+        return 0;
     }
 
-    /*
-    public void orb() {
+    private void createDescriptorsExample(String exampleString) throws IOException {
+
+        Mat input_rgba = new Mat();
+        //Mat input_gray = new Mat();
+        AssetManager assetManager = context.getAssets();
+        InputStream istr = assetManager.open("guides/" + exampleString + "/img.jpg");
+        Bitmap bitmap = BitmapFactory.decodeStream(istr);
+        Utils.bitmapToMat(bitmap, input_rgba);
+
+        //Imgproc.cvtColor(input_rgba, input_gray, Imgproc.COLOR_RGB2GRAY);
+        //img1.convertTo(img1, 0); //converting the image to match with the type of the cameras image
+
+        keyPointsExample = new MatOfKeyPoint();
+        ORB ORBdetector = ORB.create();
+        ORBdetector.detect(input_rgba, keyPointsExample);
+
+        ORBdetector.compute(input_rgba, keyPointsExample, descriptorsExample);
+
+        //Features2d.drawKeypoints(input_rgba, keyPointsExample, input_rgba);
+
+        Utils.matToBitmap(input_rgba,bitmap);
+        //imageExampleView.setImageBitmap(bitmap);
+
+        input_rgba_example = input_rgba;
+
+    }
+
+    public float orb() {
 
         Mat input_rgba = new Mat();
         Utils.bitmapToMat(bitmap, input_rgba);
-
 
         //Keypoint Detection for Object image
         MatOfKeyPoint keyPoints = new MatOfKeyPoint();
@@ -65,7 +114,7 @@ public class DetectionHelper {
 
         //Calculate the descriptors/feature vectors
         ORBdetector.compute(input_rgba, keyPoints, descriptors);
-        Features2d.drawKeypoints(input_rgba, keyPoints, input_rgba);
+        //Features2d.drawKeypoints(input_rgba, keyPoints, input_rgba);
 
         //Matching the descriptors using Brute-Force
         DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
@@ -74,17 +123,16 @@ public class DetectionHelper {
 
         // ratio test
         LinkedList<DMatch> good_matches = new LinkedList<DMatch>();
-        for (Iterator<MatOfDMatch> iterator = matches.iterator(); iterator.hasNext();) {
+        for (Iterator<MatOfDMatch> iterator = matches.iterator(); iterator.hasNext(); ) {
             MatOfDMatch matOfDMatch = (MatOfDMatch) iterator.next();
             if (matOfDMatch.toArray()[0].distance / matOfDMatch.toArray()[1].distance < 0.9) {
                 good_matches.add(matOfDMatch.toArray()[0]);
             }
         }
 
-        if(good_matches.size() <= 10){ //it was 6
+        if (good_matches.size() <= 10) { //it was 6
             //Log.i(TAG,"Wrong Detection");
-        }
-        else {
+        } else {
             //Log.i(TAG,"Good Detection");
 
             // get keypoint coordinates of good matches to find homography and remove outliers using ransac
@@ -114,46 +162,14 @@ public class DetectionHelper {
                 }
             }
 
-            // DRAWING OUTPUT
-            Mat outputImg = new Mat();
-            // this will draw all matches
-            MatOfDMatch better_matches_mat = new MatOfDMatch();
-            better_matches_mat.fromList(better_matches);
-            Features2d.drawMatches(input_rgba, keyPoints, input_rgba_example, keyPointsExample, better_matches_mat, outputImg);
+            float good_ratio = (float) better_matches.size() / matches.size();
 
-            // save image
-            //Imgcodecs.imwrite("C:/result.jpg", outputImg);
-
-            Imgproc.resize(outputImg, input_rgba, input_rgba.size(), 0, 0, INTER_AREA);
-
-            float good_ratio = (float)better_matches.size()/matches.size();
-            //#good matches/#all matches in order to get a ratio
-            //Log.i(TAG, "good/all matches ratio: " +good_ratio);
-
-
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    // Stuff that updates the UI
-
-                    ratioView.setText("ratio: " +good_ratio);
-                    ratioView.setTextColor(Color.GREEN);
-
-                }
-            });
-
-
-
+            return good_ratio;
 
         }
-        return input_rgba;
 
+        return 0;
     }
-
-
-     */
 
     private void  OBJ(){
 

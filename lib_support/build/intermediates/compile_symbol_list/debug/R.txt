@@ -167,6 +167,7 @@ int attr buttonStyle 0x0
 int attr buttonStyleSmall 0x0
 int attr buttonTint 0x0
 int attr buttonTintMode 0x0
+int attr camera_id 0x0
 int attr cardBackgroundColor 0x0
 int attr cardCornerRadius 0x0
 int attr cardElevation 0x0
@@ -756,6 +757,7 @@ int attr showMotionSpec 0x0
 int attr showPaths 0x0
 int attr showText 0x0
 int attr showTitle 0x0
+int attr show_fps 0x0
 int attr shrinkMotionSpec 0x0
 int attr singleChoiceItemLayout 0x0
 int attr singleLine 0x0
@@ -1790,6 +1792,7 @@ int id alertTitle 0x0
 int id aligned 0x0
 int id animateToEnd 0x0
 int id animateToStart 0x0
+int id any 0x0
 int id arc 0x0
 int id asConfigured 0x0
 int id async 0x0
@@ -1797,6 +1800,7 @@ int id auto 0x0
 int id autoComplete 0x0
 int id autoCompleteToEnd 0x0
 int id autoCompleteToStart 0x0
+int id back 0x0
 int id barrier 0x0
 int id baseline 0x0
 int id blocking 0x0
@@ -1864,6 +1868,7 @@ int id fixed 0x0
 int id flip 0x0
 int id floating 0x0
 int id forever 0x0
+int id front 0x0
 int id ghost_view 0x0
 int id ghost_view_holder 0x0
 int id gone 0x0
@@ -3368,6 +3373,9 @@ int styleable BottomSheetBehavior_Layout_shapeAppearance 16
 int styleable BottomSheetBehavior_Layout_shapeAppearanceOverlay 17
 int[] styleable ButtonBarLayout { 0x0 }
 int styleable ButtonBarLayout_allowStacking 0
+int[] styleable CameraBridgeViewBase { 0x0, 0x0 }
+int styleable CameraBridgeViewBase_camera_id 0
+int styleable CameraBridgeViewBase_show_fps 1
 int[] styleable CardView { 0x1010140, 0x101013f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 }
 int styleable CardView_android_minHeight 0
 int styleable CardView_android_minWidth 1

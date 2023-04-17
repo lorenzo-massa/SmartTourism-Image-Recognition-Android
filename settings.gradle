@@ -1,2 +1,3 @@
 rootProject.name = 'Smart Tourism v2'
 include ':app', ':lib_support', ':lib_task_api', ':models'
+include ':opencv'
