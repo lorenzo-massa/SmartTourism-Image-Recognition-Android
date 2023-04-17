@@ -117,12 +117,16 @@ public abstract class Classifier {
     private TensorImage inputImageBufferZoom2;
     private final Context context;
 
+    private Mode mode;
+
     /**
      * Initializes a {@code Classifier}.
      */
-    protected Classifier(Activity activity, Device device, int numThreads) throws IOException {
+    protected Classifier(Activity activity, Device device, int numThreads, Mode mode) throws IOException {
 
         this.context = activity.getApplicationContext();
+
+        this.mode = mode;
 
         MappedByteBuffer tfliteModel = FileUtil.loadMappedFile(activity, getModelPath());
         switch (device) {
@@ -194,17 +198,17 @@ public abstract class Classifier {
      * @param numThreads The number of threads to use for classification.
      * @return A classifier with the desired configuration.
      */
-    public static Classifier create(Activity activity, Model model, Device device, int numThreads)
+    public static Classifier create(Activity activity, Model model, Device device, int numThreads, Mode mode)
             throws IOException {
 
         retrievor = new Retrievor(activity, model);
 
         if (model == Model.PRECISE) {
-            return new ClassifierMobileNetLarge100(activity, device, numThreads);
+            return new ClassifierMobileNetLarge100(activity, device, numThreads, mode);
         } else if (model == Model.MEDIUM) {
-            return new ClassifierMobileNetLarge075(activity, device, numThreads);
+            return new ClassifierMobileNetLarge075(activity, device, numThreads, mode);
         } else if (model == Model.FAST) {
-            return new ClassifierMobileNetSmall100(activity, device, numThreads);
+            return new ClassifierMobileNetSmall100(activity, device, numThreads, mode);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -567,6 +571,12 @@ public abstract class Classifier {
     public enum Language {
         English,
         Italian
+    }
+
+    public enum Mode {
+        Standard,
+        ORB,
+        OBJ
     }
 
     /**

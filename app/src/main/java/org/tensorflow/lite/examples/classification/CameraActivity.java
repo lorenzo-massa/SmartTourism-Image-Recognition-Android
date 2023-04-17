@@ -24,6 +24,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.Camera;
@@ -74,10 +75,13 @@ import java.util.stream.Collectors;
 
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
+import org.tensorflow.lite.examples.classification.tflite.Classifier;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Language;
+import org.tensorflow.lite.examples.classification.tflite.Classifier.Mode;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
+import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -135,8 +139,15 @@ public abstract class CameraActivity extends AppCompatActivity
     private Spinner languageSpinner;
     private Language language = Language.English;
 
+    //Language
+    private Spinner modeSpinner;
+    private Mode mode = Classifier.Mode.Standard;
+
     //Loading
     private CircularProgressIndicator loadingIndicator;
+
+    //To check if help (ORB or OBJ_DET) is needed
+    private int nClearedList = 0;
 
     private static boolean allPermissionsGranted(final int[] grantResults) {
         for (int result : grantResults) {
@@ -174,6 +185,7 @@ public abstract class CameraActivity extends AppCompatActivity
         modelSpinner = findViewById(R.id.model_spinner);
         deviceSpinner = findViewById(R.id.device_spinner);
         languageSpinner = findViewById(R.id.language_spinner);
+        modeSpinner = findViewById(R.id.mode_spinner);
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
@@ -245,15 +257,18 @@ public abstract class CameraActivity extends AppCompatActivity
         recognition2TextView = findViewById(R.id.detected_item2);
         recognition2ValueTextView = findViewById(R.id.detected_item2_value);
 
+        /*
         frameValueTextView = findViewById(R.id.frame_info);
         cropValueTextView = findViewById(R.id.crop_info);
         cameraResolutionTextView = findViewById(R.id.view_info);
         rotationTextView = findViewById(R.id.rotation_info);
         inferenceTimeTextView = findViewById(R.id.inference_info);
+         */
 
         modelSpinner.setOnItemSelectedListener(this);
         deviceSpinner.setOnItemSelectedListener(this);
         languageSpinner.setOnItemSelectedListener(this);
+        modeSpinner.setOnItemSelectedListener(this);
 
         plusImageView.setOnClickListener(this);
         minusImageView.setOnClickListener(this);
@@ -261,6 +276,8 @@ public abstract class CameraActivity extends AppCompatActivity
         model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
         device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
         language = Language.valueOf(languageSpinner.getSelectedItem().toString());
+        mode = Mode.valueOf(modeSpinner.getSelectedItem().toString());
+
         numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
 
         //languageSpinner.setAdapter(new SpinnerAdapter(getContext(), new String[]{"Overview", "Story", "Specifications", "Poll", "Video"}, accentColor, backgroundColor));
@@ -622,11 +639,13 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     @UiThread
-    protected void showResultsInBottomSheet(List<Recognition> results) {
+    protected void showResultsInBottomSheet(List<Recognition> results, final Bitmap bitmap, int sensorOrientation) {
         Recognition recognition = null;
         Recognition recognition1 = null;
         Recognition recognition2 = null;
+        Boolean helped = false;
 
+        //Getting results
         if (results != null && results.size() >= 1 && !dialogIsOpen && !sheetIsOpen) {
             recognition = results.get(0);
             if (results.size() >= 2)
@@ -634,18 +653,28 @@ public abstract class CameraActivity extends AppCompatActivity
             if (results.size() >= 3)
                 recognition2 = results.get(2);
 
+            //Title of the winner monument
             String firstPosition = recognition.getTitle();
 
             if (recognitionList.isEmpty())
                 recognitionList.add(firstPosition);
             else if (recognitionList.get(recognitionList.size() - 1).equals(firstPosition))
                 recognitionList.add(firstPosition);
-            else {
+            else { // If you do not recognize the same monument in a row, you clear the list
                 recognitionList.clear();
                 recognitionList.add(firstPosition);
+
+                //If you clear the list 2-3 times in a row
+                //If the option is selected
+                //You use ORB or OBJ_DET
+
+                nClearedList += 1;
+                helped = checkIfHelpIsNeeded(bitmap,sensorOrientation, firstPosition);
+
             }
 
 
+            //Printing results with confidences
             if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
             if (recognition.getConfidence() != null)
                 recognitionValueTextView.setText(
@@ -675,10 +704,14 @@ public abstract class CameraActivity extends AppCompatActivity
             }
 
 
+            //If you recognize the same monument 3 times in a row, you show the popup
             if (recognitionList.size() >= 3) {
-                //show button more info
-                loadingIndicator.setVisibility(View.GONE);
 
+                //Reset cleanings
+                nClearedList = 0;
+
+                //Show button more info
+                loadingIndicator.setVisibility(View.GONE);
 
                 Recognition finalRecognition = recognition;
 
@@ -727,6 +760,23 @@ public abstract class CameraActivity extends AppCompatActivity
 
     }
 
+    /**
+     * If you clear the list 2-3 times in a row && If the option is selected
+     * You call ORB or OBJ_DET
+     * If the result is good enough, you use it to recognize the monument
+     */
+    @UiThread
+    protected Boolean checkIfHelpIsNeeded(final Bitmap bitmap, int sensorOrientation, String firstPosition){
+        if(nClearedList >= 3 && mode != Mode.Standard){
+
+            DetectionHelper dH = new DetectionHelper(getApplicationContext(),mode, bitmap, firstPosition);
+
+
+            return true;
+        }
+        return false;
+    }
+
     protected void showFrameInfo(String frameInfo) {
         frameValueTextView.setText(frameInfo);
     }
@@ -755,6 +805,18 @@ public abstract class CameraActivity extends AppCompatActivity
         if (this.model != model) {
             LOGGER.d("Updating  model: " + model);
             this.model = model;
+            onInferenceConfigurationChanged();
+        }
+    }
+
+    protected Mode getMode() {
+        return mode;
+    }
+
+    private void setMode(Mode mode) {
+        if (this.mode != mode) {
+            LOGGER.d("Updating  mode: " + mode);
+            this.mode = mode;
             onInferenceConfigurationChanged();
         }
     }
@@ -838,6 +900,8 @@ public abstract class CameraActivity extends AppCompatActivity
             ((TextView) view).bringToFront();
             ((TextView) view).setTypeface((((TextView) view).getTypeface()), Typeface.BOLD);
 
+        }else if (parent == modeSpinner) {
+            setMode(Mode.valueOf(parent.getItemAtPosition(pos).toString()));
         }
     }
 

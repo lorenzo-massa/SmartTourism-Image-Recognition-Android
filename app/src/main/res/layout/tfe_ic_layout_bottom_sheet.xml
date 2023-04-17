@@ -104,6 +104,7 @@
             android:background="@android:color/darker_gray" />
     </LinearLayout>
 
+    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -225,6 +226,8 @@
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray" />
 
+       -->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -320,6 +323,28 @@
             android:layout_marginTop="10dp"
             android:entries="@array/tfe_ic_devices"
             android:prompt="@string/tfe_ic_device" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Mode: "
+            android:textColor="@android:color/black" />
+
+        <Spinner
+            android:id="@+id/mode_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:entries="@array/modes_array"
+            android:prompt="@string/tfe_ic_mode" />
     </RelativeLayout>
 
 </LinearLayout>

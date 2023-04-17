@@ -44,9 +44,9 @@ public class ClassifierMobileNetLarge100 extends Classifier {
      *
      * @param activity
      */
-    public ClassifierMobileNetLarge100(Activity activity, Device device, int numThreads)
+    public ClassifierMobileNetLarge100(Activity activity, Device device, int numThreads, Mode mode)
             throws IOException {
-        super(activity, device, numThreads);
+        super(activity, device, numThreads, mode);
     }
 
     @Override

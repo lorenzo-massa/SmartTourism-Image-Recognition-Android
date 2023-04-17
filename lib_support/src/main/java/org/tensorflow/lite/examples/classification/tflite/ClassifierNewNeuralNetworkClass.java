@@ -47,9 +47,9 @@ public class ClassifierNewNeuralNetworkClass extends Classifier {
      *
      * @param activity
      */
-    public ClassifierNewNeuralNetworkClass(Activity activity, Device device, int numThreads)
+    public ClassifierNewNeuralNetworkClass(Activity activity, Device device, int numThreads, Mode mode)
             throws IOException {
-        super(activity, device, numThreads);
+        super(activity, device, numThreads, mode);
     }
 
     @Override

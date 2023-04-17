@@ -3,6 +3,7 @@
     <string name="tfe_ic_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
     <string name="tfe_ic_gpu_quant_error" translation_description="Error regarding GPU support for Quant models[CHAR_LIMIT=60]">GPU does not yet supported quantized models.</string>
     <string name="tfe_ic_model" translatable="false">Model:</string>
+    <string name="tfe_ic_mode" translatable="false">Mode:</string>
     <string-array name="tfe_ic_models" translatable="false">
         <item>Precise</item>
         <item>Medium</item>
@@ -19,5 +20,11 @@
     <string-array name="language_array">
         <item>English</item>
         <item>Italian</item>
+    </string-array>
+
+    <string-array name="modes_array">
+        <item>Standard</item>
+        <item>ORB</item>
+        <item>OBJ</item>
     </string-array>
 </resources>
