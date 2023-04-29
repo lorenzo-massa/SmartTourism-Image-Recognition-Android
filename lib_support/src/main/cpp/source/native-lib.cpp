@@ -6,6 +6,9 @@
 #include <cstdlib>
 
 #include <sys/time.h>
+#include <linux/stat.h>
+#include <iosfwd>
+#include <fstream>
 
 #include "faiss/IndexIVFPQ.h"
 #include "faiss/IndexFlat.h"
@@ -19,38 +22,39 @@ int64_t getCurrentMillTime() {
     return ((int64_t) tv.tv_sec * 1000 + (int64_t) tv.tv_usec / 1000);//毫秒
 }
 
+faiss::IndexFlatL2 *index; //global variable
+
 extern "C" JNIEXPORT jstring
 
 JNICALL stringFromJNI(JNIEnv *env, jclass clazz,jfloatArray imgFeatures,jobjectArray data,jint k) {
+
     std::string result = "";
-    //std::string name_faiss = "/sdcard/tmp/1.index";
 
     jfloat *bodyImgFeatures = (*env).GetFloatArrayElements(imgFeatures, 0);
     jsize len = (*env).GetArrayLength(data);
 
 
-    //CREATING INDEX
-    faiss::IndexFlatL2 *index;
+    //CREATING INDEX in not already done
 
-    jsize d = (*env).GetArrayLength(imgFeatures); //features number
+    if (index == nullptr){
 
-    index = new faiss::IndexFlatL2(d);
+        jsize d = (*env).GetArrayLength(imgFeatures); //features number
+        index = new faiss::IndexFlatL2(d);
 
-    //ADD TO TE INDEX
-    for(int i = 0; i < len; i++) {
-        jfloatArray arr = (jfloatArray) (*env).GetObjectArrayElement(data, i);
-        jsize innerLen = (*env).GetArrayLength(arr);
-        jfloat* vals = (*env).GetFloatArrayElements(arr, NULL);
+        //ADD TO TE INDEX
+        for(int i = 0; i < len; i++) {
+            jfloatArray arr = (jfloatArray) (*env).GetObjectArrayElement(data, i);
+            jsize innerLen = (*env).GetArrayLength(arr);
+            jfloat* vals = (*env).GetFloatArrayElements(arr, NULL);
 
-        index->add(1, vals);
+            index->add(1, vals);
 
-        (*env).ReleaseFloatArrayElements(arr, vals, JNI_COMMIT);
-        (*env).DeleteLocalRef(arr);
+            (*env).ReleaseFloatArrayElements(arr, vals, JNI_COMMIT);
+            (*env).DeleteLocalRef(arr);
 
-        delete(vals);
+            delete(vals);
+        }
     }
-
-
     //SEARCHING
     const int64_t destCount = k; //k
 
@@ -69,7 +73,7 @@ JNICALL stringFromJNI(JNIEnv *env, jclass clazz,jfloatArray imgFeatures,jobjectA
     delete(listIndex);
     delete(listScore);
     delete(bodyImgFeatures);
-    delete(index);
+    //delete(index);
 
     //result = std::to_string(index->ntotal);
 

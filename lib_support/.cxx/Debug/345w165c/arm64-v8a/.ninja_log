@@ -196,3 +196,31 @@
 13136	19559	7032715649409189	CMakeFiles/faiss.dir/faiss/IndexShards.cpp.o	d6f03ea1e577a8
 15938	21051	7032715664241345	CMakeFiles/faiss.dir/faiss/index_io.cpp.o	560ab990089e7a43
 21051	21489	7032715668110445	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+8	2768	7044613660613124	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+2769	5698	7044613688980887	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+8	802	7044617234628705	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+803	1125	7044617237164545	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+6	780	7044617748567233	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+781	1099	7044617751212658	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+8	1009	7044633971161206	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+1010	1328	7044633973809846	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+6	1001	7044634450039796	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+1002	1324	7044634452566763	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+8	993	7044634816553803	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+993	1329	7044634819089722	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+6	997	7044637208031335	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+998	1334	7044637210766400	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+8	1107	7044638265519759	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+1107	1438	7044638268312405	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+32	2308	7044652477741339	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+2309	2661	7044652480717811	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+7	1017	7044656198320325	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+1017	1377	7044656200969485	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+8	954	7044657938410651	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+955	1278	7044657940897576	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+16	2532	7044805146309487	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+2533	5084	7044805171037420	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+9	938	7044807890396208	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+939	1265	7044807892987601	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
+10	987	7044808592798997	CMakeFiles/faiss.dir/native-lib.cpp.o	f50908104ea16a85
+987	1281	7044808595301558	C:/Users/Lorenzo/StudioProjects/SmartTourism v2/lib_support/build/intermediates/cxx/Debug/345w165c/obj/arm64-v8a/libfaiss.so	a990654103e1b505
