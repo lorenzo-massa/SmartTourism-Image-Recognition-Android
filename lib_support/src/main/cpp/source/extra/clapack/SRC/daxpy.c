@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int daxpy_(integer *n, doublereal *da, doublereal *dx, 
-	integer *incx, doublereal *dy, integer *incy)
-{
+/* Subroutine */ int daxpy_(integer *n, doublereal *da, doublereal *dx,
+                            integer *incx, doublereal *dy, integer *incy) {
     /* System generated locals */
     integer i__1;
 
@@ -46,13 +45,13 @@
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+        return 0;
     }
     if (*da == 0.) {
-	return 0;
+        return 0;
     }
     if (*incx == 1 && *incy == 1) {
-	goto L20;
+        goto L20;
     }
 
 /*        code for unequal increments or equal increments */
@@ -61,16 +60,16 @@
     ix = 1;
     iy = 1;
     if (*incx < 0) {
-	ix = (-(*n) + 1) * *incx + 1;
+        ix = (-(*n) + 1) * *incx + 1;
     }
     if (*incy < 0) {
-	iy = (-(*n) + 1) * *incy + 1;
+        iy = (-(*n) + 1) * *incy + 1;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	dy[iy] += *da * dx[ix];
-	ix += *incx;
-	iy += *incy;
+        dy[iy] += *da * dx[ix];
+        ix += *incx;
+        iy += *incy;
 /* L10: */
     }
     return 0;
@@ -80,27 +79,27 @@
 
 /*        clean-up loop */
 
-L20:
+    L20:
     m = *n % 4;
     if (m == 0) {
-	goto L40;
+        goto L40;
     }
     i__1 = m;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	dy[i__] += *da * dx[i__];
+        dy[i__] += *da * dx[i__];
 /* L30: */
     }
     if (*n < 4) {
-	return 0;
+        return 0;
     }
-L40:
+    L40:
     mp1 = m + 1;
     i__1 = *n;
     for (i__ = mp1; i__ <= i__1; i__ += 4) {
-	dy[i__] += *da * dx[i__];
-	dy[i__ + 1] += *da * dx[i__ + 1];
-	dy[i__ + 2] += *da * dx[i__ + 2];
-	dy[i__ + 3] += *da * dx[i__ + 3];
+        dy[i__] += *da * dx[i__];
+        dy[i__ + 1] += *da * dx[i__ + 1];
+        dy[i__ + 2] += *da * dx[i__ + 2];
+        dy[i__ + 3] += *da * dx[i__ + 3];
 /* L50: */
     }
     return 0;

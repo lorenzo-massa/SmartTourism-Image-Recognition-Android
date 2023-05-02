@@ -16,30 +16,28 @@ set(CMAKE_C_COMPILER_FRONTEND_VARIANT "GNU")
 set(CMAKE_C_SIMULATE_VERSION "")
 
 
-
-
 set(CMAKE_AR "C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/bin/arm-linux-androideabi-ar.exe")
 set(CMAKE_C_COMPILER_AR "CMAKE_C_COMPILER_AR-NOTFOUND")
 set(CMAKE_RANLIB "C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/bin/arm-linux-androideabi-ranlib.exe")
 set(CMAKE_C_COMPILER_RANLIB "CMAKE_C_COMPILER_RANLIB-NOTFOUND")
 set(CMAKE_LINKER "C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/bin/arm-linux-androideabi-ld.exe")
 set(CMAKE_MT "")
-set(CMAKE_COMPILER_IS_GNUCC )
+set(CMAKE_COMPILER_IS_GNUCC)
 set(CMAKE_C_COMPILER_LOADED 1)
 set(CMAKE_C_COMPILER_WORKS TRUE)
 set(CMAKE_C_ABI_COMPILED TRUE)
-set(CMAKE_COMPILER_IS_MINGW )
-set(CMAKE_COMPILER_IS_CYGWIN )
-if(CMAKE_COMPILER_IS_CYGWIN)
-  set(CYGWIN 1)
-  set(UNIX 1)
-endif()
+set(CMAKE_COMPILER_IS_MINGW)
+set(CMAKE_COMPILER_IS_CYGWIN)
+if (CMAKE_COMPILER_IS_CYGWIN)
+    set(CYGWIN 1)
+    set(UNIX 1)
+endif ()
 
 set(CMAKE_C_COMPILER_ENV_VAR "CC")
 
-if(CMAKE_COMPILER_IS_MINGW)
-  set(MINGW 1)
-endif()
+if (CMAKE_COMPILER_IS_MINGW)
+    set(MINGW 1)
+endif ()
 set(CMAKE_C_COMPILER_ID_RUN 1)
 set(CMAKE_C_SOURCE_FILE_EXTENSIONS c;m)
 set(CMAKE_C_IGNORE_EXTENSIONS h;H;o;O;obj;OBJ;def;DEF;rc;RC)
@@ -50,25 +48,22 @@ set(CMAKE_C_SIZEOF_DATA_PTR "4")
 set(CMAKE_C_COMPILER_ABI "ELF")
 set(CMAKE_C_LIBRARY_ARCHITECTURE "")
 
-if(CMAKE_C_SIZEOF_DATA_PTR)
-  set(CMAKE_SIZEOF_VOID_P "${CMAKE_C_SIZEOF_DATA_PTR}")
-endif()
+if (CMAKE_C_SIZEOF_DATA_PTR)
+    set(CMAKE_SIZEOF_VOID_P "${CMAKE_C_SIZEOF_DATA_PTR}")
+endif ()
 
-if(CMAKE_C_COMPILER_ABI)
-  set(CMAKE_INTERNAL_PLATFORM_ABI "${CMAKE_C_COMPILER_ABI}")
-endif()
+if (CMAKE_C_COMPILER_ABI)
+    set(CMAKE_INTERNAL_PLATFORM_ABI "${CMAKE_C_COMPILER_ABI}")
+endif ()
 
-if(CMAKE_C_LIBRARY_ARCHITECTURE)
-  set(CMAKE_LIBRARY_ARCHITECTURE "")
-endif()
+if (CMAKE_C_LIBRARY_ARCHITECTURE)
+    set(CMAKE_LIBRARY_ARCHITECTURE "")
+endif ()
 
 set(CMAKE_C_CL_SHOWINCLUDES_PREFIX "")
-if(CMAKE_C_CL_SHOWINCLUDES_PREFIX)
-  set(CMAKE_CL_SHOWINCLUDES_PREFIX "${CMAKE_C_CL_SHOWINCLUDES_PREFIX}")
-endif()
-
-
-
+if (CMAKE_C_CL_SHOWINCLUDES_PREFIX)
+    set(CMAKE_CL_SHOWINCLUDES_PREFIX "${CMAKE_C_CL_SHOWINCLUDES_PREFIX}")
+endif ()
 
 
 set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include;C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/9.0.9/include;C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/arm-linux-androideabi;C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include")

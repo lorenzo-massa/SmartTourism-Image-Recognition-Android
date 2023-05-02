@@ -17,10 +17,9 @@
 
 static integer c__1 = 1;
 
-/* Subroutine */ int sorm2r_(char *side, char *trans, integer *m, integer *n, 
-	integer *k, real *a, integer *lda, real *tau, real *c__, integer *ldc, 
-	 real *work, integer *info)
-{
+/* Subroutine */ int sorm2r_(char *side, char *trans, integer *m, integer *n,
+                             integer *k, real *a, integer *lda, real *tau, real *c__, integer *ldc,
+                             real *work, integer *info) {
     /* System generated locals */
     integer a_dim1, a_offset, c_dim1, c_offset, i__1, i__2;
 
@@ -29,9 +28,9 @@ static integer c__1 = 1;
     real aii;
     logical left;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
-	    integer *, real *, real *, integer *, real *), xerbla_(
-	    char *, integer *);
+    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *,
+                                       integer *, real *, real *, integer *, real *), xerbla_(
+            char *, integer *);
     logical notran;
 
 
@@ -152,79 +151,79 @@ static integer c__1 = 1;
 /*     NQ is the order of Q */
 
     if (left) {
-	nq = *m;
+        nq = *m;
     } else {
-	nq = *n;
+        nq = *n;
     }
-    if (! left && ! lsame_(side, "R")) {
-	*info = -1;
-    } else if (! notran && ! lsame_(trans, "T")) {
-	*info = -2;
+    if (!left && !lsame_(side, "R")) {
+        *info = -1;
+    } else if (!notran && !lsame_(trans, "T")) {
+        *info = -2;
     } else if (*m < 0) {
-	*info = -3;
+        *info = -3;
     } else if (*n < 0) {
-	*info = -4;
+        *info = -4;
     } else if (*k < 0 || *k > nq) {
-	*info = -5;
-    } else if (*lda < max(1,nq)) {
-	*info = -7;
-    } else if (*ldc < max(1,*m)) {
-	*info = -10;
+        *info = -5;
+    } else if (*lda < max(1, nq)) {
+        *info = -7;
+    } else if (*ldc < max(1, *m)) {
+        *info = -10;
     }
     if (*info != 0) {
-	i__1 = -(*info);
-	xerbla_("SORM2R", &i__1);
-	return 0;
+        i__1 = -(*info);
+        xerbla_("SORM2R", &i__1);
+        return 0;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+        return 0;
     }
 
-    if (left && ! notran || ! left && notran) {
-	i1 = 1;
-	i2 = *k;
-	i3 = 1;
+    if (left && !notran || !left && notran) {
+        i1 = 1;
+        i2 = *k;
+        i3 = 1;
     } else {
-	i1 = *k;
-	i2 = 1;
-	i3 = -1;
+        i1 = *k;
+        i2 = 1;
+        i3 = -1;
     }
 
     if (left) {
-	ni = *n;
-	jc = 1;
+        ni = *n;
+        jc = 1;
     } else {
-	mi = *m;
-	ic = 1;
+        mi = *m;
+        ic = 1;
     }
 
     i__1 = i2;
     i__2 = i3;
     for (i__ = i1; i__2 < 0 ? i__ >= i__1 : i__ <= i__1; i__ += i__2) {
-	if (left) {
+        if (left) {
 
 /*           H(i) is applied to C(i:m,1:n) */
 
-	    mi = *m - i__ + 1;
-	    ic = i__;
-	} else {
+            mi = *m - i__ + 1;
+            ic = i__;
+        } else {
 
 /*           H(i) is applied to C(1:m,i:n) */
 
-	    ni = *n - i__ + 1;
-	    jc = i__;
-	}
+            ni = *n - i__ + 1;
+            jc = i__;
+        }
 
 /*        Apply H(i) */
 
-	aii = a[i__ + i__ * a_dim1];
-	a[i__ + i__ * a_dim1] = 1.f;
-	slarf_(side, &mi, &ni, &a[i__ + i__ * a_dim1], &c__1, &tau[i__], &c__[
-		ic + jc * c_dim1], ldc, &work[1]);
-	a[i__ + i__ * a_dim1] = aii;
+        aii = a[i__ + i__ * a_dim1];
+        a[i__ + i__ * a_dim1] = 1.f;
+        slarf_(side, &mi, &ni, &a[i__ + i__ * a_dim1], &c__1, &tau[i__], &c__[
+                ic + jc * c_dim1], ldc, &work[1]);
+        a[i__ + i__ * a_dim1] = aii;
 /* L10: */
     }
     return 0;

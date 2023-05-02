@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer 
-	*ilo, integer *ihi, integer *lwork)
-{
+integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer
+*ilo, integer *ihi, integer *lwork) {
     /* System generated locals */
     integer ret_val, i__1, i__2;
     real r__1;
@@ -192,32 +191,32 @@ integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer
 
 /*        ==== Set the number simultaneous shifts ==== */
 
-	nh = *ihi - *ilo + 1;
-	ns = 2;
-	if (nh >= 30) {
-	    ns = 4;
-	}
-	if (nh >= 60) {
-	    ns = 10;
-	}
-	if (nh >= 150) {
+        nh = *ihi - *ilo + 1;
+        ns = 2;
+        if (nh >= 30) {
+            ns = 4;
+        }
+        if (nh >= 60) {
+            ns = 10;
+        }
+        if (nh >= 150) {
 /* Computing MAX */
-	    r__1 = log((real) nh) / log(2.f);
-	    i__1 = 10, i__2 = nh / i_nint(&r__1);
-	    ns = max(i__1,i__2);
-	}
-	if (nh >= 590) {
-	    ns = 64;
-	}
-	if (nh >= 3000) {
-	    ns = 128;
-	}
-	if (nh >= 6000) {
-	    ns = 256;
-	}
+            r__1 = log((real) nh) / log(2.f);
+            i__1 = 10, i__2 = nh / i_nint(&r__1);
+            ns = max(i__1, i__2);
+        }
+        if (nh >= 590) {
+            ns = 64;
+        }
+        if (nh >= 3000) {
+            ns = 128;
+        }
+        if (nh >= 6000) {
+            ns = 256;
+        }
 /* Computing MAX */
-	i__1 = 2, i__2 = ns - ns % 2;
-	ns = max(i__1,i__2);
+        i__1 = 2, i__2 = ns - ns % 2;
+        ns = max(i__1, i__2);
     }
 
     if (*ispec == 12) {
@@ -227,7 +226,7 @@ integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer
 /*        .     to xLAHQR, the classic double shift algorithm. */
 /*        .     This must be at least 11. ==== */
 
-	ret_val = 75;
+        ret_val = 75;
 
     } else if (*ispec == 14) {
 
@@ -235,23 +234,23 @@ integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer
 /*        .    whenever aggressive early deflation finds */
 /*        .    at least (NIBBLE*(window size)/100) deflations. ==== */
 
-	ret_val = 14;
+        ret_val = 14;
 
     } else if (*ispec == 15) {
 
 /*        ==== NSHFTS: The number of simultaneous shifts ===== */
 
-	ret_val = ns;
+        ret_val = ns;
 
     } else if (*ispec == 13) {
 
 /*        ==== NW: deflation window size.  ==== */
 
-	if (nh <= 500) {
-	    ret_val = ns;
-	} else {
-	    ret_val = ns * 3 / 2;
-	}
+        if (nh <= 500) {
+            ret_val = ns;
+        } else {
+            ret_val = ns * 3 / 2;
+        }
 
     } else if (*ispec == 16) {
 
@@ -262,17 +261,17 @@ integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer
 /*        .     by making this choice dependent also upon the */
 /*        .     NH=IHI-ILO+1. */
 
-	ret_val = 0;
-	if (ns >= 14) {
-	    ret_val = 1;
-	}
-	if (ns >= 14) {
-	    ret_val = 2;
-	}
+        ret_val = 0;
+        if (ns >= 14) {
+            ret_val = 1;
+        }
+        if (ns >= 14) {
+            ret_val = 2;
+        }
 
     } else {
 /*        ===== invalid value of ispec ===== */
-	ret_val = -1;
+        ret_val = -1;
 
     }
 

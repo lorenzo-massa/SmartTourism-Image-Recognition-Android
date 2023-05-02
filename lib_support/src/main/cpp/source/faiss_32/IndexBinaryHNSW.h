@@ -20,37 +20,39 @@ namespace faiss {
 /** The HNSW index is a normal random-access index with a HNSW
  * link structure built on top */
 
-struct IndexBinaryHNSW : IndexBinary {
-  typedef HNSW::storage_idx_t storage_idx_t;
+    struct IndexBinaryHNSW : IndexBinary {
+        typedef HNSW::storage_idx_t storage_idx_t;
 
-  // the link strcuture
-  HNSW hnsw;
+        // the link strcuture
+        HNSW hnsw;
 
-  // the sequential storage
-  bool own_fields;
-  IndexBinary *storage;
+        // the sequential storage
+        bool own_fields;
+        IndexBinary *storage;
 
-  explicit IndexBinaryHNSW();
-  explicit IndexBinaryHNSW(int d, int M = 32);
-  explicit IndexBinaryHNSW(IndexBinary *storage, int M = 32);
+        explicit IndexBinaryHNSW();
 
-  ~IndexBinaryHNSW() override;
+        explicit IndexBinaryHNSW(int d, int M = 32);
 
-  DistanceComputer *get_distance_computer() const;
+        explicit IndexBinaryHNSW(IndexBinary *storage, int M = 32);
 
-  void add(idx_t n, const uint8_t *x) override;
+        ~IndexBinaryHNSW() override;
 
-  /// Trains the storage if needed
-  void train(idx_t n, const uint8_t* x) override;
+        DistanceComputer *get_distance_computer() const;
 
-  /// entry point for search
-  void search(idx_t n, const uint8_t *x, idx_t k,
-              int32_t *distances, idx_t *labels) const override;
+        void add(idx_t n, const uint8_t *x) override;
 
-  void reconstruct(idx_t key, uint8_t* recons) const override;
+        /// Trains the storage if needed
+        void train(idx_t n, const uint8_t *x) override;
 
-  void reset() override;
-};
+        /// entry point for search
+        void search(idx_t n, const uint8_t *x, idx_t k,
+                    int32_t *distances, idx_t *labels) const override;
+
+        void reconstruct(idx_t key, uint8_t *recons) const override;
+
+        void reset() override;
+    };
 
 
 }  // namespace faiss

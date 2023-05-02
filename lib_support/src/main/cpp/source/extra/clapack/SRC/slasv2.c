@@ -19,8 +19,7 @@ static real c_b3 = 2.f;
 static real c_b4 = 1.f;
 
 /* Subroutine */ int slasv2_(real *f, real *g, real *h__, real *ssmin, real *
-	ssmax, real *snr, real *csr, real *snl, real *csl)
-{
+ssmax, real *snr, real *csr, real *snl, real *csl) {
     /* System generated locals */
     real r__1;
 
@@ -28,8 +27,8 @@ static real c_b4 = 1.f;
     double sqrt(doublereal), r_sign(real *, real *);
 
     /* Local variables */
-    real a, d__, l, m, r__, s, t, fa, ga, ha, ft, gt, ht, mm, tt, clt, crt, 
-	    slt, srt;
+    real a, d__, l, m, r__, s, t, fa, ga, ha, ft, gt, ht, mm, tt, clt, crt,
+            slt, srt;
     integer pmax;
     real temp;
     logical swap;
@@ -133,13 +132,13 @@ static real c_b4 = 1.f;
     pmax = 1;
     swap = ha > fa;
     if (swap) {
-	pmax = 3;
-	temp = ft;
-	ft = ht;
-	ht = temp;
-	temp = fa;
-	fa = ha;
-	ha = temp;
+        pmax = 3;
+        temp = ft;
+        ft = ht;
+        ht = temp;
+        temp = fa;
+        fa = ha;
+        ha = temp;
 
 /*        Now FA .ge. HA */
 
@@ -150,118 +149,118 @@ static real c_b4 = 1.f;
 
 /*        Diagonal matrix */
 
-	*ssmin = ha;
-	*ssmax = fa;
-	clt = 1.f;
-	crt = 1.f;
-	slt = 0.f;
-	srt = 0.f;
+        *ssmin = ha;
+        *ssmax = fa;
+        clt = 1.f;
+        crt = 1.f;
+        slt = 0.f;
+        srt = 0.f;
     } else {
-	gasmal = TRUE_;
-	if (ga > fa) {
-	    pmax = 2;
-	    if (fa / ga < slamch_("EPS")) {
+        gasmal = TRUE_;
+        if (ga > fa) {
+            pmax = 2;
+            if (fa / ga < slamch_("EPS")) {
 
 /*              Case of very large GA */
 
-		gasmal = FALSE_;
-		*ssmax = ga;
-		if (ha > 1.f) {
-		    *ssmin = fa / (ga / ha);
-		} else {
-		    *ssmin = fa / ga * ha;
-		}
-		clt = 1.f;
-		slt = ht / gt;
-		srt = 1.f;
-		crt = ft / gt;
-	    }
-	}
-	if (gasmal) {
+                gasmal = FALSE_;
+                *ssmax = ga;
+                if (ha > 1.f) {
+                    *ssmin = fa / (ga / ha);
+                } else {
+                    *ssmin = fa / ga * ha;
+                }
+                clt = 1.f;
+                slt = ht / gt;
+                srt = 1.f;
+                crt = ft / gt;
+            }
+        }
+        if (gasmal) {
 
 /*           Normal case */
 
-	    d__ = fa - ha;
-	    if (d__ == fa) {
+            d__ = fa - ha;
+            if (d__ == fa) {
 
 /*              Copes with infinite F or H */
 
-		l = 1.f;
-	    } else {
-		l = d__ / fa;
-	    }
+                l = 1.f;
+            } else {
+                l = d__ / fa;
+            }
 
 /*           Note that 0 .le. L .le. 1 */
 
-	    m = gt / ft;
+            m = gt / ft;
 
 /*           Note that abs(M) .le. 1/macheps */
 
-	    t = 2.f - l;
+            t = 2.f - l;
 
 /*           Note that T .ge. 1 */
 
-	    mm = m * m;
-	    tt = t * t;
-	    s = sqrt(tt + mm);
+            mm = m * m;
+            tt = t * t;
+            s = sqrt(tt + mm);
 
 /*           Note that 1 .le. S .le. 1 + 1/macheps */
 
-	    if (l == 0.f) {
-		r__ = dabs(m);
-	    } else {
-		r__ = sqrt(l * l + mm);
-	    }
+            if (l == 0.f) {
+                r__ = dabs(m);
+            } else {
+                r__ = sqrt(l * l + mm);
+            }
 
 /*           Note that 0 .le. R .le. 1 + 1/macheps */
 
-	    a = (s + r__) * .5f;
+            a = (s + r__) * .5f;
 
 /*           Note that 1 .le. A .le. 1 + abs(M) */
 
-	    *ssmin = ha / a;
-	    *ssmax = fa * a;
-	    if (mm == 0.f) {
+            *ssmin = ha / a;
+            *ssmax = fa * a;
+            if (mm == 0.f) {
 
 /*              Note that M is very tiny */
 
-		if (l == 0.f) {
-		    t = r_sign(&c_b3, &ft) * r_sign(&c_b4, &gt);
-		} else {
-		    t = gt / r_sign(&d__, &ft) + m / t;
-		}
-	    } else {
-		t = (m / (s + t) + m / (r__ + l)) * (a + 1.f);
-	    }
-	    l = sqrt(t * t + 4.f);
-	    crt = 2.f / l;
-	    srt = t / l;
-	    clt = (crt + srt * m) / a;
-	    slt = ht / ft * srt / a;
-	}
+                if (l == 0.f) {
+                    t = r_sign(&c_b3, &ft) * r_sign(&c_b4, &gt);
+                } else {
+                    t = gt / r_sign(&d__, &ft) + m / t;
+                }
+            } else {
+                t = (m / (s + t) + m / (r__ + l)) * (a + 1.f);
+            }
+            l = sqrt(t * t + 4.f);
+            crt = 2.f / l;
+            srt = t / l;
+            clt = (crt + srt * m) / a;
+            slt = ht / ft * srt / a;
+        }
     }
     if (swap) {
-	*csl = srt;
-	*snl = crt;
-	*csr = slt;
-	*snr = clt;
+        *csl = srt;
+        *snl = crt;
+        *csr = slt;
+        *snr = clt;
     } else {
-	*csl = clt;
-	*snl = slt;
-	*csr = crt;
-	*snr = srt;
+        *csl = clt;
+        *snl = slt;
+        *csr = crt;
+        *snr = srt;
     }
 
 /*     Correct signs of SSMAX and SSMIN */
 
     if (pmax == 1) {
-	tsign = r_sign(&c_b4, csr) * r_sign(&c_b4, csl) * r_sign(&c_b4, f);
+        tsign = r_sign(&c_b4, csr) * r_sign(&c_b4, csl) * r_sign(&c_b4, f);
     }
     if (pmax == 2) {
-	tsign = r_sign(&c_b4, snr) * r_sign(&c_b4, csl) * r_sign(&c_b4, g);
+        tsign = r_sign(&c_b4, snr) * r_sign(&c_b4, csl) * r_sign(&c_b4, g);
     }
     if (pmax == 3) {
-	tsign = r_sign(&c_b4, snr) * r_sign(&c_b4, snl) * r_sign(&c_b4, h__);
+        tsign = r_sign(&c_b4, snr) * r_sign(&c_b4, snl) * r_sign(&c_b4, h__);
     }
     *ssmax = r_sign(ssmax, &tsign);
     r__1 = tsign * r_sign(&c_b4, f) * r_sign(&c_b4, h__);

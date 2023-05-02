@@ -14,9 +14,8 @@
 #include "blaswrap.h"
 
 /* Subroutine */ int dgemv_(char *trans, integer *m, integer *n, doublereal *
-	alpha, doublereal *a, integer *lda, doublereal *x, integer *incx, 
-	doublereal *beta, doublereal *y, integer *incy)
-{
+alpha, doublereal *a, integer *lda, doublereal *x, integer *incx,
+                            doublereal *beta, doublereal *y, integer *incy) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2;
 
@@ -145,50 +144,50 @@
 
     /* Function Body */
     info = 0;
-    if (! lsame_(trans, "N") && ! lsame_(trans, "T") && ! lsame_(trans, "C")
-	    ) {
-	info = 1;
+    if (!lsame_(trans, "N") && !lsame_(trans, "T") && !lsame_(trans, "C")
+            ) {
+        info = 1;
     } else if (*m < 0) {
-	info = 2;
+        info = 2;
     } else if (*n < 0) {
-	info = 3;
-    } else if (*lda < max(1,*m)) {
-	info = 6;
+        info = 3;
+    } else if (*lda < max(1, *m)) {
+        info = 6;
     } else if (*incx == 0) {
-	info = 8;
+        info = 8;
     } else if (*incy == 0) {
-	info = 11;
+        info = 11;
     }
     if (info != 0) {
-	xerbla_("DGEMV ", &info);
-	return 0;
+        xerbla_("DGEMV ", &info);
+        return 0;
     }
 
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0 || *alpha == 0. && *beta == 1.) {
-	return 0;
+        return 0;
     }
 
 /*     Set  LENX  and  LENY, the lengths of the vectors x and y, and set */
 /*     up the start points in  X  and  Y. */
 
     if (lsame_(trans, "N")) {
-	lenx = *n;
-	leny = *m;
+        lenx = *n;
+        leny = *m;
     } else {
-	lenx = *m;
-	leny = *n;
+        lenx = *m;
+        leny = *n;
     }
     if (*incx > 0) {
-	kx = 1;
+        kx = 1;
     } else {
-	kx = 1 - (lenx - 1) * *incx;
+        kx = 1 - (lenx - 1) * *incx;
     }
     if (*incy > 0) {
-	ky = 1;
+        ky = 1;
     } else {
-	ky = 1 - (leny - 1) * *incy;
+        ky = 1 - (leny - 1) * *incy;
     }
 
 /*     Start the operations. In this version the elements of A are */
@@ -197,112 +196,112 @@
 /*     First form  y := beta*y. */
 
     if (*beta != 1.) {
-	if (*incy == 1) {
-	    if (*beta == 0.) {
-		i__1 = leny;
-		for (i__ = 1; i__ <= i__1; ++i__) {
-		    y[i__] = 0.;
+        if (*incy == 1) {
+            if (*beta == 0.) {
+                i__1 = leny;
+                for (i__ = 1; i__ <= i__1; ++i__) {
+                    y[i__] = 0.;
 /* L10: */
-		}
-	    } else {
-		i__1 = leny;
-		for (i__ = 1; i__ <= i__1; ++i__) {
-		    y[i__] = *beta * y[i__];
+                }
+            } else {
+                i__1 = leny;
+                for (i__ = 1; i__ <= i__1; ++i__) {
+                    y[i__] = *beta * y[i__];
 /* L20: */
-		}
-	    }
-	} else {
-	    iy = ky;
-	    if (*beta == 0.) {
-		i__1 = leny;
-		for (i__ = 1; i__ <= i__1; ++i__) {
-		    y[iy] = 0.;
-		    iy += *incy;
+                }
+            }
+        } else {
+            iy = ky;
+            if (*beta == 0.) {
+                i__1 = leny;
+                for (i__ = 1; i__ <= i__1; ++i__) {
+                    y[iy] = 0.;
+                    iy += *incy;
 /* L30: */
-		}
-	    } else {
-		i__1 = leny;
-		for (i__ = 1; i__ <= i__1; ++i__) {
-		    y[iy] = *beta * y[iy];
-		    iy += *incy;
+                }
+            } else {
+                i__1 = leny;
+                for (i__ = 1; i__ <= i__1; ++i__) {
+                    y[iy] = *beta * y[iy];
+                    iy += *incy;
 /* L40: */
-		}
-	    }
-	}
+                }
+            }
+        }
     }
     if (*alpha == 0.) {
-	return 0;
+        return 0;
     }
     if (lsame_(trans, "N")) {
 
 /*        Form  y := alpha*A*x + y. */
 
-	jx = kx;
-	if (*incy == 1) {
-	    i__1 = *n;
-	    for (j = 1; j <= i__1; ++j) {
-		if (x[jx] != 0.) {
-		    temp = *alpha * x[jx];
-		    i__2 = *m;
-		    for (i__ = 1; i__ <= i__2; ++i__) {
-			y[i__] += temp * a[i__ + j * a_dim1];
+        jx = kx;
+        if (*incy == 1) {
+            i__1 = *n;
+            for (j = 1; j <= i__1; ++j) {
+                if (x[jx] != 0.) {
+                    temp = *alpha * x[jx];
+                    i__2 = *m;
+                    for (i__ = 1; i__ <= i__2; ++i__) {
+                        y[i__] += temp * a[i__ + j * a_dim1];
 /* L50: */
-		    }
-		}
-		jx += *incx;
+                    }
+                }
+                jx += *incx;
 /* L60: */
-	    }
-	} else {
-	    i__1 = *n;
-	    for (j = 1; j <= i__1; ++j) {
-		if (x[jx] != 0.) {
-		    temp = *alpha * x[jx];
-		    iy = ky;
-		    i__2 = *m;
-		    for (i__ = 1; i__ <= i__2; ++i__) {
-			y[iy] += temp * a[i__ + j * a_dim1];
-			iy += *incy;
+            }
+        } else {
+            i__1 = *n;
+            for (j = 1; j <= i__1; ++j) {
+                if (x[jx] != 0.) {
+                    temp = *alpha * x[jx];
+                    iy = ky;
+                    i__2 = *m;
+                    for (i__ = 1; i__ <= i__2; ++i__) {
+                        y[iy] += temp * a[i__ + j * a_dim1];
+                        iy += *incy;
 /* L70: */
-		    }
-		}
-		jx += *incx;
+                    }
+                }
+                jx += *incx;
 /* L80: */
-	    }
-	}
+            }
+        }
     } else {
 
 /*        Form  y := alpha*A'*x + y. */
 
-	jy = ky;
-	if (*incx == 1) {
-	    i__1 = *n;
-	    for (j = 1; j <= i__1; ++j) {
-		temp = 0.;
-		i__2 = *m;
-		for (i__ = 1; i__ <= i__2; ++i__) {
-		    temp += a[i__ + j * a_dim1] * x[i__];
+        jy = ky;
+        if (*incx == 1) {
+            i__1 = *n;
+            for (j = 1; j <= i__1; ++j) {
+                temp = 0.;
+                i__2 = *m;
+                for (i__ = 1; i__ <= i__2; ++i__) {
+                    temp += a[i__ + j * a_dim1] * x[i__];
 /* L90: */
-		}
-		y[jy] += *alpha * temp;
-		jy += *incy;
+                }
+                y[jy] += *alpha * temp;
+                jy += *incy;
 /* L100: */
-	    }
-	} else {
-	    i__1 = *n;
-	    for (j = 1; j <= i__1; ++j) {
-		temp = 0.;
-		ix = kx;
-		i__2 = *m;
-		for (i__ = 1; i__ <= i__2; ++i__) {
-		    temp += a[i__ + j * a_dim1] * x[ix];
-		    ix += *incx;
+            }
+        } else {
+            i__1 = *n;
+            for (j = 1; j <= i__1; ++j) {
+                temp = 0.;
+                ix = kx;
+                i__2 = *m;
+                for (i__ = 1; i__ <= i__2; ++i__) {
+                    temp += a[i__ + j * a_dim1] * x[ix];
+                    ix += *incx;
 /* L110: */
-		}
-		y[jy] += *alpha * temp;
-		jy += *incy;
+                }
+                y[jy] += *alpha * temp;
+                jy += *incy;
 /* L120: */
-	    }
-	}
+            }
+        }
     }
 
     return 0;

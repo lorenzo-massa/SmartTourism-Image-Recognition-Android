@@ -9,6 +9,7 @@
 
 #ifndef FAISS_CLUSTERING_H
 #define FAISS_CLUSTERING_H
+
 #include "Index.h"
 
 #include <vector>
@@ -19,24 +20,24 @@ namespace faiss {
 /** Class for the clustering parameters. Can be passed to the
  * constructor of the Clustering object.
  */
-struct ClusteringParameters {
-    int niter;          ///< clustering iterations
-    int nredo;          ///< redo clustering this many times and keep best
+    struct ClusteringParameters {
+        int niter;          ///< clustering iterations
+        int nredo;          ///< redo clustering this many times and keep best
 
-    bool verbose;
-    bool spherical;     ///< do we want normalized centroids?
-    bool int_centroids; ///< round centroids coordinates to integer
-    bool update_index;  ///< update index after each iteration?
-    bool frozen_centroids;  ///< use the centroids provided as input and do not change them during iterations
+        bool verbose;
+        bool spherical;     ///< do we want normalized centroids?
+        bool int_centroids; ///< round centroids coordinates to integer
+        bool update_index;  ///< update index after each iteration?
+        bool frozen_centroids;  ///< use the centroids provided as input and do not change them during iterations
 
-    int min_points_per_centroid; ///< otherwise you get a warning
-    int max_points_per_centroid;  ///< to limit size of dataset
+        int min_points_per_centroid; ///< otherwise you get a warning
+        int max_points_per_centroid;  ///< to limit size of dataset
 
-    int seed; ///< seed for the random number generator
+        int seed; ///< seed for the random number generator
 
-    /// sets reasonable defaults
-    ClusteringParameters ();
-};
+        /// sets reasonable defaults
+        ClusteringParameters();
+    };
 
 
 /** clustering based on assignment - centroid update iterations
@@ -53,31 +54,32 @@ struct ClusteringParameters {
  * To do several clusterings, just call train() several times on
  * different training sets, clearing the centroid table in between.
  */
-struct Clustering: ClusteringParameters {
-    typedef Index::idx_t idx_t;
-    int64_t d;              ///< dimension of the vectors
-    int64_t k;              ///< nb of centroids
+    struct Clustering : ClusteringParameters {
+        typedef Index::idx_t idx_t;
+        int64_t d;              ///< dimension of the vectors
+        int64_t k;              ///< nb of centroids
 
-    /// centroids (k * d)
-    std::vector<float> centroids;
+        /// centroids (k * d)
+        std::vector<float> centroids;
 
-    /// objective values (sum of distances reported by index) over
-    /// iterations
-    std::vector<float> obj;
+        /// objective values (sum of distances reported by index) over
+        /// iterations
+        std::vector<float> obj;
 
-    /// the only mandatory parameters are k and d
-    Clustering (int d, int k);
-    Clustering (int d, int k, const ClusteringParameters &cp);
+        /// the only mandatory parameters are k and d
+        Clustering(int d, int k);
 
-    /// Index is used during the assignment stage
-    virtual void train (idx_t n, const float * x, faiss::Index & index);
+        Clustering(int d, int k, const ClusteringParameters &cp);
 
-    /// Post-process the centroids after each centroid update.
-    /// includes optional L2 normalization and nearest integer rounding
-    void post_process_centroids ();
+        /// Index is used during the assignment stage
+        virtual void train(idx_t n, const float *x, faiss::Index &index);
 
-    virtual ~Clustering() {}
-};
+        /// Post-process the centroids after each centroid update.
+        /// includes optional L2 normalization and nearest integer rounding
+        void post_process_centroids();
+
+        virtual ~Clustering() {}
+    };
 
 
 /** simplified interface
@@ -89,10 +91,9 @@ struct Clustering: ClusteringParameters {
  * @param centroids output centroids (size k * d)
  * @return final quantization error
  */
-float kmeans_clustering (int64_t d, int64_t n, int64_t k,
-                         const float *x,
-                         float *centroids);
-
+    float kmeans_clustering(int64_t d, int64_t n, int64_t k,
+                            const float *x,
+                            float *centroids);
 
 
 }

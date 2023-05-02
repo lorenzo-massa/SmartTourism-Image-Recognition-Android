@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-integer iladlr_(integer *m, integer *n, doublereal *a, integer *lda)
-{
+integer iladlr_(integer *m, integer *n, doublereal *a, integer *lda) {
     /* System generated locals */
     integer a_dim1, a_offset, ret_val, i__1;
 
@@ -70,21 +69,21 @@ integer iladlr_(integer *m, integer *n, doublereal *a, integer *lda)
 
     /* Function Body */
     if (*m == 0) {
-	ret_val = *m;
+        ret_val = *m;
     } else if (a[*m + a_dim1] != 0. || a[*m + *n * a_dim1] != 0.) {
-	ret_val = *m;
+        ret_val = *m;
     } else {
 /*     Scan up each column tracking the last zero row seen. */
-	ret_val = 0;
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    for (i__ = *m; i__ >= 1; --i__) {
-		if (a[i__ + j * a_dim1] != 0.) {
-		    break;
-		}
-	    }
-	    ret_val = max(ret_val,i__);
-	}
+        ret_val = 0;
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            for (i__ = *m; i__ >= 1; --i__) {
+                if (a[i__ + j * a_dim1] != 0.) {
+                    break;
+                }
+            }
+            ret_val = max(ret_val, i__);
+        }
     }
     return ret_val;
 } /* iladlr_ */

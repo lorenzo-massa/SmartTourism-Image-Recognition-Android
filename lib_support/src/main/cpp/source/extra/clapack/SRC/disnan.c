@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-logical disnan_(doublereal *din)
-{
+logical disnan_(doublereal *din) {
     /* System generated locals */
     logical ret_val;
 

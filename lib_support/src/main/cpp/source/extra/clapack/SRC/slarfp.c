@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int slarfp_(integer *n, real *alpha, real *x, integer *incx, 
-	real *tau)
-{
+/* Subroutine */ int slarfp_(integer *n, real *alpha, real *x, integer *incx,
+                             real *tau) {
     /* System generated locals */
     integer i__1;
     real r__1;
@@ -105,8 +104,8 @@
 
     /* Function Body */
     if (*n <= 0) {
-	*tau = 0.f;
-	return 0;
+        *tau = 0.f;
+        return 0;
     }
 
     i__1 = *n - 1;
@@ -116,72 +115,72 @@
 
 /*        H  =  [+/-1, 0; I], sign chosen so ALPHA >= 0. */
 
-	if (*alpha >= 0.f) {
+        if (*alpha >= 0.f) {
 /*           When TAU.eq.ZERO, the vector is special-cased to be */
 /*           all zeros in the application routines.  We do not need */
 /*           to clear it. */
-	    *tau = 0.f;
-	} else {
+            *tau = 0.f;
+        } else {
 /*           However, the application routines rely on explicit */
 /*           zero checks when TAU.ne.ZERO, and we must clear X. */
-	    *tau = 2.f;
-	    i__1 = *n - 1;
-	    for (j = 1; j <= i__1; ++j) {
-		x[(j - 1) * *incx + 1] = 0.f;
-	    }
-	    *alpha = -(*alpha);
-	}
+            *tau = 2.f;
+            i__1 = *n - 1;
+            for (j = 1; j <= i__1; ++j) {
+                x[(j - 1) * *incx + 1] = 0.f;
+            }
+            *alpha = -(*alpha);
+        }
     } else {
 
 /*        general case */
 
-	r__1 = slapy2_(alpha, &xnorm);
-	beta = r_sign(&r__1, alpha);
-	safmin = slamch_("S") / slamch_("E");
-	knt = 0;
-	if (dabs(beta) < safmin) {
+        r__1 = slapy2_(alpha, &xnorm);
+        beta = r_sign(&r__1, alpha);
+        safmin = slamch_("S") / slamch_("E");
+        knt = 0;
+        if (dabs(beta) < safmin) {
 
 /*           XNORM, BETA may be inaccurate; scale X and recompute them */
 
-	    rsafmn = 1.f / safmin;
-L10:
-	    ++knt;
-	    i__1 = *n - 1;
-	    sscal_(&i__1, &rsafmn, &x[1], incx);
-	    beta *= rsafmn;
-	    *alpha *= rsafmn;
-	    if (dabs(beta) < safmin) {
-		goto L10;
-	    }
+            rsafmn = 1.f / safmin;
+            L10:
+            ++knt;
+            i__1 = *n - 1;
+            sscal_(&i__1, &rsafmn, &x[1], incx);
+            beta *= rsafmn;
+            *alpha *= rsafmn;
+            if (dabs(beta) < safmin) {
+                goto L10;
+            }
 
 /*           New BETA is at most 1, at least SAFMIN */
 
-	    i__1 = *n - 1;
-	    xnorm = snrm2_(&i__1, &x[1], incx);
-	    r__1 = slapy2_(alpha, &xnorm);
-	    beta = r_sign(&r__1, alpha);
-	}
-	*alpha += beta;
-	if (beta < 0.f) {
-	    beta = -beta;
-	    *tau = -(*alpha) / beta;
-	} else {
-	    *alpha = xnorm * (xnorm / *alpha);
-	    *tau = *alpha / beta;
-	    *alpha = -(*alpha);
-	}
-	i__1 = *n - 1;
-	r__1 = 1.f / *alpha;
-	sscal_(&i__1, &r__1, &x[1], incx);
+            i__1 = *n - 1;
+            xnorm = snrm2_(&i__1, &x[1], incx);
+            r__1 = slapy2_(alpha, &xnorm);
+            beta = r_sign(&r__1, alpha);
+        }
+        *alpha += beta;
+        if (beta < 0.f) {
+            beta = -beta;
+            *tau = -(*alpha) / beta;
+        } else {
+            *alpha = xnorm * (xnorm / *alpha);
+            *tau = *alpha / beta;
+            *alpha = -(*alpha);
+        }
+        i__1 = *n - 1;
+        r__1 = 1.f / *alpha;
+        sscal_(&i__1, &r__1, &x[1], incx);
 
 /*        If BETA is subnormal, it may lose relative accuracy */
 
-	i__1 = knt;
-	for (j = 1; j <= i__1; ++j) {
-	    beta *= safmin;
+        i__1 = knt;
+        for (j = 1; j <= i__1; ++j) {
+            beta *= safmin;
 /* L20: */
-	}
-	*alpha = beta;
+        }
+        *alpha = beta;
     }
 
     return 0;

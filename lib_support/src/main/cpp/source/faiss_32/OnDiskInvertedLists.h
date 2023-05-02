@@ -18,7 +18,7 @@
 namespace faiss {
 
 
-struct LockLevels;
+    struct LockLevels;
 
 /** On-disk storage of inverted lists.
  *
@@ -48,78 +48,85 @@ struct LockLevels;
  * to call prefetch_lists, that launches a set of threads to read the
  * lists in parallel.
  */
-struct OnDiskInvertedLists: InvertedLists {
+    struct OnDiskInvertedLists : InvertedLists {
 
-    struct List {
-        int64_t size;     // size of inverted list (entries)
-        int64_t capacity; // allocated size (entries)
-        int64_t offset;   // offset in buffer (bytes)
-        List ();
+        struct List {
+            int64_t size;     // size of inverted list (entries)
+            int64_t capacity; // allocated size (entries)
+            int64_t offset;   // offset in buffer (bytes)
+            List();
+        };
+
+        // size nlist
+        std::vector<List> lists;
+
+        struct Slot {
+            int64_t offset;    // bytes
+            int64_t capacity;  // bytes
+            Slot(int64_t offset, int64_t capacity);
+
+            Slot();
+        };
+
+        // size whatever space remains
+        std::list<Slot> slots;
+
+        std::string filename;
+        int64_t totsize;
+        uint8_t *ptr; // mmap base pointer
+        bool read_only;  /// are inverted lists mapped read-only
+
+        OnDiskInvertedLists(int64_t nlist, int64_t code_size,
+                            const char *filename);
+
+        int64_t list_size(int64_t list_no) const override;
+
+        const uint8_t *get_codes(int64_t list_no) const override;
+
+        const idx_t *get_ids(int64_t list_no) const override;
+
+        int64_t add_entries(
+                int64_t list_no, int64_t n_entry,
+                const idx_t *ids, const uint8_t *code) override;
+
+        void update_entries(int64_t list_no, int64_t offset, int64_t n_entry,
+                            const idx_t *ids, const uint8_t *code) override;
+
+        void resize(int64_t list_no, int64_t new_size) override;
+
+        // copy all inverted lists into *this, in compact form (without
+        // allocating slots)
+        int64_t merge_from(const InvertedLists **ils, int n_il, bool verbose = false);
+
+        /// restrict the inverted lists to l0:l1 without touching the mmapped region
+        void crop_invlists(int64_t l0, int64_t l1);
+
+        void prefetch_lists(const idx_t *list_nos, int nlist) const override;
+
+        virtual ~OnDiskInvertedLists();
+
+        // private
+
+        LockLevels *locks;
+
+        // encapsulates the threads that are busy prefeteching
+        struct OngoingPrefetch;
+        OngoingPrefetch *pf;
+        int prefetch_nthread;
+
+        void do_mmap();
+
+        void update_totsize(int64_t new_totsize);
+
+        void resize_locked(int64_t list_no, int64_t new_size);
+
+        int64_t allocate_slot(int64_t capacity);
+
+        void free_slot(int64_t offset, int64_t capacity);
+
+        // empty constructor for the I/O functions
+        OnDiskInvertedLists();
     };
-
-    // size nlist
-    std::vector<List> lists;
-
-    struct Slot {
-        int64_t offset;    // bytes
-        int64_t capacity;  // bytes
-        Slot (int64_t offset, int64_t capacity);
-        Slot ();
-    };
-
-    // size whatever space remains
-    std::list<Slot> slots;
-
-    std::string filename;
-    int64_t totsize;
-    uint8_t *ptr; // mmap base pointer
-    bool read_only;  /// are inverted lists mapped read-only
-
-    OnDiskInvertedLists (int64_t nlist, int64_t code_size,
-                         const char *filename);
-
-    int64_t list_size(int64_t list_no) const override;
-    const uint8_t * get_codes (int64_t list_no) const override;
-    const idx_t * get_ids (int64_t list_no) const override;
-
-    int64_t add_entries (
-           int64_t list_no, int64_t n_entry,
-           const idx_t* ids, const uint8_t *code) override;
-
-    void update_entries (int64_t list_no, int64_t offset, int64_t n_entry,
-                         const idx_t *ids, const uint8_t *code) override;
-
-    void resize (int64_t list_no, int64_t new_size) override;
-
-    // copy all inverted lists into *this, in compact form (without
-    // allocating slots)
-    int64_t merge_from (const InvertedLists **ils, int n_il, bool verbose=false);
-
-    /// restrict the inverted lists to l0:l1 without touching the mmapped region
-    void crop_invlists(int64_t l0, int64_t l1);
-
-    void prefetch_lists (const idx_t *list_nos, int nlist) const override;
-
-    virtual ~OnDiskInvertedLists ();
-
-    // private
-
-    LockLevels * locks;
-
-    // encapsulates the threads that are busy prefeteching
-    struct OngoingPrefetch;
-    OngoingPrefetch *pf;
-    int prefetch_nthread;
-
-    void do_mmap ();
-    void update_totsize (int64_t new_totsize);
-    void resize_locked (int64_t list_no, int64_t new_size);
-    int64_t allocate_slot (int64_t capacity);
-    void free_slot (int64_t offset, int64_t capacity);
-
-    // empty constructor for the I/O functions
-    OnDiskInvertedLists ();
-};
 
 
 } // namespace faiss

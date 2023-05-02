@@ -1,14 +1,9 @@
 package org.tensorflow.lite.examples.classification.tflite;
 
-import static org.opencv.imgproc.Imgproc.INTER_AREA;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.util.Log;
-import android.widget.TextView;
 
 import org.opencv.android.Utils;
 import org.opencv.calib3d.Calib3d;
@@ -19,9 +14,7 @@ import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.features2d.DescriptorMatcher;
-import org.opencv.features2d.Features2d;
 import org.opencv.features2d.ORB;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,22 +45,22 @@ public class DetectionHelper {
         this.exampleString = exampleString;
 
 
-        if(mode == Classifier.Mode.ORB){
+        if (mode == Classifier.Mode.ORB) {
             descriptors = new Mat();
             descriptorsExample = new Mat();
-            try{
+            try {
                 createDescriptorsExample(exampleString);
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
 
     }
 
-    public float help(){
-        if(mode == Classifier.Mode.ORB){
+    public float help() {
+        if (mode == Classifier.Mode.ORB) {
             return orb();
-        }else if(mode == Classifier.Mode.OBJ){
+        } else if (mode == Classifier.Mode.OBJ) {
             //obj();
             return 0; //TODO
         }
@@ -95,7 +88,7 @@ public class DetectionHelper {
 
         //Features2d.drawKeypoints(input_rgba, keyPointsExample, input_rgba);
 
-        Utils.matToBitmap(input_rgba,bitmap);
+        Utils.matToBitmap(input_rgba, bitmap);
         //imageExampleView.setImageBitmap(bitmap);
 
         input_rgba_example = input_rgba;
@@ -171,7 +164,7 @@ public class DetectionHelper {
         return 0;
     }
 
-    private void  OBJ(){
+    private void OBJ() {
 
     }
 }

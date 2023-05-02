@@ -18,10 +18,9 @@
 static integer c__1 = 1;
 static integer c_n1 = -1;
 
-/* Subroutine */ int dorgbr_(char *vect, integer *m, integer *n, integer *k, 
-	doublereal *a, integer *lda, doublereal *tau, doublereal *work, 
-	integer *lwork, integer *info)
-{
+/* Subroutine */ int dorgbr_(char *vect, integer *m, integer *n, integer *k,
+                             doublereal *a, integer *lda, doublereal *tau, doublereal *work,
+                             integer *lwork, integer *info) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3;
 
@@ -31,12 +30,15 @@ static integer c_n1 = -1;
     integer iinfo;
     logical wantq;
     extern /* Subroutine */ int xerbla_(char *, integer *);
-    extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
-	    integer *, integer *);
-    extern /* Subroutine */ int dorglq_(integer *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
-	    integer *), dorgqr_(integer *, integer *, integer *, doublereal *, 
-	     integer *, doublereal *, doublereal *, integer *, integer *);
+    extern integer ilaenv_(integer *, char *, char *, integer *, integer *,
+                           integer *, integer *);
+    extern /* Subroutine */ int dorglq_(integer *, integer *, integer *,
+                                        doublereal *, integer *, doublereal *, doublereal *,
+                                        integer *,
+                                        integer *), dorgqr_(integer *, integer *, integer *,
+                                                            doublereal *,
+                                                            integer *, doublereal *, doublereal *,
+                                                            integer *, integer *);
     integer lwkopt;
     logical lquery;
 
@@ -156,46 +158,46 @@ static integer c_n1 = -1;
     /* Function Body */
     *info = 0;
     wantq = lsame_(vect, "Q");
-    mn = min(*m,*n);
+    mn = min(*m, *n);
     lquery = *lwork == -1;
-    if (! wantq && ! lsame_(vect, "P")) {
-	*info = -1;
+    if (!wantq && !lsame_(vect, "P")) {
+        *info = -1;
     } else if (*m < 0) {
-	*info = -2;
-    } else if (*n < 0 || wantq && (*n > *m || *n < min(*m,*k)) || ! wantq && (
-	    *m > *n || *m < min(*n,*k))) {
-	*info = -3;
+        *info = -2;
+    } else if (*n < 0 || wantq && (*n > *m || *n < min(*m, *k)) || !wantq && (
+            *m > *n || *m < min(*n, *k))) {
+        *info = -3;
     } else if (*k < 0) {
-	*info = -4;
-    } else if (*lda < max(1,*m)) {
-	*info = -6;
-    } else if (*lwork < max(1,mn) && ! lquery) {
-	*info = -9;
+        *info = -4;
+    } else if (*lda < max(1, *m)) {
+        *info = -6;
+    } else if (*lwork < max(1, mn) && !lquery) {
+        *info = -9;
     }
 
     if (*info == 0) {
-	if (wantq) {
-	    nb = ilaenv_(&c__1, "DORGQR", " ", m, n, k, &c_n1);
-	} else {
-	    nb = ilaenv_(&c__1, "DORGLQ", " ", m, n, k, &c_n1);
-	}
-	lwkopt = max(1,mn) * nb;
-	work[1] = (doublereal) lwkopt;
+        if (wantq) {
+            nb = ilaenv_(&c__1, "DORGQR", " ", m, n, k, &c_n1);
+        } else {
+            nb = ilaenv_(&c__1, "DORGLQ", " ", m, n, k, &c_n1);
+        }
+        lwkopt = max(1, mn) * nb;
+        work[1] = (doublereal) lwkopt;
     }
 
     if (*info != 0) {
-	i__1 = -(*info);
-	xerbla_("DORGBR", &i__1);
-	return 0;
+        i__1 = -(*info);
+        xerbla_("DORGBR", &i__1);
+        return 0;
     } else if (lquery) {
-	return 0;
+        return 0;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	work[1] = 1.;
-	return 0;
+        work[1] = 1.;
+        return 0;
     }
 
     if (wantq) {
@@ -203,14 +205,14 @@ static integer c_n1 = -1;
 /*        Form Q, determined by a call to DGEBRD to reduce an m-by-k */
 /*        matrix */
 
-	if (*m >= *k) {
+        if (*m >= *k) {
 
 /*           If m >= k, assume m >= n >= k */
 
-	    dorgqr_(m, n, k, &a[a_offset], lda, &tau[1], &work[1], lwork, &
-		    iinfo);
+            dorgqr_(m, n, k, &a[a_offset], lda, &tau[1], &work[1], lwork, &
+                    iinfo);
 
-	} else {
+        } else {
 
 /*           If m < k, assume m = n */
 
@@ -218,45 +220,45 @@ static integer c_n1 = -1;
 /*           column to the right, and set the first row and column of Q */
 /*           to those of the unit matrix */
 
-	    for (j = *m; j >= 2; --j) {
-		a[j * a_dim1 + 1] = 0.;
-		i__1 = *m;
-		for (i__ = j + 1; i__ <= i__1; ++i__) {
-		    a[i__ + j * a_dim1] = a[i__ + (j - 1) * a_dim1];
+            for (j = *m; j >= 2; --j) {
+                a[j * a_dim1 + 1] = 0.;
+                i__1 = *m;
+                for (i__ = j + 1; i__ <= i__1; ++i__) {
+                    a[i__ + j * a_dim1] = a[i__ + (j - 1) * a_dim1];
 /* L10: */
-		}
+                }
 /* L20: */
-	    }
-	    a[a_dim1 + 1] = 1.;
-	    i__1 = *m;
-	    for (i__ = 2; i__ <= i__1; ++i__) {
-		a[i__ + a_dim1] = 0.;
+            }
+            a[a_dim1 + 1] = 1.;
+            i__1 = *m;
+            for (i__ = 2; i__ <= i__1; ++i__) {
+                a[i__ + a_dim1] = 0.;
 /* L30: */
-	    }
-	    if (*m > 1) {
+            }
+            if (*m > 1) {
 
 /*              Form Q(2:m,2:m) */
 
-		i__1 = *m - 1;
-		i__2 = *m - 1;
-		i__3 = *m - 1;
-		dorgqr_(&i__1, &i__2, &i__3, &a[(a_dim1 << 1) + 2], lda, &tau[
-			1], &work[1], lwork, &iinfo);
-	    }
-	}
+                i__1 = *m - 1;
+                i__2 = *m - 1;
+                i__3 = *m - 1;
+                dorgqr_(&i__1, &i__2, &i__3, &a[(a_dim1 << 1) + 2], lda, &tau[
+                        1], &work[1], lwork, &iinfo);
+            }
+        }
     } else {
 
 /*        Form P', determined by a call to DGEBRD to reduce a k-by-n */
 /*        matrix */
 
-	if (*k < *n) {
+        if (*k < *n) {
 
 /*           If k < n, assume k <= m <= n */
 
-	    dorglq_(m, n, k, &a[a_offset], lda, &tau[1], &work[1], lwork, &
-		    iinfo);
+            dorglq_(m, n, k, &a[a_offset], lda, &tau[1], &work[1], lwork, &
+                    iinfo);
 
-	} else {
+        } else {
 
 /*           If k >= n, assume m = n */
 
@@ -264,32 +266,32 @@ static integer c_n1 = -1;
 /*           row downward, and set the first row and column of P' to */
 /*           those of the unit matrix */
 
-	    a[a_dim1 + 1] = 1.;
-	    i__1 = *n;
-	    for (i__ = 2; i__ <= i__1; ++i__) {
-		a[i__ + a_dim1] = 0.;
+            a[a_dim1 + 1] = 1.;
+            i__1 = *n;
+            for (i__ = 2; i__ <= i__1; ++i__) {
+                a[i__ + a_dim1] = 0.;
 /* L40: */
-	    }
-	    i__1 = *n;
-	    for (j = 2; j <= i__1; ++j) {
-		for (i__ = j - 1; i__ >= 2; --i__) {
-		    a[i__ + j * a_dim1] = a[i__ - 1 + j * a_dim1];
+            }
+            i__1 = *n;
+            for (j = 2; j <= i__1; ++j) {
+                for (i__ = j - 1; i__ >= 2; --i__) {
+                    a[i__ + j * a_dim1] = a[i__ - 1 + j * a_dim1];
 /* L50: */
-		}
-		a[j * a_dim1 + 1] = 0.;
+                }
+                a[j * a_dim1 + 1] = 0.;
 /* L60: */
-	    }
-	    if (*n > 1) {
+            }
+            if (*n > 1) {
 
 /*              Form P'(2:n,2:n) */
 
-		i__1 = *n - 1;
-		i__2 = *n - 1;
-		i__3 = *n - 1;
-		dorglq_(&i__1, &i__2, &i__3, &a[(a_dim1 << 1) + 2], lda, &tau[
-			1], &work[1], lwork, &iinfo);
-	    }
-	}
+                i__1 = *n - 1;
+                i__2 = *n - 1;
+                i__3 = *n - 1;
+                dorglq_(&i__1, &i__2, &i__3, &a[(a_dim1 << 1) + 2], lda, &tau[
+                        1], &work[1], lwork, &iinfo);
+            }
+        }
     }
     work[1] = (doublereal) lwkopt;
     return 0;

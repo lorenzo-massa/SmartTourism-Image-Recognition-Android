@@ -17,10 +17,10 @@ package org.tensorflow.lite.examples.classification.tflite;
 
 import android.app.Activity;
 
-import java.io.IOException;
-
 import org.tensorflow.lite.support.common.TensorOperator;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
+
+import java.io.IOException;
 
 /**
  * This TensorFlow Lite classifier works with the quantized EfficientNet model.

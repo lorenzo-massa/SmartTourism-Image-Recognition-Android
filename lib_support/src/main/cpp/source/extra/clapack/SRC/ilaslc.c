@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-integer ilaslc_(integer *m, integer *n, real *a, integer *lda)
-{
+integer ilaslc_(integer *m, integer *n, real *a, integer *lda) {
     /* System generated locals */
     integer a_dim1, a_offset, ret_val, i__1;
 
@@ -70,19 +69,19 @@ integer ilaslc_(integer *m, integer *n, real *a, integer *lda)
 
     /* Function Body */
     if (*n == 0) {
-	ret_val = *n;
+        ret_val = *n;
     } else if (a[*n * a_dim1 + 1] != 0.f || a[*m + *n * a_dim1] != 0.f) {
-	ret_val = *n;
+        ret_val = *n;
     } else {
 /*     Now scan each column from the end, returning with the first non-zero. */
-	for (ret_val = *n; ret_val >= 1; --ret_val) {
-	    i__1 = *m;
-	    for (i__ = 1; i__ <= i__1; ++i__) {
-		if (a[i__ + ret_val * a_dim1] != 0.f) {
-		    return ret_val;
-		}
-	    }
-	}
+        for (ret_val = *n; ret_val >= 1; --ret_val) {
+            i__1 = *m;
+            for (i__ = 1; i__ <= i__1; ++i__) {
+                if (a[i__ + ret_val * a_dim1] != 0.f) {
+                    return ret_val;
+                }
+            }
+        }
     }
     return ret_val;
 } /* ilaslc_ */

@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int dlae2_(doublereal *a, doublereal *b, doublereal *c__, 
-	doublereal *rt1, doublereal *rt2)
-{
+/* Subroutine */ int dlae2_(doublereal *a, doublereal *b, doublereal *c__,
+                            doublereal *rt1, doublereal *rt2) {
     /* System generated locals */
     doublereal d__1;
 
@@ -92,48 +91,48 @@
     tb = *b + *b;
     ab = abs(tb);
     if (abs(*a) > abs(*c__)) {
-	acmx = *a;
-	acmn = *c__;
+        acmx = *a;
+        acmn = *c__;
     } else {
-	acmx = *c__;
-	acmn = *a;
+        acmx = *c__;
+        acmn = *a;
     }
     if (adf > ab) {
 /* Computing 2nd power */
-	d__1 = ab / adf;
-	rt = adf * sqrt(d__1 * d__1 + 1.);
+        d__1 = ab / adf;
+        rt = adf * sqrt(d__1 * d__1 + 1.);
     } else if (adf < ab) {
 /* Computing 2nd power */
-	d__1 = adf / ab;
-	rt = ab * sqrt(d__1 * d__1 + 1.);
+        d__1 = adf / ab;
+        rt = ab * sqrt(d__1 * d__1 + 1.);
     } else {
 
 /*        Includes case AB=ADF=0 */
 
-	rt = ab * sqrt(2.);
+        rt = ab * sqrt(2.);
     }
     if (sm < 0.) {
-	*rt1 = (sm - rt) * .5;
+        *rt1 = (sm - rt) * .5;
 
 /*        Order of execution important. */
 /*        To get fully accurate smaller eigenvalue, */
 /*        next line needs to be executed in higher precision. */
 
-	*rt2 = acmx / *rt1 * acmn - *b / *rt1 * *b;
+        *rt2 = acmx / *rt1 * acmn - *b / *rt1 * *b;
     } else if (sm > 0.) {
-	*rt1 = (sm + rt) * .5;
+        *rt1 = (sm + rt) * .5;
 
 /*        Order of execution important. */
 /*        To get fully accurate smaller eigenvalue, */
 /*        next line needs to be executed in higher precision. */
 
-	*rt2 = acmx / *rt1 * acmn - *b / *rt1 * *b;
+        *rt2 = acmx / *rt1 * acmn - *b / *rt1 * *b;
     } else {
 
 /*        Includes case RT1 = RT2 = 0 */
 
-	*rt1 = rt * .5;
-	*rt2 = rt * -.5;
+        *rt1 = rt * .5;
+        *rt2 = rt * -.5;
     }
     return 0;
 

@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int dscal_(integer *n, doublereal *da, doublereal *dx, 
-	integer *incx)
-{
+/* Subroutine */ int dscal_(integer *n, doublereal *da, doublereal *dx,
+                            integer *incx) {
     /* System generated locals */
     integer i__1, i__2;
 
@@ -46,10 +45,10 @@
 
     /* Function Body */
     if (*n <= 0 || *incx <= 0) {
-	return 0;
+        return 0;
     }
     if (*incx == 1) {
-	goto L20;
+        goto L20;
     }
 
 /*        code for increment not equal to 1 */
@@ -58,7 +57,7 @@
     i__1 = nincx;
     i__2 = *incx;
     for (i__ = 1; i__2 < 0 ? i__ >= i__1 : i__ <= i__1; i__ += i__2) {
-	dx[i__] = *da * dx[i__];
+        dx[i__] = *da * dx[i__];
 /* L10: */
     }
     return 0;
@@ -68,28 +67,28 @@
 
 /*        clean-up loop */
 
-L20:
+    L20:
     m = *n % 5;
     if (m == 0) {
-	goto L40;
+        goto L40;
     }
     i__2 = m;
     for (i__ = 1; i__ <= i__2; ++i__) {
-	dx[i__] = *da * dx[i__];
+        dx[i__] = *da * dx[i__];
 /* L30: */
     }
     if (*n < 5) {
-	return 0;
+        return 0;
     }
-L40:
+    L40:
     mp1 = m + 1;
     i__2 = *n;
     for (i__ = mp1; i__ <= i__2; i__ += 5) {
-	dx[i__] = *da * dx[i__];
-	dx[i__ + 1] = *da * dx[i__ + 1];
-	dx[i__ + 2] = *da * dx[i__ + 2];
-	dx[i__ + 3] = *da * dx[i__ + 3];
-	dx[i__ + 4] = *da * dx[i__ + 4];
+        dx[i__] = *da * dx[i__];
+        dx[i__ + 1] = *da * dx[i__ + 1];
+        dx[i__ + 2] = *da * dx[i__ + 2];
+        dx[i__ + 3] = *da * dx[i__ + 3];
+        dx[i__ + 4] = *da * dx[i__ + 4];
 /* L50: */
     }
     return 0;

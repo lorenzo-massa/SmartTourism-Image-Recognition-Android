@@ -28,18 +28,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.MappedByteBuffer;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.TreeMap;
-
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.gpu.CompatibilityList;
@@ -55,6 +43,15 @@ import org.tensorflow.lite.support.image.ops.ResizeOp.ResizeMethod;
 import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
 import org.tensorflow.lite.support.image.ops.Rot90Op;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 /**
  * A classifier specialized to label images using TensorFlow Lite.
@@ -145,7 +142,7 @@ public abstract class Classifier {
                 } else {
                     tfliteOptions.setUseXNNPACK(true);
                     Log.d(TAG, "GPU not supported. Default to CPU.");
-                    Toast.makeText(context, "GPU not supported. Default to CPU.", Toast.LENGTH_SHORT);
+                    Toast.makeText(context, "GPU not supported. Default to CPU.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case CPU:
@@ -338,10 +335,10 @@ public abstract class Classifier {
         Log.v(TAG, "Timecost to run model inference: " + (endTimeForReference - startTimeForReference));
 
         //Get features
-    /*float [] features = outputProbabilityBuffer.getFloatArray();
-    float [] featuresZoom1 = outputProbabilityBufferZoom1.getFloatArray();
-    float [] featuresZoom2 = outputProbabilityBufferZoom2.getFloatArray();
-    */
+        /*float [] features = outputProbabilityBuffer.getFloatArray();
+        float [] featuresZoom1 = outputProbabilityBufferZoom1.getFloatArray();
+        float [] featuresZoom2 = outputProbabilityBufferZoom2.getFloatArray();
+        */
 
         //Get features + Postprocess
         float[] features = probabilityProcessor.process(outputProbabilityBuffer).getFloatArray();
@@ -368,32 +365,6 @@ public abstract class Classifier {
         Trace.endSection();
 
         Trace.endSection(); //end recognize image section
-
-    /*
-    String app = "";
-    for (Float f: features) {
-      app+=f+" ";
-    }
-    Log.v(TAG,"features: "+app);
-
-    String app1 = "";
-    for (Float f: featuresZoom1) {
-      app1+=f+" ";
-    }
-    Log.v(TAG,"features zoom 1: "+app1);
-
-    String app2 = "";
-    for (Float f: featuresZoom2) {
-      app2+=f+" ";
-    }
-    Log.v(TAG,"features zoom 2: "+app2);
-    */
-
-        //Log.v(TAG,"result: "+ result);
-        //Log.v(TAG,"result zoom 1: "+resultZoom1);
-        //Log.v(TAG,"result zoom 2: "+resultZoom2);
-
-        //Log.v(TAG,"finalResult: "+finalResult);
 
         return finalResult;
     }
@@ -434,42 +405,7 @@ public abstract class Classifier {
      * Loads input image, and applies preprocessing.
      */
     private void loadImage(Bitmap bitmap, int sensorOrientation, float zoomRatio, float zoomRatioZoom1, float zoomRatioZoom2) {
-        // Loads bitmap into a TensorImage.
-
-
-        //Try with particular image
-/*
-    InputStream in = null;
-    BitmapFactory.Options options = null;
-    try{
-      in = context.getAssets().open("images/Palazzo_Vecchio_004.JPG");
-      options = new BitmapFactory.Options();
-      options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-      bitmap = BitmapFactory.decodeStream(in,null,options);
-
-    }catch (Exception e){
-
-    }
-*/
-
-        //Show image pixels
-    /*
-    int[] pixels = new int[bitmap.getHeight()*bitmap.getWidth()];
-
-    bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-
-    for (int i=0; i<50; i++){
-      int p = pixels[i];
-
-      int R = (p >> 16) & 0xff;
-      int G = (p >> 8) & 0xff;
-      int B = p & 0xff;
-
-      Log.v(TAG, i+": "+R+" "+G+" "+B);
-    }
-     */
-
+        // Loads bitmap into a TensorImage
 
         inputImageBuffer.load(bitmap); //image in ARGB_8888
         inputImageBufferZoom1.load(bitmap); //image in ARGB_8888
@@ -556,7 +492,7 @@ public abstract class Classifier {
         PRECISE, //MOBILENET_V3_LARGE_100
         MEDIUM, //MOBILENET_V3_LARGE_075
         FAST, //OBILENET_V3_SMALL_100
-        QUANTIZED_MOBILENET
+        QUANTIZED_MOBILENET //NOT USED
     }
 
     /**
@@ -649,7 +585,6 @@ public abstract class Classifier {
             }
 
             if (confidence != null) {
-                //resultString += String.format("(%.1f%%) ", confidence * 100.0f);
                 resultString += confidence + " ";
             }
 

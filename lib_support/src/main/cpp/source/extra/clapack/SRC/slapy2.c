@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-doublereal slapy2_(real *x, real *y)
-{
+doublereal slapy2_(real *x, real *y) {
     /* System generated locals */
     real ret_val, r__1;
 
@@ -57,14 +56,14 @@ doublereal slapy2_(real *x, real *y)
 
     xabs = dabs(*x);
     yabs = dabs(*y);
-    w = dmax(xabs,yabs);
-    z__ = dmin(xabs,yabs);
+    w = dmax(xabs, yabs);
+    z__ = dmin(xabs, yabs);
     if (z__ == 0.f) {
-	ret_val = w;
+        ret_val = w;
     } else {
 /* Computing 2nd power */
-	r__1 = z__ / w;
-	ret_val = w * sqrt(r__1 * r__1 + 1.f);
+        r__1 = z__ / w;
+        ret_val = w * sqrt(r__1 * r__1 + 1.f);
     }
     return ret_val;
 

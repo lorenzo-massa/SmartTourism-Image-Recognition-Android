@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-doublereal dlapy2_(doublereal *x, doublereal *y)
-{
+doublereal dlapy2_(doublereal *x, doublereal *y) {
     /* System generated locals */
     doublereal ret_val, d__1;
 
@@ -57,14 +56,14 @@ doublereal dlapy2_(doublereal *x, doublereal *y)
 
     xabs = abs(*x);
     yabs = abs(*y);
-    w = max(xabs,yabs);
-    z__ = min(xabs,yabs);
+    w = max(xabs, yabs);
+    z__ = min(xabs, yabs);
     if (z__ == 0.) {
-	ret_val = w;
+        ret_val = w;
     } else {
 /* Computing 2nd power */
-	d__1 = z__ / w;
-	ret_val = w * sqrt(d__1 * d__1 + 1.);
+        d__1 = z__ / w;
+        ret_val = w * sqrt(d__1 * d__1 + 1.);
     }
     return ret_val;
 

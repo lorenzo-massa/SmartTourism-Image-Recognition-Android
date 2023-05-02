@@ -20,33 +20,32 @@
 #include "Heap.h"
 
 
-
 namespace faiss {
 
 
-void pairwise_extra_distances (
-                     int64_t d,
-                     int64_t nq, const float *xq,
-                     int64_t nb, const float *xb,
-                     MetricType mt, float metric_arg,
-                     float *dis,
-                     int64_t ldq = -1, int64_t ldb = -1, int64_t ldd = -1);
+    void pairwise_extra_distances(
+            int64_t d,
+            int64_t nq, const float *xq,
+            int64_t nb, const float *xb,
+            MetricType mt, float metric_arg,
+            float *dis,
+            int64_t ldq = -1, int64_t ldb = -1, int64_t ldd = -1);
 
 
-void knn_extra_metrics (
-        const float * x,
-        const float * y,
-        int64_t d, int64_t nx, int64_t ny,
-        MetricType mt, float metric_arg,
-        float_maxheap_array_t * res);
+    void knn_extra_metrics(
+            const float *x,
+            const float *y,
+            int64_t d, int64_t nx, int64_t ny,
+            MetricType mt, float metric_arg,
+            float_maxheap_array_t *res);
 
 
 /** get a DistanceComputer that refers to this type of distance and
  *  indexes a flat array of size nb */
-DistanceComputer *get_extra_distance_computer (
-        int64_t d,
-        MetricType mt, float metric_arg,
-        int64_t nb, const float *xb);
+    DistanceComputer *get_extra_distance_computer(
+            int64_t d,
+            MetricType mt, float metric_arg,
+            int64_t nb, const float *xb);
 
 }
 

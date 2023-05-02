@@ -23,27 +23,32 @@ static doublereal c_b21 = -1.;
 static doublereal c_b22 = 1.;
 
 /* Subroutine */ int dgebrd_(integer *m, integer *n, doublereal *a, integer *
-	lda, doublereal *d__, doublereal *e, doublereal *tauq, doublereal *
-	taup, doublereal *work, integer *lwork, integer *info)
-{
+lda, doublereal *d__, doublereal *e, doublereal *tauq, doublereal *
+taup, doublereal *work, integer *lwork, integer *info) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
     integer i__, j, nb, nx;
     doublereal ws;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
-	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
-	    integer *, doublereal *, doublereal *, integer *);
+    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *,
+                                       integer *, doublereal *, doublereal *, integer *,
+                                       doublereal *,
+                                       integer *, doublereal *, doublereal *, integer *);
     integer nbmin, iinfo, minmn;
-    extern /* Subroutine */ int dgebd2_(integer *, integer *, doublereal *, 
-	    integer *, doublereal *, doublereal *, doublereal *, doublereal *, 
-	     doublereal *, integer *), dlabrd_(integer *, integer *, integer *
-, doublereal *, integer *, doublereal *, doublereal *, doublereal 
-	    *, doublereal *, doublereal *, integer *, doublereal *, integer *)
-	    , xerbla_(char *, integer *);
-    extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
-	    integer *, integer *);
+    extern /* Subroutine */ int dgebd2_(integer *, integer *, doublereal *,
+                                        integer *, doublereal *, doublereal *, doublereal *,
+                                        doublereal *,
+                                        doublereal *, integer *), dlabrd_(integer *, integer *,
+                                                                          integer *, doublereal *,
+                                                                          integer *, doublereal *,
+                                                                          doublereal *, doublereal
+                                                                          *, doublereal *,
+                                                                          doublereal *, integer *,
+                                                                          doublereal *, integer *)
+    , xerbla_(char *, integer *);
+    extern integer ilaenv_(integer *, char *, char *, integer *, integer *,
+                           integer *, integer *);
     integer ldwrkx, ldwrky, lwkopt;
     logical lquery;
 
@@ -207,40 +212,40 @@ static doublereal c_b22 = 1.;
     *info = 0;
 /* Computing MAX */
     i__1 = 1, i__2 = ilaenv_(&c__1, "DGEBRD", " ", m, n, &c_n1, &c_n1);
-    nb = max(i__1,i__2);
+    nb = max(i__1, i__2);
     lwkopt = (*m + *n) * nb;
     work[1] = (doublereal) lwkopt;
     lquery = *lwork == -1;
     if (*m < 0) {
-	*info = -1;
+        *info = -1;
     } else if (*n < 0) {
-	*info = -2;
-    } else if (*lda < max(1,*m)) {
-	*info = -4;
+        *info = -2;
+    } else if (*lda < max(1, *m)) {
+        *info = -4;
     } else /* if(complicated condition) */ {
 /* Computing MAX */
-	i__1 = max(1,*m);
-	if (*lwork < max(i__1,*n) && ! lquery) {
-	    *info = -10;
-	}
+        i__1 = max(1, *m);
+        if (*lwork < max(i__1, *n) && !lquery) {
+            *info = -10;
+        }
     }
     if (*info < 0) {
-	i__1 = -(*info);
-	xerbla_("DGEBRD", &i__1);
-	return 0;
+        i__1 = -(*info);
+        xerbla_("DGEBRD", &i__1);
+        return 0;
     } else if (lquery) {
-	return 0;
+        return 0;
     }
 
 /*     Quick return if possible */
 
-    minmn = min(*m,*n);
+    minmn = min(*m, *n);
     if (minmn == 0) {
-	work[1] = 1.;
-	return 0;
+        work[1] = 1.;
+        return 0;
     }
 
-    ws = (doublereal) max(*m,*n);
+    ws = (doublereal) max(*m, *n);
     ldwrkx = *m;
     ldwrky = *n;
 
@@ -249,29 +254,29 @@ static doublereal c_b22 = 1.;
 /*        Set the crossover point NX. */
 
 /* Computing MAX */
-	i__1 = nb, i__2 = ilaenv_(&c__3, "DGEBRD", " ", m, n, &c_n1, &c_n1);
-	nx = max(i__1,i__2);
+        i__1 = nb, i__2 = ilaenv_(&c__3, "DGEBRD", " ", m, n, &c_n1, &c_n1);
+        nx = max(i__1, i__2);
 
 /*        Determine when to switch from blocked to unblocked code. */
 
-	if (nx < minmn) {
-	    ws = (doublereal) ((*m + *n) * nb);
-	    if ((doublereal) (*lwork) < ws) {
+        if (nx < minmn) {
+            ws = (doublereal) ((*m + *n) * nb);
+            if ((doublereal) (*lwork) < ws) {
 
 /*              Not enough work space for the optimal NB, consider using */
 /*              a smaller block size. */
 
-		nbmin = ilaenv_(&c__2, "DGEBRD", " ", m, n, &c_n1, &c_n1);
-		if (*lwork >= (*m + *n) * nbmin) {
-		    nb = *lwork / (*m + *n);
-		} else {
-		    nb = 1;
-		    nx = minmn;
-		}
-	    }
-	}
+                nbmin = ilaenv_(&c__2, "DGEBRD", " ", m, n, &c_n1, &c_n1);
+                if (*lwork >= (*m + *n) * nbmin) {
+                    nb = *lwork / (*m + *n);
+                } else {
+                    nb = 1;
+                    nx = minmn;
+                }
+            }
+        }
     } else {
-	nx = minmn;
+        nx = minmn;
     }
 
     i__1 = minmn - nx;
@@ -282,43 +287,44 @@ static doublereal c_b22 = 1.;
 /*        the matrices X and Y which are needed to update the unreduced */
 /*        part of the matrix */
 
-	i__3 = *m - i__ + 1;
-	i__4 = *n - i__ + 1;
-	dlabrd_(&i__3, &i__4, &nb, &a[i__ + i__ * a_dim1], lda, &d__[i__], &e[
-		i__], &tauq[i__], &taup[i__], &work[1], &ldwrkx, &work[ldwrkx 
-		* nb + 1], &ldwrky);
+        i__3 = *m - i__ + 1;
+        i__4 = *n - i__ + 1;
+        dlabrd_(&i__3, &i__4, &nb, &a[i__ + i__ * a_dim1], lda, &d__[i__], &e[
+                i__], &tauq[i__], &taup[i__], &work[1], &ldwrkx, &work[ldwrkx
+                                                                       * nb + 1], &ldwrky);
 
 /*        Update the trailing submatrix A(i+nb:m,i+nb:n), using an update */
 /*        of the form  A := A - V*Y' - X*U' */
 
-	i__3 = *m - i__ - nb + 1;
-	i__4 = *n - i__ - nb + 1;
-	dgemm_("No transpose", "Transpose", &i__3, &i__4, &nb, &c_b21, &a[i__ 
-		+ nb + i__ * a_dim1], lda, &work[ldwrkx * nb + nb + 1], &
-		ldwrky, &c_b22, &a[i__ + nb + (i__ + nb) * a_dim1], lda);
-	i__3 = *m - i__ - nb + 1;
-	i__4 = *n - i__ - nb + 1;
-	dgemm_("No transpose", "No transpose", &i__3, &i__4, &nb, &c_b21, &
-		work[nb + 1], &ldwrkx, &a[i__ + (i__ + nb) * a_dim1], lda, &
-		c_b22, &a[i__ + nb + (i__ + nb) * a_dim1], lda);
+        i__3 = *m - i__ - nb + 1;
+        i__4 = *n - i__ - nb + 1;
+        dgemm_("No transpose", "Transpose", &i__3, &i__4, &nb, &c_b21, &a[i__
+                                                                          + nb + i__ * a_dim1], lda,
+               &work[ldwrkx * nb + nb + 1], &
+                       ldwrky, &c_b22, &a[i__ + nb + (i__ + nb) * a_dim1], lda);
+        i__3 = *m - i__ - nb + 1;
+        i__4 = *n - i__ - nb + 1;
+        dgemm_("No transpose", "No transpose", &i__3, &i__4, &nb, &c_b21, &
+                work[nb + 1], &ldwrkx, &a[i__ + (i__ + nb) * a_dim1], lda, &
+                       c_b22, &a[i__ + nb + (i__ + nb) * a_dim1], lda);
 
 /*        Copy diagonal and off-diagonal elements of B back into A */
 
-	if (*m >= *n) {
-	    i__3 = i__ + nb - 1;
-	    for (j = i__; j <= i__3; ++j) {
-		a[j + j * a_dim1] = d__[j];
-		a[j + (j + 1) * a_dim1] = e[j];
+        if (*m >= *n) {
+            i__3 = i__ + nb - 1;
+            for (j = i__; j <= i__3; ++j) {
+                a[j + j * a_dim1] = d__[j];
+                a[j + (j + 1) * a_dim1] = e[j];
 /* L10: */
-	    }
-	} else {
-	    i__3 = i__ + nb - 1;
-	    for (j = i__; j <= i__3; ++j) {
-		a[j + j * a_dim1] = d__[j];
-		a[j + 1 + j * a_dim1] = e[j];
+            }
+        } else {
+            i__3 = i__ + nb - 1;
+            for (j = i__; j <= i__3; ++j) {
+                a[j + j * a_dim1] = d__[j];
+                a[j + 1 + j * a_dim1] = e[j];
 /* L20: */
-	    }
-	}
+            }
+        }
 /* L30: */
     }
 
@@ -327,7 +333,7 @@ static doublereal c_b22 = 1.;
     i__2 = *m - i__ + 1;
     i__1 = *n - i__ + 1;
     dgebd2_(&i__2, &i__1, &a[i__ + i__ * a_dim1], lda, &d__[i__], &e[i__], &
-	    tauq[i__], &taup[i__], &work[1], &iinfo);
+            tauq[i__], &taup[i__], &work[1], &iinfo);
     work[1] = ws;
     return 0;
 

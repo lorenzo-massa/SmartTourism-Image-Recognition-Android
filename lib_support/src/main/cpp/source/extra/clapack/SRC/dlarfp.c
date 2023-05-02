@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int dlarfp_(integer *n, doublereal *alpha, doublereal *x, 
-	integer *incx, doublereal *tau)
-{
+/* Subroutine */ int dlarfp_(integer *n, doublereal *alpha, doublereal *x,
+                             integer *incx, doublereal *tau) {
     /* System generated locals */
     integer i__1;
     doublereal d__1;
@@ -27,8 +26,8 @@
     integer j, knt;
     doublereal beta;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
-	    integer *);
+    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *,
+                                       integer *);
     doublereal xnorm;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlamch_(char *);
     doublereal safmin, rsafmn;
@@ -106,8 +105,8 @@
 
     /* Function Body */
     if (*n <= 0) {
-	*tau = 0.;
-	return 0;
+        *tau = 0.;
+        return 0;
     }
 
     i__1 = *n - 1;
@@ -117,72 +116,72 @@
 
 /*        H  =  [+/-1, 0; I], sign chosen so ALPHA >= 0 */
 
-	if (*alpha >= 0.) {
+        if (*alpha >= 0.) {
 /*           When TAU.eq.ZERO, the vector is special-cased to be */
 /*           all zeros in the application routines.  We do not need */
 /*           to clear it. */
-	    *tau = 0.;
-	} else {
+            *tau = 0.;
+        } else {
 /*           However, the application routines rely on explicit */
 /*           zero checks when TAU.ne.ZERO, and we must clear X. */
-	    *tau = 2.;
-	    i__1 = *n - 1;
-	    for (j = 1; j <= i__1; ++j) {
-		x[(j - 1) * *incx + 1] = 0.;
-	    }
-	    *alpha = -(*alpha);
-	}
+            *tau = 2.;
+            i__1 = *n - 1;
+            for (j = 1; j <= i__1; ++j) {
+                x[(j - 1) * *incx + 1] = 0.;
+            }
+            *alpha = -(*alpha);
+        }
     } else {
 
 /*        general case */
 
-	d__1 = dlapy2_(alpha, &xnorm);
-	beta = d_sign(&d__1, alpha);
-	safmin = dlamch_("S") / dlamch_("E");
-	knt = 0;
-	if (abs(beta) < safmin) {
+        d__1 = dlapy2_(alpha, &xnorm);
+        beta = d_sign(&d__1, alpha);
+        safmin = dlamch_("S") / dlamch_("E");
+        knt = 0;
+        if (abs(beta) < safmin) {
 
 /*           XNORM, BETA may be inaccurate; scale X and recompute them */
 
-	    rsafmn = 1. / safmin;
-L10:
-	    ++knt;
-	    i__1 = *n - 1;
-	    dscal_(&i__1, &rsafmn, &x[1], incx);
-	    beta *= rsafmn;
-	    *alpha *= rsafmn;
-	    if (abs(beta) < safmin) {
-		goto L10;
-	    }
+            rsafmn = 1. / safmin;
+            L10:
+            ++knt;
+            i__1 = *n - 1;
+            dscal_(&i__1, &rsafmn, &x[1], incx);
+            beta *= rsafmn;
+            *alpha *= rsafmn;
+            if (abs(beta) < safmin) {
+                goto L10;
+            }
 
 /*           New BETA is at most 1, at least SAFMIN */
 
-	    i__1 = *n - 1;
-	    xnorm = dnrm2_(&i__1, &x[1], incx);
-	    d__1 = dlapy2_(alpha, &xnorm);
-	    beta = d_sign(&d__1, alpha);
-	}
-	*alpha += beta;
-	if (beta < 0.) {
-	    beta = -beta;
-	    *tau = -(*alpha) / beta;
-	} else {
-	    *alpha = xnorm * (xnorm / *alpha);
-	    *tau = *alpha / beta;
-	    *alpha = -(*alpha);
-	}
-	i__1 = *n - 1;
-	d__1 = 1. / *alpha;
-	dscal_(&i__1, &d__1, &x[1], incx);
+            i__1 = *n - 1;
+            xnorm = dnrm2_(&i__1, &x[1], incx);
+            d__1 = dlapy2_(alpha, &xnorm);
+            beta = d_sign(&d__1, alpha);
+        }
+        *alpha += beta;
+        if (beta < 0.) {
+            beta = -beta;
+            *tau = -(*alpha) / beta;
+        } else {
+            *alpha = xnorm * (xnorm / *alpha);
+            *tau = *alpha / beta;
+            *alpha = -(*alpha);
+        }
+        i__1 = *n - 1;
+        d__1 = 1. / *alpha;
+        dscal_(&i__1, &d__1, &x[1], incx);
 
 /*        If BETA is subnormal, it may lose relative accuracy */
 
-	i__1 = knt;
-	for (j = 1; j <= i__1; ++j) {
-	    beta *= safmin;
+        i__1 = knt;
+        for (j = 1; j <= i__1; ++j) {
+            beta *= safmin;
 /* L20: */
-	}
-	*alpha = beta;
+        }
+        *alpha = beta;
     }
 
     return 0;

@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int slartg_(real *f, real *g, real *cs, real *sn, real *r__)
-{
+/* Subroutine */ int slartg_(real *f, real *g, real *cs, real *sn, real *r__) {
     /* System generated locals */
     integer i__1;
     real r__1, r__2;
@@ -106,81 +105,81 @@
 /*        FIRST = .FALSE. */
 /*     END IF */
     if (*g == 0.f) {
-	*cs = 1.f;
-	*sn = 0.f;
-	*r__ = *f;
+        *cs = 1.f;
+        *sn = 0.f;
+        *r__ = *f;
     } else if (*f == 0.f) {
-	*cs = 0.f;
-	*sn = 1.f;
-	*r__ = *g;
+        *cs = 0.f;
+        *sn = 1.f;
+        *r__ = *g;
     } else {
-	f1 = *f;
-	g1 = *g;
+        f1 = *f;
+        g1 = *g;
 /* Computing MAX */
-	r__1 = dabs(f1), r__2 = dabs(g1);
-	scale = dmax(r__1,r__2);
-	if (scale >= safmx2) {
-	    count = 0;
-L10:
-	    ++count;
-	    f1 *= safmn2;
-	    g1 *= safmn2;
+        r__1 = dabs(f1), r__2 = dabs(g1);
+        scale = dmax(r__1, r__2);
+        if (scale >= safmx2) {
+            count = 0;
+            L10:
+            ++count;
+            f1 *= safmn2;
+            g1 *= safmn2;
 /* Computing MAX */
-	    r__1 = dabs(f1), r__2 = dabs(g1);
-	    scale = dmax(r__1,r__2);
-	    if (scale >= safmx2) {
-		goto L10;
-	    }
+            r__1 = dabs(f1), r__2 = dabs(g1);
+            scale = dmax(r__1, r__2);
+            if (scale >= safmx2) {
+                goto L10;
+            }
 /* Computing 2nd power */
-	    r__1 = f1;
+            r__1 = f1;
 /* Computing 2nd power */
-	    r__2 = g1;
-	    *r__ = sqrt(r__1 * r__1 + r__2 * r__2);
-	    *cs = f1 / *r__;
-	    *sn = g1 / *r__;
-	    i__1 = count;
-	    for (i__ = 1; i__ <= i__1; ++i__) {
-		*r__ *= safmx2;
+            r__2 = g1;
+            *r__ = sqrt(r__1 * r__1 + r__2 * r__2);
+            *cs = f1 / *r__;
+            *sn = g1 / *r__;
+            i__1 = count;
+            for (i__ = 1; i__ <= i__1; ++i__) {
+                *r__ *= safmx2;
 /* L20: */
-	    }
-	} else if (scale <= safmn2) {
-	    count = 0;
-L30:
-	    ++count;
-	    f1 *= safmx2;
-	    g1 *= safmx2;
+            }
+        } else if (scale <= safmn2) {
+            count = 0;
+            L30:
+            ++count;
+            f1 *= safmx2;
+            g1 *= safmx2;
 /* Computing MAX */
-	    r__1 = dabs(f1), r__2 = dabs(g1);
-	    scale = dmax(r__1,r__2);
-	    if (scale <= safmn2) {
-		goto L30;
-	    }
+            r__1 = dabs(f1), r__2 = dabs(g1);
+            scale = dmax(r__1, r__2);
+            if (scale <= safmn2) {
+                goto L30;
+            }
 /* Computing 2nd power */
-	    r__1 = f1;
+            r__1 = f1;
 /* Computing 2nd power */
-	    r__2 = g1;
-	    *r__ = sqrt(r__1 * r__1 + r__2 * r__2);
-	    *cs = f1 / *r__;
-	    *sn = g1 / *r__;
-	    i__1 = count;
-	    for (i__ = 1; i__ <= i__1; ++i__) {
-		*r__ *= safmn2;
+            r__2 = g1;
+            *r__ = sqrt(r__1 * r__1 + r__2 * r__2);
+            *cs = f1 / *r__;
+            *sn = g1 / *r__;
+            i__1 = count;
+            for (i__ = 1; i__ <= i__1; ++i__) {
+                *r__ *= safmn2;
 /* L40: */
-	    }
-	} else {
+            }
+        } else {
 /* Computing 2nd power */
-	    r__1 = f1;
+            r__1 = f1;
 /* Computing 2nd power */
-	    r__2 = g1;
-	    *r__ = sqrt(r__1 * r__1 + r__2 * r__2);
-	    *cs = f1 / *r__;
-	    *sn = g1 / *r__;
-	}
-	if (dabs(*f) > dabs(*g) && *cs < 0.f) {
-	    *cs = -(*cs);
-	    *sn = -(*sn);
-	    *r__ = -(*r__);
-	}
+            r__2 = g1;
+            *r__ = sqrt(r__1 * r__1 + r__2 * r__2);
+            *cs = f1 / *r__;
+            *sn = g1 / *r__;
+        }
+        if (dabs(*f) > dabs(*g) && *cs < 0.f) {
+            *cs = -(*cs);
+            *sn = -(*sn);
+            *r__ = -(*r__);
+        }
     }
     return 0;
 

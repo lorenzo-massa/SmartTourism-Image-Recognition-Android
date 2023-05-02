@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-integer ieeeck_(integer *ispec, real *zero, real *one)
-{
+integer ieeeck_(integer *ispec, real *zero, real *one) {
     /* System generated locals */
     integer ret_val;
 
@@ -65,50 +64,50 @@ integer ieeeck_(integer *ispec, real *zero, real *one)
 
     posinf = *one / *zero;
     if (posinf <= *one) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     neginf = -(*one) / *zero;
     if (neginf >= *zero) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     negzro = *one / (neginf + *one);
     if (negzro != *zero) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     neginf = *one / negzro;
     if (neginf >= *zero) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     newzro = negzro + *zero;
     if (newzro != *zero) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     posinf = *one / newzro;
     if (posinf <= *one) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     neginf *= posinf;
     if (neginf >= *zero) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     posinf *= posinf;
     if (posinf <= *one) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
 
@@ -117,7 +116,7 @@ integer ieeeck_(integer *ispec, real *zero, real *one)
 /*     Return if we were only asked to check infinity arithmetic */
 
     if (*ispec == 0) {
-	return ret_val;
+        return ret_val;
     }
 
     nan1 = posinf + neginf;
@@ -133,33 +132,33 @@ integer ieeeck_(integer *ispec, real *zero, real *one)
     nan6 = nan5 * 0.f;
 
     if (nan1 == nan1) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     if (nan2 == nan2) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     if (nan3 == nan3) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     if (nan4 == nan4) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     if (nan5 == nan5) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     if (nan6 == nan6) {
-	ret_val = 0;
-	return ret_val;
+        ret_val = 0;
+        return ret_val;
     }
 
     return ret_val;

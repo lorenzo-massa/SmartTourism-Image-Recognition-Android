@@ -1,10 +1,5 @@
 package org.tensorflow.lite.examples.classification;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
-
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +14,10 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,7 +78,7 @@ public class GuideActivity extends AppCompatActivity {
                 if (language.equals("English")) {
                     pathVideo += "ldt7ng0eaxog55s/duomo_english.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
-                }else {
+                } else {
                     pathVideo += "ee3n2s3uls7ryhv/duomo_italian.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
                 }
@@ -88,7 +87,7 @@ public class GuideActivity extends AppCompatActivity {
                 if (language.equals("English")) {
                     pathVideo += "kxxuxmdkyxgr9it/giotto_english.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
-                }else {
+                } else {
                     pathVideo += "3ivnh9a9lfeeyjs/giotto_italian.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
                 }
@@ -97,7 +96,7 @@ public class GuideActivity extends AppCompatActivity {
                 if (language.equals("English")) {
                     pathVideo += "5lwaewd7bk86mlf/battistero_english.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
-                }else {
+                } else {
                     pathVideo += "g0pu1i6fsawkzmm/battistero_italian.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
                 }
@@ -106,7 +105,7 @@ public class GuideActivity extends AppCompatActivity {
                 if (language.equals("English")) {
                     pathVideo += "ksabtl8jtaeftcb/loggia_english.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
-                }else {
+                } else {
                     pathVideo += "oxn2kxthnlgyd9a/loggia_italian.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
                 }
@@ -115,7 +114,7 @@ public class GuideActivity extends AppCompatActivity {
                 if (language.equals("English")) {
                     pathVideo += "ob5asd114e7o8jm/palazzo_english.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
-                }else {
+                } else {
                     pathVideo += "x44z7eckei4dysm/palazzo_italian.mp4";
                     pathAudio += "ujmvjjwy7s4iode/audio.mp3";
                 }

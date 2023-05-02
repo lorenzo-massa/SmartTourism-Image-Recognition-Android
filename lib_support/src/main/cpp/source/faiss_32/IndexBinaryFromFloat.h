@@ -16,7 +16,7 @@
 namespace faiss {
 
 
-struct Index;
+    struct Index;
 
 /** IndexBinary backed by a float Index.
  *
@@ -25,26 +25,26 @@ struct Index;
  * All queries are symmetric because there is no distinction between codes and
  * vectors.
  */
-struct IndexBinaryFromFloat : IndexBinary {
-  Index *index = nullptr;
+    struct IndexBinaryFromFloat : IndexBinary {
+        Index *index = nullptr;
 
-  bool own_fields = false; ///< Whether object owns the index pointer.
+        bool own_fields = false; ///< Whether object owns the index pointer.
 
-  IndexBinaryFromFloat();
+        IndexBinaryFromFloat();
 
-  explicit IndexBinaryFromFloat(Index *index);
+        explicit IndexBinaryFromFloat(Index *index);
 
-  ~IndexBinaryFromFloat();
+        ~IndexBinaryFromFloat();
 
-  void add(idx_t n, const uint8_t *x) override;
+        void add(idx_t n, const uint8_t *x) override;
 
-  void reset() override;
+        void reset() override;
 
-  void search(idx_t n, const uint8_t *x, idx_t k,
-              int32_t *distances, idx_t *labels) const override;
+        void search(idx_t n, const uint8_t *x, idx_t k,
+                    int32_t *distances, idx_t *labels) const override;
 
-  void train(idx_t n, const uint8_t *x) override;
-};
+        void train(idx_t n, const uint8_t *x) override;
+    };
 
 
 }  // namespace faiss

@@ -1,59 +1,49 @@
 {
-	"configurations" : 
-	[
-		{
-			"directories" : 
-			[
-				{
-					"build" : ".",
-					"minimumCMakeVersion" : 
-					{
-						"string" : "3.4.1"
-					},
-					"projectIndex" : 0,
-					"source" : ".",
-					"targetIndexes" : 
-					[
-						0
-					]
-				}
-			],
-			"name" : "Debug",
-			"projects" : 
-			[
-				{
-					"directoryIndexes" : 
-					[
-						0
-					],
-					"name" : "Project",
-					"targetIndexes" : 
-					[
-						0
-					]
-				}
-			],
-			"targets" : 
-			[
-				{
-					"directoryIndex" : 0,
-					"id" : "faiss::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-faiss-Debug-619328c973b871ebdf96.json",
-					"name" : "faiss",
-					"projectIndex" : 0
-				}
-			]
-		}
-	],
-	"kind" : "codemodel",
-	"paths" : 
-	{
-		"build" : "C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/.cxx/Debug/41r1g196/x86",
-		"source" : "C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/src/main/cpp/source"
-	},
-	"version" : 
-	{
-		"major" : 2,
-		"minor" : 1
-	}
+  "configurations": [
+    {
+      "directories": [
+        {
+          "build": ".",
+          "minimumCMakeVersion": {
+            "string": "3.4.1"
+          },
+          "projectIndex": 0,
+          "source": ".",
+          "targetIndexes": [
+            0
+          ]
+        }
+      ],
+      "name": "Debug",
+      "projects": [
+        {
+          "directoryIndexes": [
+            0
+          ],
+          "name": "Project",
+          "targetIndexes": [
+            0
+          ]
+        }
+      ],
+      "targets": [
+        {
+          "directoryIndex": 0,
+          "id": "faiss::@6890427a1f51a3e7e1df",
+          "jsonFile": "target-faiss-Debug-619328c973b871ebdf96.json",
+          "name": "faiss",
+          "projectIndex": 0
+        }
+      ]
+    }
+  ],
+  "kind": "codemodel",
+  "paths": {
+    "build": "C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/.cxx/Debug/41r1g196/x86",
+    "source": "C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/src/main/cpp/source"
+  },
+  "version": {
+    "major": 2,
+    "minor": 1
+  }
 }

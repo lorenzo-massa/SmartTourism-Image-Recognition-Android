@@ -26,7 +26,8 @@ faiss::IndexFlatL2 *index; //global variable
 
 extern "C" JNIEXPORT jstring
 
-JNICALL stringFromJNI(JNIEnv *env, jclass clazz,jfloatArray imgFeatures,jobjectArray data,jint k) {
+JNICALL
+stringFromJNI(JNIEnv *env, jclass clazz, jfloatArray imgFeatures, jobjectArray data, jint k) {
 
     std::string result = "";
 
@@ -36,23 +37,23 @@ JNICALL stringFromJNI(JNIEnv *env, jclass clazz,jfloatArray imgFeatures,jobjectA
 
     //CREATING INDEX in not already done
 
-    if (index == nullptr){
+    if (index == nullptr) {
 
         jsize d = (*env).GetArrayLength(imgFeatures); //features number
         index = new faiss::IndexFlatL2(d);
 
         //ADD TO TE INDEX
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             jfloatArray arr = (jfloatArray) (*env).GetObjectArrayElement(data, i);
             jsize innerLen = (*env).GetArrayLength(arr);
-            jfloat* vals = (*env).GetFloatArrayElements(arr, NULL);
+            jfloat *vals = (*env).GetFloatArrayElements(arr, NULL);
 
             index->add(1, vals);
 
             (*env).ReleaseFloatArrayElements(arr, vals, JNI_COMMIT);
             (*env).DeleteLocalRef(arr);
 
-            delete(vals);
+            delete (vals);
         }
     }
     //SEARCHING
@@ -67,12 +68,12 @@ JNICALL stringFromJNI(JNIEnv *env, jclass clazz,jfloatArray imgFeatures,jobjectA
 
     for (int i = 0; i < destCount; i++) {
         //LOGI("index->search[%lld]=%f", listIndex[i], listScore[i]);
-        result += std::to_string(listIndex[i]) + " "+std::to_string(listScore[i]) + " ";
+        result += std::to_string(listIndex[i]) + " " + std::to_string(listScore[i]) + " ";
     }
 
-    delete(listIndex);
-    delete(listScore);
-    delete(bodyImgFeatures);
+    delete (listIndex);
+    delete (listScore);
+    delete (bodyImgFeatures);
     //delete(index);
 
     //result = std::to_string(index->ntotal);
@@ -82,7 +83,8 @@ JNICALL stringFromJNI(JNIEnv *env, jclass clazz,jfloatArray imgFeatures,jobjectA
 
 #define JNIREG_CLASS_BASE "org/tensorflow/lite/examples/classification/tflite/Retrievor"
 static JNINativeMethod gMethods_Base[] = {
-        {"stringFromJNI", "([F[[FI)Ljava/lang/String;", (void *) stringFromJNI}, //(...) input e out return type
+        {"stringFromJNI", "([F[[FI)Ljava/lang/String;",
+         (void *) stringFromJNI}, //(...) input e out return type
 };
 
 static int registerNativeMethods(JNIEnv *env, const char *className,

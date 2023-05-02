@@ -19,9 +19,8 @@ static integer c__1 = 1;
 static integer c__2 = 2;
 static integer c__0 = 0;
 
-/* Subroutine */ int slasq1_(integer *n, real *d__, real *e, real *work, 
-	integer *info)
-{
+/* Subroutine */ int slasq1_(integer *n, real *d__, real *e, real *work,
+                             integer *info) {
     /* System generated locals */
     integer i__1, i__2;
     real r__1, r__2, r__3;
@@ -32,19 +31,17 @@ static integer c__0 = 0;
     /* Local variables */
     integer i__;
     real eps;
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
-	    ;
+    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *);
     real scale;
     integer iinfo;
     real sigmn, sigmx;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
-	    integer *), slasq2_(integer *, real *, integer *);
+    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *,
+                                       integer *), slasq2_(integer *, real *, integer *);
     extern doublereal slamch_(char *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *), slascl_(
-	    char *, integer *, integer *, real *, real *, integer *, integer *
-, real *, integer *, integer *), slasrt_(char *, integer *
-, real *, integer *);
+            char *, integer *, integer *, real *, real *, integer *, integer *, real *, integer *,
+            integer *), slasrt_(char *, integer *, real *, integer *);
 
 
 /*  -- LAPACK routine (version 3.2)                                    -- */
@@ -128,20 +125,20 @@ static integer c__0 = 0;
     /* Function Body */
     *info = 0;
     if (*n < 0) {
-	*info = -2;
-	i__1 = -(*info);
-	xerbla_("SLASQ1", &i__1);
-	return 0;
+        *info = -2;
+        i__1 = -(*info);
+        xerbla_("SLASQ1", &i__1);
+        return 0;
     } else if (*n == 0) {
-	return 0;
+        return 0;
     } else if (*n == 1) {
-	d__[1] = dabs(d__[1]);
-	return 0;
+        d__[1] = dabs(d__[1]);
+        return 0;
     } else if (*n == 2) {
-	slas2_(&d__[1], &e[1], &d__[2], &sigmn, &sigmx);
-	d__[1] = sigmx;
-	d__[2] = sigmn;
-	return 0;
+        slas2_(&d__[1], &e[1], &d__[2], &sigmn, &sigmx);
+        d__[1] = sigmx;
+        d__[2] = sigmn;
+        return 0;
     }
 
 /*     Estimate the largest singular value. */
@@ -149,10 +146,10 @@ static integer c__0 = 0;
     sigmx = 0.f;
     i__1 = *n - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	d__[i__] = (r__1 = d__[i__], dabs(r__1));
+        d__[i__] = (r__1 = d__[i__], dabs(r__1));
 /* Computing MAX */
-	r__2 = sigmx, r__3 = (r__1 = e[i__], dabs(r__1));
-	sigmx = dmax(r__2,r__3);
+        r__2 = sigmx, r__3 = (r__1 = e[i__], dabs(r__1));
+        sigmx = dmax(r__2, r__3);
 /* L10: */
     }
     d__[*n] = (r__1 = d__[*n], dabs(r__1));
@@ -160,15 +157,15 @@ static integer c__0 = 0;
 /*     Early return if SIGMX is zero (matrix is already diagonal). */
 
     if (sigmx == 0.f) {
-	slasrt_("D", n, &d__[1], &iinfo);
-	return 0;
+        slasrt_("D", n, &d__[1], &iinfo);
+        return 0;
     }
 
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 /* Computing MAX */
-	r__1 = sigmx, r__2 = d__[i__];
-	sigmx = dmax(r__1,r__2);
+        r__1 = sigmx, r__2 = d__[i__];
+        sigmx = dmax(r__1, r__2);
 /* L20: */
     }
 
@@ -183,16 +180,16 @@ static integer c__0 = 0;
     scopy_(&i__1, &e[1], &c__1, &work[2], &c__2);
     i__1 = (*n << 1) - 1;
     i__2 = (*n << 1) - 1;
-    slascl_("G", &c__0, &c__0, &sigmx, &scale, &i__1, &c__1, &work[1], &i__2, 
-	    &iinfo);
+    slascl_("G", &c__0, &c__0, &sigmx, &scale, &i__1, &c__1, &work[1], &i__2,
+            &iinfo);
 
 /*     Compute the q's and e's. */
 
     i__1 = (*n << 1) - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 /* Computing 2nd power */
-	r__1 = work[i__];
-	work[i__] = r__1 * r__1;
+        r__1 = work[i__];
+        work[i__] = r__1 * r__1;
 /* L30: */
     }
     work[*n * 2] = 0.f;
@@ -200,13 +197,13 @@ static integer c__0 = 0;
     slasq2_(n, &work[1], info);
 
     if (*info == 0) {
-	i__1 = *n;
-	for (i__ = 1; i__ <= i__1; ++i__) {
-	    d__[i__] = sqrt(work[i__]);
+        i__1 = *n;
+        for (i__ = 1; i__ <= i__1; ++i__) {
+            d__[i__] = sqrt(work[i__]);
 /* L40: */
-	}
-	slascl_("G", &c__0, &c__0, &scale, &sigmx, n, &c__1, &d__[1], n, &
-		iinfo);
+        }
+        slascl_("G", &c__0, &c__0, &scale, &sigmx, n, &c__1, &d__[1], n, &
+                iinfo);
     }
 
     return 0;

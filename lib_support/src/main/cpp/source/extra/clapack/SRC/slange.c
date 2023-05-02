@@ -17,9 +17,8 @@
 
 static integer c__1 = 1;
 
-doublereal slange_(char *norm, integer *m, integer *n, real *a, integer *lda, 
-	real *work)
-{
+doublereal slange_(char *norm, integer *m, integer *n, real *a, integer *lda,
+                   real *work) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2;
     real ret_val, r__1, r__2, r__3;
@@ -32,8 +31,8 @@ doublereal slange_(char *norm, integer *m, integer *n, real *a, integer *lda,
     real sum, scale;
     extern logical lsame_(char *, char *);
     real value;
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
-	    real *);
+    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *,
+                                        real *);
 
 
 /*  -- LAPACK auxiliary routine (version 3.2) -- */
@@ -116,79 +115,79 @@ doublereal slange_(char *norm, integer *m, integer *n, real *a, integer *lda,
     --work;
 
     /* Function Body */
-    if (min(*m,*n) == 0) {
-	value = 0.f;
+    if (min(*m, *n) == 0) {
+        value = 0.f;
     } else if (lsame_(norm, "M")) {
 
 /*        Find max(abs(A(i,j))). */
 
-	value = 0.f;
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = *m;
-	    for (i__ = 1; i__ <= i__2; ++i__) {
+        value = 0.f;
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = *m;
+            for (i__ = 1; i__ <= i__2; ++i__) {
 /* Computing MAX */
-		r__2 = value, r__3 = (r__1 = a[i__ + j * a_dim1], dabs(r__1));
-		value = dmax(r__2,r__3);
+                r__2 = value, r__3 = (r__1 = a[i__ + j * a_dim1], dabs(r__1));
+                value = dmax(r__2, r__3);
 /* L10: */
-	    }
+            }
 /* L20: */
-	}
+        }
     } else if (lsame_(norm, "O") || *(unsigned char *)
-	    norm == '1') {
+            norm == '1') {
 
 /*        Find norm1(A). */
 
-	value = 0.f;
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    sum = 0.f;
-	    i__2 = *m;
-	    for (i__ = 1; i__ <= i__2; ++i__) {
-		sum += (r__1 = a[i__ + j * a_dim1], dabs(r__1));
+        value = 0.f;
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            sum = 0.f;
+            i__2 = *m;
+            for (i__ = 1; i__ <= i__2; ++i__) {
+                sum += (r__1 = a[i__ + j * a_dim1], dabs(r__1));
 /* L30: */
-	    }
-	    value = dmax(value,sum);
+            }
+            value = dmax(value, sum);
 /* L40: */
-	}
+        }
     } else if (lsame_(norm, "I")) {
 
 /*        Find normI(A). */
 
-	i__1 = *m;
-	for (i__ = 1; i__ <= i__1; ++i__) {
-	    work[i__] = 0.f;
+        i__1 = *m;
+        for (i__ = 1; i__ <= i__1; ++i__) {
+            work[i__] = 0.f;
 /* L50: */
-	}
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = *m;
-	    for (i__ = 1; i__ <= i__2; ++i__) {
-		work[i__] += (r__1 = a[i__ + j * a_dim1], dabs(r__1));
+        }
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = *m;
+            for (i__ = 1; i__ <= i__2; ++i__) {
+                work[i__] += (r__1 = a[i__ + j * a_dim1], dabs(r__1));
 /* L60: */
-	    }
+            }
 /* L70: */
-	}
-	value = 0.f;
-	i__1 = *m;
-	for (i__ = 1; i__ <= i__1; ++i__) {
+        }
+        value = 0.f;
+        i__1 = *m;
+        for (i__ = 1; i__ <= i__1; ++i__) {
 /* Computing MAX */
-	    r__1 = value, r__2 = work[i__];
-	    value = dmax(r__1,r__2);
+            r__1 = value, r__2 = work[i__];
+            value = dmax(r__1, r__2);
 /* L80: */
-	}
+        }
     } else if (lsame_(norm, "F") || lsame_(norm, "E")) {
 
 /*        Find normF(A). */
 
-	scale = 0.f;
-	sum = 1.f;
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    slassq_(m, &a[j * a_dim1 + 1], &c__1, &scale, &sum);
+        scale = 0.f;
+        sum = 1.f;
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            slassq_(m, &a[j * a_dim1 + 1], &c__1, &scale, &sum);
 /* L90: */
-	}
-	value = scale * sqrt(sum);
+        }
+        value = scale * sqrt(sum);
     }
 
     ret_val = value;

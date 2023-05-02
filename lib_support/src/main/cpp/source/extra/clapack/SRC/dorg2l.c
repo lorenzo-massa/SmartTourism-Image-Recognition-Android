@@ -18,17 +18,19 @@
 static integer c__1 = 1;
 
 /* Subroutine */ int dorg2l_(integer *m, integer *n, integer *k, doublereal *
-	a, integer *lda, doublereal *tau, doublereal *work, integer *info)
-{
+a, integer *lda, doublereal *tau, doublereal *work, integer *info) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3;
     doublereal d__1;
 
     /* Local variables */
     integer i__, j, l, ii;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
-	    integer *), dlarf_(char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *, doublereal *, integer *, doublereal *), xerbla_(char *, integer *);
+    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *,
+                                       integer *), dlarf_(char *, integer *, integer *,
+                                                          doublereal *,
+                                                          integer *, doublereal *, doublereal *,
+                                                          integer *, doublereal *), xerbla_(char *,
+                                                                                            integer *);
 
 
 /*  -- LAPACK routine (version 3.2) -- */
@@ -108,62 +110,62 @@ static integer c__1 = 1;
     /* Function Body */
     *info = 0;
     if (*m < 0) {
-	*info = -1;
+        *info = -1;
     } else if (*n < 0 || *n > *m) {
-	*info = -2;
+        *info = -2;
     } else if (*k < 0 || *k > *n) {
-	*info = -3;
-    } else if (*lda < max(1,*m)) {
-	*info = -5;
+        *info = -3;
+    } else if (*lda < max(1, *m)) {
+        *info = -5;
     }
     if (*info != 0) {
-	i__1 = -(*info);
-	xerbla_("DORG2L", &i__1);
-	return 0;
+        i__1 = -(*info);
+        xerbla_("DORG2L", &i__1);
+        return 0;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+        return 0;
     }
 
 /*     Initialise columns 1:n-k to columns of the unit matrix */
 
     i__1 = *n - *k;
     for (j = 1; j <= i__1; ++j) {
-	i__2 = *m;
-	for (l = 1; l <= i__2; ++l) {
-	    a[l + j * a_dim1] = 0.;
+        i__2 = *m;
+        for (l = 1; l <= i__2; ++l) {
+            a[l + j * a_dim1] = 0.;
 /* L10: */
-	}
-	a[*m - *n + j + j * a_dim1] = 1.;
+        }
+        a[*m - *n + j + j * a_dim1] = 1.;
 /* L20: */
     }
 
     i__1 = *k;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	ii = *n - *k + i__;
+        ii = *n - *k + i__;
 
 /*        Apply H(i) to A(1:m-k+i,1:n-k+i) from the left */
 
-	a[*m - *n + ii + ii * a_dim1] = 1.;
-	i__2 = *m - *n + ii;
-	i__3 = ii - 1;
-	dlarf_("Left", &i__2, &i__3, &a[ii * a_dim1 + 1], &c__1, &tau[i__], &
-		a[a_offset], lda, &work[1]);
-	i__2 = *m - *n + ii - 1;
-	d__1 = -tau[i__];
-	dscal_(&i__2, &d__1, &a[ii * a_dim1 + 1], &c__1);
-	a[*m - *n + ii + ii * a_dim1] = 1. - tau[i__];
+        a[*m - *n + ii + ii * a_dim1] = 1.;
+        i__2 = *m - *n + ii;
+        i__3 = ii - 1;
+        dlarf_("Left", &i__2, &i__3, &a[ii * a_dim1 + 1], &c__1, &tau[i__], &
+                a[a_offset], lda, &work[1]);
+        i__2 = *m - *n + ii - 1;
+        d__1 = -tau[i__];
+        dscal_(&i__2, &d__1, &a[ii * a_dim1 + 1], &c__1);
+        a[*m - *n + ii + ii * a_dim1] = 1. - tau[i__];
 
 /*        Set A(m-k+i+1:m,n-k+i) to zero */
 
-	i__2 = *m;
-	for (l = *m - *n + ii + 1; l <= i__2; ++l) {
-	    a[l + ii * a_dim1] = 0.;
+        i__2 = *m;
+        for (l = *m - *n + ii + 1; l <= i__2; ++l) {
+            a[l + ii * a_dim1] = 0.;
 /* L30: */
-	}
+        }
 /* L40: */
     }
     return 0;

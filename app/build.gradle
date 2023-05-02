@@ -29,16 +29,16 @@ android {
     }
     flavorDimensions "tfliteInference"
     productFlavors {
-       // The TFLite inference is built using the TFLite Support library.
-       support {
-           dimension "tfliteInference"
-       }
-       // Default: The TFLite inference is built using the TFLite Task library (high-level API).
-       taskApi {
-           getIsDefault().set(true)
-           dimension "tfliteInference"
-       }
-   }
+        // The TFLite inference is built using the TFLite Support library.
+        support {
+            dimension "tfliteInference"
+        }
+        // Default: The TFLite inference is built using the TFLite Task library (high-level API).
+        taskApi {
+            getIsDefault().set(true)
+            dimension "tfliteInference"
+        }
+    }
 
 }
 

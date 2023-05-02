@@ -19,9 +19,8 @@ static integer c__1 = 1;
 static integer c__2 = 2;
 static integer c__0 = 0;
 
-/* Subroutine */ int dlasq1_(integer *n, doublereal *d__, doublereal *e, 
-	doublereal *work, integer *info)
-{
+/* Subroutine */ int dlasq1_(integer *n, doublereal *d__, doublereal *e,
+                             doublereal *work, integer *info) {
     /* System generated locals */
     integer i__1, i__2;
     doublereal d__1, d__2, d__3;
@@ -32,22 +31,23 @@ static integer c__0 = 0;
     /* Local variables */
     integer i__;
     doublereal eps;
-    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal 
-	    *, doublereal *, doublereal *);
+    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal
+    *, doublereal *, doublereal *);
     doublereal scale;
     integer iinfo;
     doublereal sigmn;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
-	    doublereal *, integer *);
+    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
+                                       doublereal *, integer *);
     doublereal sigmx;
     extern /* Subroutine */ int dlasq2_(integer *, doublereal *, integer *);
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
-	    integer *, integer *);
+    extern /* Subroutine */ int dlascl_(char *, integer *, integer *,
+                                        doublereal *, doublereal *, integer *, integer *,
+                                        doublereal *,
+                                        integer *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *), dlasrt_(
-	    char *, integer *, doublereal *, integer *);
+            char *, integer *, doublereal *, integer *);
 
 
 /*  -- LAPACK routine (version 3.2)                                    -- */
@@ -131,20 +131,20 @@ static integer c__0 = 0;
     /* Function Body */
     *info = 0;
     if (*n < 0) {
-	*info = -2;
-	i__1 = -(*info);
-	xerbla_("DLASQ1", &i__1);
-	return 0;
+        *info = -2;
+        i__1 = -(*info);
+        xerbla_("DLASQ1", &i__1);
+        return 0;
     } else if (*n == 0) {
-	return 0;
+        return 0;
     } else if (*n == 1) {
-	d__[1] = abs(d__[1]);
-	return 0;
+        d__[1] = abs(d__[1]);
+        return 0;
     } else if (*n == 2) {
-	dlas2_(&d__[1], &e[1], &d__[2], &sigmn, &sigmx);
-	d__[1] = sigmx;
-	d__[2] = sigmn;
-	return 0;
+        dlas2_(&d__[1], &e[1], &d__[2], &sigmn, &sigmx);
+        d__[1] = sigmx;
+        d__[2] = sigmn;
+        return 0;
     }
 
 /*     Estimate the largest singular value. */
@@ -152,10 +152,10 @@ static integer c__0 = 0;
     sigmx = 0.;
     i__1 = *n - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	d__[i__] = (d__1 = d__[i__], abs(d__1));
+        d__[i__] = (d__1 = d__[i__], abs(d__1));
 /* Computing MAX */
-	d__2 = sigmx, d__3 = (d__1 = e[i__], abs(d__1));
-	sigmx = max(d__2,d__3);
+        d__2 = sigmx, d__3 = (d__1 = e[i__], abs(d__1));
+        sigmx = max(d__2, d__3);
 /* L10: */
     }
     d__[*n] = (d__1 = d__[*n], abs(d__1));
@@ -163,15 +163,15 @@ static integer c__0 = 0;
 /*     Early return if SIGMX is zero (matrix is already diagonal). */
 
     if (sigmx == 0.) {
-	dlasrt_("D", n, &d__[1], &iinfo);
-	return 0;
+        dlasrt_("D", n, &d__[1], &iinfo);
+        return 0;
     }
 
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 /* Computing MAX */
-	d__1 = sigmx, d__2 = d__[i__];
-	sigmx = max(d__1,d__2);
+        d__1 = sigmx, d__2 = d__[i__];
+        sigmx = max(d__1, d__2);
 /* L20: */
     }
 
@@ -186,16 +186,16 @@ static integer c__0 = 0;
     dcopy_(&i__1, &e[1], &c__1, &work[2], &c__2);
     i__1 = (*n << 1) - 1;
     i__2 = (*n << 1) - 1;
-    dlascl_("G", &c__0, &c__0, &sigmx, &scale, &i__1, &c__1, &work[1], &i__2, 
-	    &iinfo);
+    dlascl_("G", &c__0, &c__0, &sigmx, &scale, &i__1, &c__1, &work[1], &i__2,
+            &iinfo);
 
 /*     Compute the q's and e's. */
 
     i__1 = (*n << 1) - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 /* Computing 2nd power */
-	d__1 = work[i__];
-	work[i__] = d__1 * d__1;
+        d__1 = work[i__];
+        work[i__] = d__1 * d__1;
 /* L30: */
     }
     work[*n * 2] = 0.;
@@ -203,13 +203,13 @@ static integer c__0 = 0;
     dlasq2_(n, &work[1], info);
 
     if (*info == 0) {
-	i__1 = *n;
-	for (i__ = 1; i__ <= i__1; ++i__) {
-	    d__[i__] = sqrt(work[i__]);
+        i__1 = *n;
+        for (i__ = 1; i__ <= i__1; ++i__) {
+            d__[i__] = sqrt(work[i__]);
 /* L40: */
-	}
-	dlascl_("G", &c__0, &c__0, &scale, &sigmx, n, &c__1, &d__[1], n, &
-		iinfo);
+        }
+        dlascl_("G", &c__0, &c__0, &scale, &sigmx, n, &c__1, &d__[1], n, &
+                iinfo);
     }
 
     return 0;

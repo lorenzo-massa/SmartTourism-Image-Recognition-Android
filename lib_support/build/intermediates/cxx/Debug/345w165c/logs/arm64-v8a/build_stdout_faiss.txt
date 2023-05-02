@@ -1,3 +1,2 @@
 ninja: Entering directory `C:\Users\Lorenzo\StudioProjects\SmartTourism v2\lib_support\.cxx\Debug\345w165c\arm64-v8a'
-[1/2] Building CXX object CMakeFiles/faiss.dir/native-lib.cpp.o
-[2/2] Linking CXX shared library "C:\Users\Lorenzo\StudioProjects\SmartTourism v2\lib_support\build\intermediates\cxx\Debug\345w165c\obj\arm64-v8a\libfaiss.so"
+ninja: no work to do.

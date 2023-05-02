@@ -2,8 +2,6 @@ package org.tensorflow.lite.examples.classification.tflite;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-
 public class Element {
     private final String monument;
     private final double distance;

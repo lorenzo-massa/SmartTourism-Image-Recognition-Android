@@ -22,91 +22,90 @@ namespace faiss {
  * pre-selects the vectors to be searched, but they are not otherwise
  * encoded, the code array just contains the raw float entries.
  */
-struct IndexIVFFlat: IndexIVF {
+    struct IndexIVFFlat : IndexIVF {
 
-    IndexIVFFlat (
-            Index * quantizer, int64_t d, int64_t nlist_,
-            MetricType = METRIC_L2);
+        IndexIVFFlat(
+                Index *quantizer, int64_t d, int64_t nlist_,
+                MetricType = METRIC_L2);
 
-    /// same as add_with_ids, with precomputed coarse quantizer
-    virtual void add_core (idx_t n, const float * x, const int64_t *xids,
-                   const int64_t *precomputed_idx);
+        /// same as add_with_ids, with precomputed coarse quantizer
+        virtual void add_core(idx_t n, const float *x, const int64_t *xids,
+                              const int64_t *precomputed_idx);
 
-    /// implemented for all IndexIVF* classes
-    void add_with_ids(idx_t n, const float* x, const idx_t* xids) override;
+        /// implemented for all IndexIVF* classes
+        void add_with_ids(idx_t n, const float *x, const idx_t *xids) override;
 
-    void encode_vectors(idx_t n, const float* x,
-                        const idx_t *list_nos,
-                        uint8_t * codes) const override;
+        void encode_vectors(idx_t n, const float *x,
+                            const idx_t *list_nos,
+                            uint8_t *codes) const override;
 
 
-    InvertedListScanner *get_InvertedListScanner (bool store_pairs)
+        InvertedListScanner *get_InvertedListScanner(bool store_pairs)
         const override;
 
-    /** Update a subset of vectors.
-     *
-     * The index must have a direct_map
-     *
-     * @param nv     nb of vectors to update
-     * @param idx    vector indices to update, size nv
-     * @param v      vectors of new values, size nv*d
-     */
-    virtual void update_vectors (int nv, idx_t *idx, const float *v);
+        /** Update a subset of vectors.
+         *
+         * The index must have a direct_map
+         *
+         * @param nv     nb of vectors to update
+         * @param idx    vector indices to update, size nv
+         * @param v      vectors of new values, size nv*d
+         */
+        virtual void update_vectors(int nv, idx_t *idx, const float *v);
 
-    void reconstruct_from_offset (int64_t list_no, int64_t offset,
-                                  float* recons) const override;
+        void reconstruct_from_offset(int64_t list_no, int64_t offset,
+                                     float *recons) const override;
 
-    IndexIVFFlat () {}
-};
-
-
-struct IndexIVFFlatDedup: IndexIVFFlat {
-
-    /** Maps ids stored in the index to the ids of vectors that are
-     *  the same. When a vector is unique, it does not appear in the
-     *  instances map */
-    std::unordered_multimap <idx_t, idx_t> instances;
-
-    IndexIVFFlatDedup (
-            Index * quantizer, int64_t d, int64_t nlist_,
-            MetricType = METRIC_L2);
-
-    /// also dedups the training set
-    void train(idx_t n, const float* x) override;
-
-    /// implemented for all IndexIVF* classes
-    void add_with_ids(idx_t n, const float* x, const idx_t* xids) override;
-
-    void search_preassigned (idx_t n, const float *x, idx_t k,
-                             const idx_t *assign,
-                             const float *centroid_dis,
-                             float *distances, idx_t *labels,
-                             bool store_pairs,
-                             const IVFSearchParameters *params=nullptr
-                             ) const override;
-
-    int64_t remove_ids(const IDSelector& sel) override;
-
-    /// not implemented
-    void range_search(
-        idx_t n,
-        const float* x,
-        float radius,
-        RangeSearchResult* result) const override;
-
-    /// not implemented
-    void update_vectors (int nv, idx_t *idx, const float *v) override;
+        IndexIVFFlat() {}
+    };
 
 
-    /// not implemented
-    void reconstruct_from_offset (int64_t list_no, int64_t offset,
-                                  float* recons) const override;
+    struct IndexIVFFlatDedup : IndexIVFFlat {
 
-    IndexIVFFlatDedup () {}
+        /** Maps ids stored in the index to the ids of vectors that are
+         *  the same. When a vector is unique, it does not appear in the
+         *  instances map */
+        std::unordered_multimap<idx_t, idx_t> instances;
+
+        IndexIVFFlatDedup(
+                Index *quantizer, int64_t d, int64_t nlist_,
+                MetricType = METRIC_L2);
+
+        /// also dedups the training set
+        void train(idx_t n, const float *x) override;
+
+        /// implemented for all IndexIVF* classes
+        void add_with_ids(idx_t n, const float *x, const idx_t *xids) override;
+
+        void search_preassigned(idx_t n, const float *x, idx_t k,
+                                const idx_t *assign,
+                                const float *centroid_dis,
+                                float *distances, idx_t *labels,
+                                bool store_pairs,
+                                const IVFSearchParameters *params = nullptr
+        ) const override;
+
+        int64_t remove_ids(const IDSelector &sel) override;
+
+        /// not implemented
+        void range_search(
+                idx_t n,
+                const float *x,
+                float radius,
+                RangeSearchResult *result) const override;
+
+        /// not implemented
+        void update_vectors(int nv, idx_t *idx, const float *v) override;
 
 
-};
+        /// not implemented
+        void reconstruct_from_offset(int64_t list_no, int64_t offset,
+                                     float *recons) const override;
 
+        IndexIVFFlatDedup() {}
+
+
+    };
 
 
 } // namespace faiss

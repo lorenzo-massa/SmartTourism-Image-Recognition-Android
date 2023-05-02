@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int slaset_(char *uplo, integer *m, integer *n, real *alpha, 
-	real *beta, real *a, integer *lda)
-{
+/* Subroutine */ int slaset_(char *uplo, integer *m, integer *n, real *alpha,
+                             real *beta, real *a, integer *lda) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3;
 
@@ -95,53 +94,53 @@
 /*        Set the strictly upper triangular or trapezoidal part of the */
 /*        array to ALPHA. */
 
-	i__1 = *n;
-	for (j = 2; j <= i__1; ++j) {
+        i__1 = *n;
+        for (j = 2; j <= i__1; ++j) {
 /* Computing MIN */
-	    i__3 = j - 1;
-	    i__2 = min(i__3,*m);
-	    for (i__ = 1; i__ <= i__2; ++i__) {
-		a[i__ + j * a_dim1] = *alpha;
+            i__3 = j - 1;
+            i__2 = min(i__3, *m);
+            for (i__ = 1; i__ <= i__2; ++i__) {
+                a[i__ + j * a_dim1] = *alpha;
 /* L10: */
-	    }
+            }
 /* L20: */
-	}
+        }
 
     } else if (lsame_(uplo, "L")) {
 
 /*        Set the strictly lower triangular or trapezoidal part of the */
 /*        array to ALPHA. */
 
-	i__1 = min(*m,*n);
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = *m;
-	    for (i__ = j + 1; i__ <= i__2; ++i__) {
-		a[i__ + j * a_dim1] = *alpha;
+        i__1 = min(*m, *n);
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = *m;
+            for (i__ = j + 1; i__ <= i__2; ++i__) {
+                a[i__ + j * a_dim1] = *alpha;
 /* L30: */
-	    }
+            }
 /* L40: */
-	}
+        }
 
     } else {
 
 /*        Set the leading m-by-n submatrix to ALPHA. */
 
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = *m;
-	    for (i__ = 1; i__ <= i__2; ++i__) {
-		a[i__ + j * a_dim1] = *alpha;
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = *m;
+            for (i__ = 1; i__ <= i__2; ++i__) {
+                a[i__ + j * a_dim1] = *alpha;
 /* L50: */
-	    }
+            }
 /* L60: */
-	}
+        }
     }
 
 /*     Set the first min(M,N) diagonal elements to BETA. */
 
-    i__1 = min(*m,*n);
+    i__1 = min(*m, *n);
     for (i__ = 1; i__ <= i__1; ++i__) {
-	a[i__ + i__ * a_dim1] = *beta;
+        a[i__ + i__ * a_dim1] = *beta;
 /* L70: */
     }
 

@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int slacpy_(char *uplo, integer *m, integer *n, real *a, 
-	integer *lda, real *b, integer *ldb)
-{
+/* Subroutine */ int slacpy_(char *uplo, integer *m, integer *n, real *a,
+                             integer *lda, real *b, integer *ldb) {
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2;
 
@@ -88,35 +87,35 @@
 
     /* Function Body */
     if (lsame_(uplo, "U")) {
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = min(j,*m);
-	    for (i__ = 1; i__ <= i__2; ++i__) {
-		b[i__ + j * b_dim1] = a[i__ + j * a_dim1];
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = min(j, *m);
+            for (i__ = 1; i__ <= i__2; ++i__) {
+                b[i__ + j * b_dim1] = a[i__ + j * a_dim1];
 /* L10: */
-	    }
+            }
 /* L20: */
-	}
+        }
     } else if (lsame_(uplo, "L")) {
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = *m;
-	    for (i__ = j; i__ <= i__2; ++i__) {
-		b[i__ + j * b_dim1] = a[i__ + j * a_dim1];
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = *m;
+            for (i__ = j; i__ <= i__2; ++i__) {
+                b[i__ + j * b_dim1] = a[i__ + j * a_dim1];
 /* L30: */
-	    }
+            }
 /* L40: */
-	}
+        }
     } else {
-	i__1 = *n;
-	for (j = 1; j <= i__1; ++j) {
-	    i__2 = *m;
-	    for (i__ = 1; i__ <= i__2; ++i__) {
-		b[i__ + j * b_dim1] = a[i__ + j * a_dim1];
+        i__1 = *n;
+        for (j = 1; j <= i__1; ++j) {
+            i__2 = *m;
+            for (i__ = 1; i__ <= i__2; ++i__) {
+                b[i__ + j * b_dim1] = a[i__ + j * a_dim1];
 /* L50: */
-	    }
+            }
 /* L60: */
-	}
+        }
     }
     return 0;
 

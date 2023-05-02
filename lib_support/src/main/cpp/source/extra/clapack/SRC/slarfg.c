@@ -13,9 +13,8 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int slarfg_(integer *n, real *alpha, real *x, integer *incx, 
-	real *tau)
-{
+/* Subroutine */ int slarfg_(integer *n, real *alpha, real *x, integer *incx,
+                             real *tau) {
     /* System generated locals */
     integer i__1;
     real r__1;
@@ -105,8 +104,8 @@
 
     /* Function Body */
     if (*n <= 1) {
-	*tau = 0.f;
-	return 0;
+        *tau = 0.f;
+        return 0;
     }
 
     i__1 = *n - 1;
@@ -116,50 +115,50 @@
 
 /*        H  =  I */
 
-	*tau = 0.f;
+        *tau = 0.f;
     } else {
 
 /*        general case */
 
-	r__1 = slapy2_(alpha, &xnorm);
-	beta = -r_sign(&r__1, alpha);
-	safmin = slamch_("S") / slamch_("E");
-	knt = 0;
-	if (dabs(beta) < safmin) {
+        r__1 = slapy2_(alpha, &xnorm);
+        beta = -r_sign(&r__1, alpha);
+        safmin = slamch_("S") / slamch_("E");
+        knt = 0;
+        if (dabs(beta) < safmin) {
 
 /*           XNORM, BETA may be inaccurate; scale X and recompute them */
 
-	    rsafmn = 1.f / safmin;
-L10:
-	    ++knt;
-	    i__1 = *n - 1;
-	    sscal_(&i__1, &rsafmn, &x[1], incx);
-	    beta *= rsafmn;
-	    *alpha *= rsafmn;
-	    if (dabs(beta) < safmin) {
-		goto L10;
-	    }
+            rsafmn = 1.f / safmin;
+            L10:
+            ++knt;
+            i__1 = *n - 1;
+            sscal_(&i__1, &rsafmn, &x[1], incx);
+            beta *= rsafmn;
+            *alpha *= rsafmn;
+            if (dabs(beta) < safmin) {
+                goto L10;
+            }
 
 /*           New BETA is at most 1, at least SAFMIN */
 
-	    i__1 = *n - 1;
-	    xnorm = snrm2_(&i__1, &x[1], incx);
-	    r__1 = slapy2_(alpha, &xnorm);
-	    beta = -r_sign(&r__1, alpha);
-	}
-	*tau = (beta - *alpha) / beta;
-	i__1 = *n - 1;
-	r__1 = 1.f / (*alpha - beta);
-	sscal_(&i__1, &r__1, &x[1], incx);
+            i__1 = *n - 1;
+            xnorm = snrm2_(&i__1, &x[1], incx);
+            r__1 = slapy2_(alpha, &xnorm);
+            beta = -r_sign(&r__1, alpha);
+        }
+        *tau = (beta - *alpha) / beta;
+        i__1 = *n - 1;
+        r__1 = 1.f / (*alpha - beta);
+        sscal_(&i__1, &r__1, &x[1], incx);
 
 /*        If ALPHA is subnormal, it may lose relative accuracy */
 
-	i__1 = knt;
-	for (j = 1; j <= i__1; ++j) {
-	    beta *= safmin;
+        i__1 = knt;
+        for (j = 1; j <= i__1; ++j) {
+            beta *= safmin;
 /* L20: */
-	}
-	*alpha = beta;
+        }
+        *alpha = beta;
     }
 
     return 0;

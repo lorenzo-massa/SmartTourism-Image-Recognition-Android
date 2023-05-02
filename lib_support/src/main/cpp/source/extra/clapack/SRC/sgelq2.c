@@ -13,19 +13,18 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int sgelq2_(integer *m, integer *n, real *a, integer *lda, 
-	real *tau, real *work, integer *info)
-{
+/* Subroutine */ int sgelq2_(integer *m, integer *n, real *a, integer *lda,
+                             real *tau, real *work, integer *info) {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3;
 
     /* Local variables */
     integer i__, k;
     real aii;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
-	    integer *, real *, real *, integer *, real *), xerbla_(
-	    char *, integer *), slarfp_(integer *, real *, real *, 
-	    integer *, real *);
+    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *,
+                                       integer *, real *, real *, integer *, real *), xerbla_(
+            char *, integer *), slarfp_(integer *, real *, real *,
+                                        integer *, real *);
 
 
 /*  -- LAPACK routine (version 3.2) -- */
@@ -112,42 +111,41 @@
     /* Function Body */
     *info = 0;
     if (*m < 0) {
-	*info = -1;
+        *info = -1;
     } else if (*n < 0) {
-	*info = -2;
-    } else if (*lda < max(1,*m)) {
-	*info = -4;
+        *info = -2;
+    } else if (*lda < max(1, *m)) {
+        *info = -4;
     }
     if (*info != 0) {
-	i__1 = -(*info);
-	xerbla_("SGELQ2", &i__1);
-	return 0;
+        i__1 = -(*info);
+        xerbla_("SGELQ2", &i__1);
+        return 0;
     }
 
-    k = min(*m,*n);
+    k = min(*m, *n);
 
     i__1 = k;
     for (i__ = 1; i__ <= i__1; ++i__) {
 
 /*        Generate elementary reflector H(i) to annihilate A(i,i+1:n) */
 
-	i__2 = *n - i__ + 1;
+        i__2 = *n - i__ + 1;
 /* Computing MIN */
-	i__3 = i__ + 1;
-	slarfp_(&i__2, &a[i__ + i__ * a_dim1], &a[i__ + min(i__3, *n)* a_dim1]
-, lda, &tau[i__]);
-	if (i__ < *m) {
+        i__3 = i__ + 1;
+        slarfp_(&i__2, &a[i__ + i__ * a_dim1], &a[i__ + min(i__3, *n) * a_dim1], lda, &tau[i__]);
+        if (i__ < *m) {
 
 /*           Apply H(i) to A(i+1:m,i:n) from the right */
 
-	    aii = a[i__ + i__ * a_dim1];
-	    a[i__ + i__ * a_dim1] = 1.f;
-	    i__2 = *m - i__;
-	    i__3 = *n - i__ + 1;
-	    slarf_("Right", &i__2, &i__3, &a[i__ + i__ * a_dim1], lda, &tau[
-		    i__], &a[i__ + 1 + i__ * a_dim1], lda, &work[1]);
-	    a[i__ + i__ * a_dim1] = aii;
-	}
+            aii = a[i__ + i__ * a_dim1];
+            a[i__ + i__ * a_dim1] = 1.f;
+            i__2 = *m - i__;
+            i__3 = *n - i__ + 1;
+            slarf_("Right", &i__2, &i__3, &a[i__ + i__ * a_dim1], lda, &tau[
+                    i__], &a[i__ + 1 + i__ * a_dim1], lda, &work[1]);
+            a[i__ + i__ * a_dim1] = aii;
+        }
 /* L10: */
     }
     return 0;

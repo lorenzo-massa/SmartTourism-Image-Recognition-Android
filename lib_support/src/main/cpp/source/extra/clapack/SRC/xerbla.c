@@ -18,9 +18,8 @@
 
 static integer c__1 = 1;
 
-/* Subroutine */ int xerbla_(char *srname, integer *info)
-{
-    
+/* Subroutine */ int xerbla_(char *srname, integer *info) {
+
 
 /*  -- LAPACK auxiliary routine (version 3.2) -- */
 /*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd.. */
@@ -56,7 +55,7 @@ static integer c__1 = 1;
 /*     .. Executable Statements .. */
 
     printf("** On entry to %6s, parameter number %2i had an illegal value\n",
-		srname, *info);
+           srname, *info);
 
 
 /*     End of XERBLA */

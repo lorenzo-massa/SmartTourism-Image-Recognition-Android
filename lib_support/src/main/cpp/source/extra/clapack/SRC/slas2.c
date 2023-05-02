@@ -14,8 +14,7 @@
 #include "blaswrap.h"
 
 /* Subroutine */ int slas2_(real *f, real *g, real *h__, real *ssmin, real *
-	ssmax)
-{
+ssmax) {
     /* System generated locals */
     real r__1, r__2;
 
@@ -92,51 +91,51 @@
     fa = dabs(*f);
     ga = dabs(*g);
     ha = dabs(*h__);
-    fhmn = dmin(fa,ha);
-    fhmx = dmax(fa,ha);
+    fhmn = dmin(fa, ha);
+    fhmx = dmax(fa, ha);
     if (fhmn == 0.f) {
-	*ssmin = 0.f;
-	if (fhmx == 0.f) {
-	    *ssmax = ga;
-	} else {
+        *ssmin = 0.f;
+        if (fhmx == 0.f) {
+            *ssmax = ga;
+        } else {
 /* Computing 2nd power */
-	    r__1 = dmin(fhmx,ga) / dmax(fhmx,ga);
-	    *ssmax = dmax(fhmx,ga) * sqrt(r__1 * r__1 + 1.f);
-	}
+            r__1 = dmin(fhmx, ga) / dmax(fhmx, ga);
+            *ssmax = dmax(fhmx, ga) * sqrt(r__1 * r__1 + 1.f);
+        }
     } else {
-	if (ga < fhmx) {
-	    as = fhmn / fhmx + 1.f;
-	    at = (fhmx - fhmn) / fhmx;
+        if (ga < fhmx) {
+            as = fhmn / fhmx + 1.f;
+            at = (fhmx - fhmn) / fhmx;
 /* Computing 2nd power */
-	    r__1 = ga / fhmx;
-	    au = r__1 * r__1;
-	    c__ = 2.f / (sqrt(as * as + au) + sqrt(at * at + au));
-	    *ssmin = fhmn * c__;
-	    *ssmax = fhmx / c__;
-	} else {
-	    au = fhmx / ga;
-	    if (au == 0.f) {
+            r__1 = ga / fhmx;
+            au = r__1 * r__1;
+            c__ = 2.f / (sqrt(as * as + au) + sqrt(at * at + au));
+            *ssmin = fhmn * c__;
+            *ssmax = fhmx / c__;
+        } else {
+            au = fhmx / ga;
+            if (au == 0.f) {
 
 /*              Avoid possible harmful underflow if exponent range */
 /*              asymmetric (true SSMIN may not underflow even if */
 /*              AU underflows) */
 
-		*ssmin = fhmn * fhmx / ga;
-		*ssmax = ga;
-	    } else {
-		as = fhmn / fhmx + 1.f;
-		at = (fhmx - fhmn) / fhmx;
+                *ssmin = fhmn * fhmx / ga;
+                *ssmax = ga;
+            } else {
+                as = fhmn / fhmx + 1.f;
+                at = (fhmx - fhmn) / fhmx;
 /* Computing 2nd power */
-		r__1 = as * au;
+                r__1 = as * au;
 /* Computing 2nd power */
-		r__2 = at * au;
-		c__ = 1.f / (sqrt(r__1 * r__1 + 1.f) + sqrt(r__2 * r__2 + 1.f)
-			);
-		*ssmin = fhmn * c__ * au;
-		*ssmin += *ssmin;
-		*ssmax = ga / (c__ + c__);
-	    }
-	}
+                r__2 = at * au;
+                c__ = 1.f / (sqrt(r__1 * r__1 + 1.f) + sqrt(r__2 * r__2 + 1.f)
+                );
+                *ssmin = fhmn * c__ * au;
+                *ssmin += *ssmin;
+                *ssmax = ga / (c__ + c__);
+            }
+        }
     }
     return 0;
 

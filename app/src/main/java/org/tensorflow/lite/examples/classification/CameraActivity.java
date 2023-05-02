@@ -17,8 +17,6 @@
 package org.tensorflow.lite.examples.classification;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -41,9 +39,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -51,7 +46,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,32 +55,27 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Mat;
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
+import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Language;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Mode;
-import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
 import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -339,19 +328,11 @@ public abstract class CameraActivity extends AppCompatActivity
         yuvBytes[0] = bytes;
         yRowStride = previewWidth;
 
-        //Log.d("CameraActivity","H: "+previewHeight);
-        //Log.d("CameraActivity","W: "+previewWidth);
-
-
         imageConverter =
                 new Runnable() {
                     @Override
                     public void run() {
                         ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
-
-                        //Log.d("CameraActivity","Bytes: "+bytes.length);
-                        //Log.d("CameraActivity","RGBBytes "+rgbBytes.length);
-
                     }
                 };
 
@@ -366,11 +347,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
         processImage();
-
-        //loadingIndicator.setVisibility(View.GONE);
-
-
-        //Log.v("CameraActivity", "processImage Camera1");
     }
 
     /**
@@ -431,7 +407,6 @@ public abstract class CameraActivity extends AppCompatActivity
                     };
 
             processImage();
-            //Log.v("CameraActivity", "processImage Camera2");
 
         } catch (final Exception e) {
             LOGGER.e(e, "Exception!");
@@ -482,18 +457,6 @@ public abstract class CameraActivity extends AppCompatActivity
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
-                    //mOpenCvCameraView.enableView();
-
-                    //init after OpenCV is loaded
-                    //descriptors = new Mat();
-                    //descriptorsExample = new Mat();
-
-                    //Creating descriptors example
-                    //try {
-                    //    createDescriptorsExample();
-                    //} catch (IOException e) {
-                    //    throw new RuntimeException(e);
-                    //}
                 }
                 break;
                 default: {
@@ -714,7 +677,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
                 nClearedList += 1;
                 Log.i(TAG, "Pre-Helping classifier using mode " + mode.toString());
-                helped = checkIfHelpIsNeeded(bitmap,sensorOrientation, firstPosition);
+                helped = checkIfHelpIsNeeded(bitmap, sensorOrientation, firstPosition);
 
             }
 
@@ -811,16 +774,16 @@ public abstract class CameraActivity extends AppCompatActivity
      * If the result is good enough, you use it to recognize the monument
      */
     @UiThread
-    protected Boolean checkIfHelpIsNeeded(final Bitmap bitmap, int sensorOrientation, String firstPosition){
-        if(nClearedList >= 3 && mode != Mode.Standard){
+    protected Boolean checkIfHelpIsNeeded(final Bitmap bitmap, int sensorOrientation, String firstPosition) {
+        if (nClearedList >= 3 && mode != Mode.Standard) {
 
             Log.i(TAG, "Helping classifier using mode " + mode.toString());
-            DetectionHelper dH = new DetectionHelper(getApplicationContext(),mode, bitmap, firstPosition);
+            DetectionHelper dH = new DetectionHelper(getApplicationContext(), mode, bitmap, firstPosition);
             float good_ratio = dH.help();
 
             Log.i(TAG, "Good ratio: " + good_ratio);
 
-            if (good_ratio >= 0.1){
+            if (good_ratio >= 0.1) {
                 return true;
             }
 
@@ -953,7 +916,7 @@ public abstract class CameraActivity extends AppCompatActivity
             ((TextView) view).bringToFront();
             ((TextView) view).setTypeface((((TextView) view).getTypeface()), Typeface.BOLD);
 
-        }else if (parent == modeSpinner) {
+        } else if (parent == modeSpinner) {
             setMode(Mode.valueOf(parent.getItemAtPosition(pos).toString()));
         }
     }

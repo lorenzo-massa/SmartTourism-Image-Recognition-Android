@@ -13,10 +13,9 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-/* Subroutine */ int slasq6_(integer *i0, integer *n0, real *z__, integer *pp, 
-	 real *dmin__, real *dmin1, real *dmin2, real *dn, real *dnm1, real *
-	dnm2)
-{
+/* Subroutine */ int slasq6_(integer *i0, integer *n0, real *z__, integer *pp,
+                             real *dmin__, real *dmin1, real *dmin2, real *dn, real *dnm1, real *
+dnm2) {
     /* System generated locals */
     integer i__1;
     real r__1, r__2;
@@ -101,7 +100,7 @@
 
     /* Function Body */
     if (*n0 - *i0 - 1 <= 0) {
-	return 0;
+        return 0;
     }
 
     safmin = slamch_("Safe minimum");
@@ -111,53 +110,53 @@
     *dmin__ = d__;
 
     if (*pp == 0) {
-	i__1 = *n0 - 3 << 2;
-	for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
-	    z__[j4 - 2] = d__ + z__[j4 - 1];
-	    if (z__[j4 - 2] == 0.f) {
-		z__[j4] = 0.f;
-		d__ = z__[j4 + 1];
-		*dmin__ = d__;
-		emin = 0.f;
-	    } else if (safmin * z__[j4 + 1] < z__[j4 - 2] && safmin * z__[j4 
-		    - 2] < z__[j4 + 1]) {
-		temp = z__[j4 + 1] / z__[j4 - 2];
-		z__[j4] = z__[j4 - 1] * temp;
-		d__ *= temp;
-	    } else {
-		z__[j4] = z__[j4 + 1] * (z__[j4 - 1] / z__[j4 - 2]);
-		d__ = z__[j4 + 1] * (d__ / z__[j4 - 2]);
-	    }
-	    *dmin__ = dmin(*dmin__,d__);
+        i__1 = *n0 - 3 << 2;
+        for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
+            z__[j4 - 2] = d__ + z__[j4 - 1];
+            if (z__[j4 - 2] == 0.f) {
+                z__[j4] = 0.f;
+                d__ = z__[j4 + 1];
+                *dmin__ = d__;
+                emin = 0.f;
+            } else if (safmin * z__[j4 + 1] < z__[j4 - 2] && safmin * z__[j4
+                                                                          - 2] < z__[j4 + 1]) {
+                temp = z__[j4 + 1] / z__[j4 - 2];
+                z__[j4] = z__[j4 - 1] * temp;
+                d__ *= temp;
+            } else {
+                z__[j4] = z__[j4 + 1] * (z__[j4 - 1] / z__[j4 - 2]);
+                d__ = z__[j4 + 1] * (d__ / z__[j4 - 2]);
+            }
+            *dmin__ = dmin(*dmin__, d__);
 /* Computing MIN */
-	    r__1 = emin, r__2 = z__[j4];
-	    emin = dmin(r__1,r__2);
+            r__1 = emin, r__2 = z__[j4];
+            emin = dmin(r__1, r__2);
 /* L10: */
-	}
+        }
     } else {
-	i__1 = *n0 - 3 << 2;
-	for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
-	    z__[j4 - 3] = d__ + z__[j4];
-	    if (z__[j4 - 3] == 0.f) {
-		z__[j4 - 1] = 0.f;
-		d__ = z__[j4 + 2];
-		*dmin__ = d__;
-		emin = 0.f;
-	    } else if (safmin * z__[j4 + 2] < z__[j4 - 3] && safmin * z__[j4 
-		    - 3] < z__[j4 + 2]) {
-		temp = z__[j4 + 2] / z__[j4 - 3];
-		z__[j4 - 1] = z__[j4] * temp;
-		d__ *= temp;
-	    } else {
-		z__[j4 - 1] = z__[j4 + 2] * (z__[j4] / z__[j4 - 3]);
-		d__ = z__[j4 + 2] * (d__ / z__[j4 - 3]);
-	    }
-	    *dmin__ = dmin(*dmin__,d__);
+        i__1 = *n0 - 3 << 2;
+        for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
+            z__[j4 - 3] = d__ + z__[j4];
+            if (z__[j4 - 3] == 0.f) {
+                z__[j4 - 1] = 0.f;
+                d__ = z__[j4 + 2];
+                *dmin__ = d__;
+                emin = 0.f;
+            } else if (safmin * z__[j4 + 2] < z__[j4 - 3] && safmin * z__[j4
+                                                                          - 3] < z__[j4 + 2]) {
+                temp = z__[j4 + 2] / z__[j4 - 3];
+                z__[j4 - 1] = z__[j4] * temp;
+                d__ *= temp;
+            } else {
+                z__[j4 - 1] = z__[j4 + 2] * (z__[j4] / z__[j4 - 3]);
+                d__ = z__[j4 + 2] * (d__ / z__[j4 - 3]);
+            }
+            *dmin__ = dmin(*dmin__, d__);
 /* Computing MIN */
-	    r__1 = emin, r__2 = z__[j4 - 1];
-	    emin = dmin(r__1,r__2);
+            r__1 = emin, r__2 = z__[j4 - 1];
+            emin = dmin(r__1, r__2);
 /* L20: */
-	}
+        }
     }
 
 /*     Unroll last two steps. */
@@ -168,40 +167,40 @@
     j4p2 = j4 + (*pp << 1) - 1;
     z__[j4 - 2] = *dnm2 + z__[j4p2];
     if (z__[j4 - 2] == 0.f) {
-	z__[j4] = 0.f;
-	*dnm1 = z__[j4p2 + 2];
-	*dmin__ = *dnm1;
-	emin = 0.f;
-    } else if (safmin * z__[j4p2 + 2] < z__[j4 - 2] && safmin * z__[j4 - 2] < 
-	    z__[j4p2 + 2]) {
-	temp = z__[j4p2 + 2] / z__[j4 - 2];
-	z__[j4] = z__[j4p2] * temp;
-	*dnm1 = *dnm2 * temp;
+        z__[j4] = 0.f;
+        *dnm1 = z__[j4p2 + 2];
+        *dmin__ = *dnm1;
+        emin = 0.f;
+    } else if (safmin * z__[j4p2 + 2] < z__[j4 - 2] && safmin * z__[j4 - 2] <
+                                                       z__[j4p2 + 2]) {
+        temp = z__[j4p2 + 2] / z__[j4 - 2];
+        z__[j4] = z__[j4p2] * temp;
+        *dnm1 = *dnm2 * temp;
     } else {
-	z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
-	*dnm1 = z__[j4p2 + 2] * (*dnm2 / z__[j4 - 2]);
+        z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
+        *dnm1 = z__[j4p2 + 2] * (*dnm2 / z__[j4 - 2]);
     }
-    *dmin__ = dmin(*dmin__,*dnm1);
+    *dmin__ = dmin(*dmin__, *dnm1);
 
     *dmin1 = *dmin__;
     j4 += 4;
     j4p2 = j4 + (*pp << 1) - 1;
     z__[j4 - 2] = *dnm1 + z__[j4p2];
     if (z__[j4 - 2] == 0.f) {
-	z__[j4] = 0.f;
-	*dn = z__[j4p2 + 2];
-	*dmin__ = *dn;
-	emin = 0.f;
-    } else if (safmin * z__[j4p2 + 2] < z__[j4 - 2] && safmin * z__[j4 - 2] < 
-	    z__[j4p2 + 2]) {
-	temp = z__[j4p2 + 2] / z__[j4 - 2];
-	z__[j4] = z__[j4p2] * temp;
-	*dn = *dnm1 * temp;
+        z__[j4] = 0.f;
+        *dn = z__[j4p2 + 2];
+        *dmin__ = *dn;
+        emin = 0.f;
+    } else if (safmin * z__[j4p2 + 2] < z__[j4 - 2] && safmin * z__[j4 - 2] <
+                                                       z__[j4p2 + 2]) {
+        temp = z__[j4p2 + 2] / z__[j4 - 2];
+        z__[j4] = z__[j4p2] * temp;
+        *dn = *dnm1 * temp;
     } else {
-	z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
-	*dn = z__[j4p2 + 2] * (*dnm1 / z__[j4 - 2]);
+        z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
+        *dn = z__[j4p2 + 2] * (*dnm1 / z__[j4 - 2]);
     }
-    *dmin__ = dmin(*dmin__,*dn);
+    *dmin__ = dmin(*dmin__, *dn);
 
     z__[j4 + 2] = *dn;
     z__[(*n0 << 2) - *pp] = emin;

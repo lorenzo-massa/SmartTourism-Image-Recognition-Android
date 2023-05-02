@@ -13,8 +13,7 @@
 #include "f2c.h"
 #include "blaswrap.h"
 
-logical slaisnan_(real *sin1, real *sin2)
-{
+logical slaisnan_(real *sin1, real *sin2) {
     /* System generated locals */
     logical ret_val;
 

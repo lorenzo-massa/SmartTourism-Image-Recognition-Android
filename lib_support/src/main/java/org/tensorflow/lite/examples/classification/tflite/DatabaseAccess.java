@@ -1,19 +1,13 @@
 package org.tensorflow.lite.examples.classification.tflite;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.view.View;
-
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class DatabaseAccess {
     private static DatabaseAccess instance;
@@ -25,7 +19,7 @@ public class DatabaseAccess {
     /**
      * Private constructor to aboid object creation from outside classes.
      *
-     * @param activity
+     * @param activity to get the contex
      */
     private DatabaseAccess(Activity activity, String dbName) {
         this.openHelper = new DatabaseOpenHelper(activity, dbName);
@@ -74,12 +68,6 @@ public class DatabaseAccess {
             this.database.close();
         }
     }
-
-    /**
-     * Read all quotes from the database.
-     *
-     * @return a List of quotes
-     */
 
     public void updateDatabase(int k) {
 
