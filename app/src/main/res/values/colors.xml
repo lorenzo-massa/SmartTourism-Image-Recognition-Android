@@ -5,7 +5,11 @@
     <color name="tfe_color_primary_dark">#ff6f00</color>
     <color name="tfe_color_accent">#425066</color>
     <color name="black">#000000</color>
+    <color name="grey">#E0E0E0</color>
+
 
 
     <color name="tfe_semi_transparent">#66000000</color>
+
+
 </resources>

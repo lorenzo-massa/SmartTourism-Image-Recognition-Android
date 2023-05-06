@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -39,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -76,6 +78,7 @@ import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -117,6 +120,8 @@ public abstract class CameraActivity extends AppCompatActivity
     private Spinner modelSpinner;
     private Spinner deviceSpinner;
     private TextView threadsTextView;
+
+    private TextView idView;
 
     private Model model = Model.PRECISE;
     private Device device = Device.CPU;
@@ -187,7 +192,21 @@ public abstract class CameraActivity extends AppCompatActivity
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
 
-        //@SuppressLint("ResourceType") ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item,R.array.language_array);
+        idView = findViewById(R.id.idView);
+
+        //SharedPreferences
+        SharedPreferences sharedPref;
+        sharedPref = getSharedPreferences("myPref", MODE_PRIVATE);
+
+        String uniqueID = sharedPref.getString("unique_id", "");
+        if(uniqueID.equals("")){
+            uniqueID = UUID.randomUUID().toString();
+            sharedPref.edit().putString("unique_id", uniqueID).commit();
+        }
+
+        LOGGER.d("uniqueID: " + uniqueID);
+        idView.setText(uniqueID);
+
 
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();

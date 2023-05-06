@@ -35,7 +35,7 @@ stringFromJNI(JNIEnv *env, jclass clazz, jfloatArray imgFeatures, jobjectArray d
     jsize len = (*env).GetArrayLength(data);
 
 
-    //CREATING INDEX in not already done
+    //CREATING INDEX if not already done
 
     if (index == nullptr) {
 
