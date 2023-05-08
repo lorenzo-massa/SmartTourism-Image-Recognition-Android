@@ -12,6 +12,8 @@ import os
 import sqlite3
 import pickle
 from sklearn.model_selection import train_test_split
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+import glob
 
 np.set_printoptions(threshold=np.inf)
 
@@ -38,7 +40,6 @@ if not ALL_DATASET:
         dataImages, test_size=0.33, random_state=1331, shuffle=True
     )
     dataImages=train_set
-
 
 # progress bar
 widgets = [
@@ -155,7 +156,6 @@ for dType,modelPath in types:
             pickle.dump(test_set, fp)
 
     
-    #TODO DA RIVEDERE
     #CREATING SQL LITE DATABASE
 
     con = sqlite3.connect("../models/src/main/assets/databases/"+dType+"_db.sqlite")
@@ -186,5 +186,13 @@ for dType,modelPath in types:
     con.close()
     pbar.finish()
 
+    print("Creating Doc2Vec vectors")
+    from testDocToVec import createDTVectors
+    textPaths = glob.glob("models/src/main/assets/guides/*/English/testo.txt")
+    createDTVectors(dType, textPaths)
+    print("Doc2Vec vectors created successfully")
+
 print("DB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
+
+
 

@@ -26,6 +26,7 @@
             android:exported="false" />
         <activity
             android:name=".ClassifierActivity"
+            android:exported="true"
             android:label="@string/tfe_ic_app_name"
             android:screenOrientation="portrait">
             <intent-filter>
