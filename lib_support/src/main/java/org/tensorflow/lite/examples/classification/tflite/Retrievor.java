@@ -29,7 +29,7 @@ public class Retrievor {
                 throw new UnsupportedOperationException();
         }
 
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(activity, dbName);
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(activity, dbName, "doc2vec_db.sqlite");
         databaseAccess.open();
         databaseAccess.updateDatabase(K);
         databaseAccess.close();

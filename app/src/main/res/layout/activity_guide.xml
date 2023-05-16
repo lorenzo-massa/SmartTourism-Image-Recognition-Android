@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,6 +19,8 @@
             app:navigationIcon="@drawable/arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollNestedView"
@@ -45,11 +48,56 @@
                 app:layout_constraintTop_toBottomOf="@+id/idBtnPlay" />
 
 
+            <Button
+                android:id="@+id/hintButton1"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Outlined button"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toStartOf="@id/hintButton2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textGuide" />
+
+            <Button
+                android:id="@+id/hintButton2"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Outlined button"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/hintButton1"
+                app:layout_constraintTop_toBottomOf="@+id/textGuide"/>
+
+            <Button
+                android:id="@+id/hintButton3"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Outlined button"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hintButton2"/>
+<!--
+            <TextView
+                android:id="@+id/hints"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Generating hints..."
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hintButton3" />
+-->
             <ImageView
                 android:id="@+id/imgGuide"
                 android:layout_width="300dp"
                 android:layout_height="200dp"
                 android:layout_marginTop="15dp"
+                android:contentDescription="image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -60,6 +108,7 @@
                 android:layout_height="52dp"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="20dp"
+                android:contentDescription="@drawable/play_pause"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
                 android:insetRight="0dp"
@@ -78,7 +127,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textGuide">
+                app:layout_constraintTop_toBottomOf="@+id/hintButton3">
 
                 <VideoView
                     android:id="@+id/videoView"

@@ -11,9 +11,16 @@ import java.util.Objects;
 
 public class DatabaseAccess {
     private static DatabaseAccess instance;
+    private static DatabaseAccess instanceDocToVEc;
     private static ArrayList<Element> listDB = new ArrayList<>();
+    private static ArrayList<Element> listDocToVec = new ArrayList<>();
     private final SQLiteOpenHelper openHelper;
+    private final SQLiteOpenHelper openHelperDocToVec;
+
     private SQLiteDatabase database;
+    private SQLiteDatabase databaseDocToVec;
+
+
 
 
     /**
@@ -21,8 +28,10 @@ public class DatabaseAccess {
      *
      * @param activity to get the contex
      */
-    private DatabaseAccess(Activity activity, String dbName) {
+    private DatabaseAccess(Activity activity, String dbName, String dbName2) {
         this.openHelper = new DatabaseOpenHelper(activity, dbName);
+        this.openHelperDocToVec = new DatabaseOpenHelper(activity, dbName2);
+
 
     }
 
@@ -32,15 +41,18 @@ public class DatabaseAccess {
      * @param activity the Activity
      * @return the instance of DabaseAccess
      */
-    public static DatabaseAccess getInstance(Activity activity, String dbName) {
+    public static DatabaseAccess getInstance(Activity activity, String dbName, String dbName2) {
         //if (instance == null) {
-        instance = new DatabaseAccess(activity, dbName);
+        instance = new DatabaseAccess(activity, dbName, dbName2);
         //}
         return instance;
     }
 
     public static ArrayList<Element> getListDB() {
         return listDB;
+    }
+    public static ArrayList<Element> getListDocToVec() {
+        return listDocToVec;
     }
 
     public static float[][] getMatrixDB() {
@@ -58,7 +70,10 @@ public class DatabaseAccess {
      */
     public void open() {
         this.database = openHelper.getWritableDatabase();
+        this.databaseDocToVec = openHelperDocToVec.getWritableDatabase();
+
     }
+
 
     /**
      * Close the database connection.
@@ -66,6 +81,10 @@ public class DatabaseAccess {
     public void close() {
         if (database != null) {
             this.database.close();
+        }
+
+        if (databaseDocToVec != null) {
+            this.databaseDocToVec.close();
         }
     }
 
@@ -106,7 +125,42 @@ public class DatabaseAccess {
             cursor.close();
         }
 
+
+        //update database docToVec
+
+        Cursor cursor = databaseDocToVec.rawQuery("SELECT * FROM docToVec", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String monument = cursor.getString(0);
+            String vec = cursor.getString(1);
+
+            //Convert vec string to Float
+            String[] splittedVec = vec.substring(1, vec.length() - 1).split("\\s+");
+            float[] listVec = new float[splittedVec.length];
+
+            int z = 0;
+            for (String s : splittedVec
+            ) {
+                if (!Objects.equals(s, "")) {
+                    listVec[z] = Float.parseFloat(s);
+                    z++;
+                }
+
+            }
+
+            //element with converted matrix
+            Element e = new Element(monument, listVec, -1);
+            listDocToVec.add(e);
+
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+
     }
+
+
+
 
 
 }

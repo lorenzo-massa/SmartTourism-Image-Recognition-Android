@@ -1,11 +1,13 @@
 package org.tensorflow.lite.examples.classification;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -19,10 +21,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 
+import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
+import org.tensorflow.lite.examples.classification.tflite.Element;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GuideActivity extends AppCompatActivity {
 
@@ -123,8 +131,20 @@ public class GuideActivity extends AppCompatActivity {
                 break;
         }
 
+        ArrayList<Element> hints = getHints(monumentId);
+
         TextView textTextView = findViewById(R.id.textGuide);
         textTextView.setText(text);
+
+        //TextView hintsTextView = findViewById(R.id.hints);
+        //hintsTextView.setText(hints.toString());
+
+        Button p1_button = findViewById(R.id.hintButton1);
+        p1_button.setText(hints.get(0).getMonument());
+        Button p2_button = findViewById(R.id.hintButton2);
+        p2_button.setText(hints.get(1).getMonument());
+        Button p3_button = findViewById(R.id.hintButton3);
+        p3_button.setText(hints.get(2).getMonument());
 
         ImageView imageImageView = findViewById(R.id.imgGuide);
         imageImageView.setImageBitmap(img);
@@ -150,6 +170,39 @@ public class GuideActivity extends AppCompatActivity {
                 playAudio(finalPathAudio);
             }
         });
+    }
+
+    private ArrayList<Element> getHints(String monumendId) { //hints just calculating the distances
+        float[] recognizedVec = new float[0];
+        ArrayList<Element> listDocToVec = DatabaseAccess.getListDocToVec();
+
+        //find the vec of the recognized monument
+        for (Element x:listDocToVec) {
+            if(x.getMonument().equals(monumendId)){
+                recognizedVec=x.getMatrix();
+            }
+        }
+
+        //compute all distances
+        for (Element x:listDocToVec) {
+            x.setDistance(euclideanDistance(x.getMatrix(),recognizedVec));
+        }
+
+        //sort by distances
+        Collections.sort(listDocToVec, new Comparator<Element>(){
+            public int compare(Element obj1, Element obj2) {
+                // ## Ascending order
+                 return Double.compare(obj1.getDistance(), obj2.getDistance()); // To compare integer values
+            }
+        });
+        Log.i(TAG, "listDocToVec: "+listDocToVec);
+
+        ArrayList<Element> results = new ArrayList<>();
+        results.add(listDocToVec.get(1));
+        results.add(listDocToVec.get(2));
+        results.add(listDocToVec.get(listDocToVec.size()-1));
+
+        return results;
     }
 
     private void loadGuidefromFile(String fileName) {
@@ -225,5 +278,21 @@ public class GuideActivity extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+
+
+    public static double euclideanDistance(float[] vector1, float[] vector2) {
+        if (vector1.length != vector2.length) {
+            throw new IllegalArgumentException("Vector dimensions must be equal");
+        }
+
+        double sumOfSquares = 0.0;
+        for (int i = 0; i < vector1.length; i++) {
+            double diff = vector1[i] - vector2[i];
+            sumOfSquares += diff * diff;
+        }
+
+        return Math.sqrt(sumOfSquares);
     }
 }

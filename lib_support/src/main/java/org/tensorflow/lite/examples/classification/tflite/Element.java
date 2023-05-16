@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 public class Element {
     private final String monument;
-    private final double distance;
+    private double distance;
     private final float[] matrix;
 
 
@@ -24,6 +24,10 @@ public class Element {
 
     public float[] getMatrix() {
         return matrix;
+    }
+
+    public void setDistance(double distance){
+        this.distance=distance;
     }
 
     @NonNull

@@ -760,6 +760,7 @@ public abstract class CameraActivity extends AppCompatActivity
                         Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
                         intent.putExtra("monument_id", finalRecognition.getId());
                         intent.putExtra("language", language.toString());
+
                         startActivity(intent);
                         dialog.dismiss();
                         dialogIsOpen = false;
