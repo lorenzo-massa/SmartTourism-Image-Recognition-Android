@@ -96,5 +96,14 @@
 
     <include
         android:id="@+id/bottom_sheet_layout"
-        layout="@layout/tfe_ic_layout_bottom_sheet" />
+        layout="@layout/tfe_ic_layout_bottom_sheet"
+        android:visibility="invisible"
+        />
+
+    <ImageView
+        android:id="@+id/imageViewBG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/bg_loading" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

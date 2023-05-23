@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdkVersion 33
@@ -42,7 +43,7 @@ dependencies {
     implementation project(":models")
     implementation project(path: ':opencv')
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
 
     // Build off of nightly TensorFlow Lite
     implementation 'org.tensorflow:tensorflow-lite:2.7.0'
@@ -54,6 +55,7 @@ dependencies {
 
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.3.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     //implementation 'com.google.android.material:material:1.5.0'
 
 }

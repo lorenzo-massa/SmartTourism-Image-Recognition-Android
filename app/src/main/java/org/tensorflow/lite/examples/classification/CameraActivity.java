@@ -144,6 +144,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
     //Loading
     private CircularProgressIndicator loadingIndicator;
+    private ImageView imageViewBG;
 
     //To check if help (ORB or OBJ_DET) is needed
     private int nClearedList = 0;
@@ -170,8 +171,21 @@ public abstract class CameraActivity extends AppCompatActivity
         setContentView(R.layout.tfe_ic_activity_camera);
 
         loadingIndicator = findViewById(R.id.progressIndicator);
-
         loadingIndicator.bringToFront();
+
+        //TODO check the loading image
+        imageViewBG = findViewById(R.id.imageViewBG);
+
+        final Runnable r = new Runnable() {
+            public void run() {
+                imageViewBG.setVisibility(View.GONE);
+                bottomSheetLayout.setVisibility(View.VISIBLE);
+
+            }
+        };
+
+        Handler handler = new Handler();
+        handler.postDelayed(r, 5000);
 
 
         if (hasPermission()) {

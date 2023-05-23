@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 
+import org.jetbrains.annotations.NotNull;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.Element;
 
@@ -28,9 +30,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import com.mukesh.MarkdownView;
 
 public class GuideActivity extends AppCompatActivity {
 
@@ -45,15 +50,7 @@ public class GuideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_guide);
-
-        NestedScrollView mainScrollView = findViewById(R.id.scrollNestedView);
-        mainScrollView.post(new Runnable() {
-            public void run() {
-                mainScrollView.fullScroll(View.FOCUS_UP);
-            }
-        });
-
+        setContentView(R.layout.activity_guide_md);
 
         String monumentId = getIntent().getStringExtra("monument_id");
         String language = getIntent().getStringExtra("language");
@@ -71,6 +68,14 @@ public class GuideActivity extends AppCompatActivity {
         });
 
 
+        /*
+        NestedScrollView mainScrollView = findViewById(R.id.scrollNestedView);
+        mainScrollView.post(new Runnable() {
+            public void run() {
+                mainScrollView.fullScroll(View.FOCUS_UP);
+            }
+        });
+
         loadImageGuide("guides/" + monumentId + "/img.jpg");
         loadGuidefromFile("guides/" + monumentId + "/" + language + "/testo.txt");
 
@@ -81,6 +86,9 @@ public class GuideActivity extends AppCompatActivity {
         String pathAudio = "https://dl.dropboxusercontent.com/s/";
 
 
+         */
+
+        /*
         switch (monumentId) {
             case "Cattedrale Duomo":
                 if (language.equals("English")) {
@@ -131,21 +139,19 @@ public class GuideActivity extends AppCompatActivity {
                 break;
         }
 
-        ArrayList<Element> hints = getHints(monumentId);
+         */
 
-        TextView textTextView = findViewById(R.id.textGuide);
-        textTextView.setText(text);
+
+
+        //TextView textTextView = findViewById(R.id.textGuide);
+        //textTextView.setText(text);
 
         //TextView hintsTextView = findViewById(R.id.hints);
         //hintsTextView.setText(hints.toString());
 
-        Button p1_button = findViewById(R.id.hintButton1);
-        p1_button.setText(hints.get(0).getMonument());
-        Button p2_button = findViewById(R.id.hintButton2);
-        p2_button.setText(hints.get(1).getMonument());
-        Button p3_button = findViewById(R.id.hintButton3);
-        p3_button.setText(hints.get(2).getMonument());
 
+
+        /*
         ImageView imageImageView = findViewById(R.id.imgGuide);
         imageImageView.setImageBitmap(img);
 
@@ -170,6 +176,47 @@ public class GuideActivity extends AppCompatActivity {
                 playAudio(finalPathAudio);
             }
         });
+
+
+
+
+         */
+
+        MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdown_view);
+        //markdownView.setMarkDownText("# Hello World\nThis is a simple markdown"); //Displays markdown text
+
+        markdownView.loadMarkdownFromAssets("guides/" + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
+
+
+        //Show hints
+
+        ArrayList<Element> hints = getHints(monumentId);
+
+        Button p1_button = findViewById(R.id.hintButton1);
+        p1_button.setText(hints.get(0).getMonument());
+        Button p2_button = findViewById(R.id.hintButton2);
+        p2_button.setText(hints.get(1).getMonument());
+        Button p3_button = findViewById(R.id.hintButton3);
+        p3_button.setText(hints.get(2).getMonument());
+
+
+
+        //Wait few seconds to let the md file open
+
+        View hintsView = findViewById(R.id.hintsView);
+
+        final Runnable r = new Runnable() {
+            public void run() {
+                hintsView.setVisibility(View.VISIBLE);
+            }
+        };
+
+        Handler handler = new Handler();
+        handler.postDelayed(r, 2000);
+
+
+
+
     }
 
     private ArrayList<Element> getHints(String monumendId) { //hints just calculating the distances

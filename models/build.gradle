@@ -31,7 +31,12 @@ android {
     }
 }
 
+dependencies {
+    implementation 'androidx.core:core-ktx:1.10.1'
+}
+
 // Download default models; if you wish to use your own models then
 // place them in the "assets" directory and comment out this line.
 project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
 apply from:'download.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'
