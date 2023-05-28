@@ -18,6 +18,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <ScrollView
         android:id="@+id/scrollNestedView"
         android:layout_width="fill_parent"
@@ -28,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <com.mukesh.MarkdownView
                 android:id="@+id/markdown_view"
@@ -44,12 +46,26 @@
                 android:paddingBottom="10dp"
                 android:visibility="invisible">
 
+                <Button
+                    android:id="@+id/mapButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Open in Maps"
+                    android:layout_marginTop="5dp"
+                    android:visibility="invisible"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="You may be also interested in:"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mapButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 

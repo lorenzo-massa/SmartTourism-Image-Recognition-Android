@@ -50,12 +50,9 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
     implementation 'org.tensorflow:tensorflow-lite-support:0.3.0'
 
-    // Use local TensorFlow library
-    // implementation 'org.tensorflow:tensorflow-lite-local:0.0.0'
-
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.3.0'
     implementation 'androidx.core:core-ktx:1.10.1'
-    //implementation 'com.google.android.material:material:1.5.0'
+
 
 }
