@@ -86,31 +86,13 @@ The file `build_sqlite.py` will create three `.sqlite` and `.pck` files. Each pa
 
 IMORTANT: Do not change the names of the files created.
 
-## Add test and images for monument guide
+## Create monument guides
 Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder.</br>
-Text file and an image can be placed in this folder. Text file must be placed in the folder corresponding to the language.
+Text, images, audios and videos can be shown using Mardkown.
 
 IMPORTANT: New files must have the same name as the files in the template folder.
 
 NOTE: For the time being, Italian and English languages are supported.
-
-## Add video and audio for the monument guide
-Audio and video files are played providing an URL.
-
-IMPORTANT: If you want to add an audio or a video to the guide, first of all you have to upload the file on a drive platform (ex. Dropbox).
-
-Open `app/src/main/java/org/tensorflow/lite/examples/classification/GuideActivity.java`.
-Add a case to the switch construct with the name of the monument (must be the same as the name of the dataset folder), and replace `pathVideo` and `pathAudio` with the URL of the new files, as in the example:
-```java
-case "Palazzo Vecchio":
-                if(language.equals("English"))
-                    pathVideo += "https://driveexample.com/xxx/videoEn.mp4";
-                    pathAudio += "https://driveexample.com/xxx/audioEn.mp4";
-                else
-                    pathVideo += "https://driveexample.com/xxx/videoEn.mp4";
-                    pathAudio += "https://driveexample.com/xxx/audioIt.mp4";
-                break;
-```
 
 ### ONLY FOR EXPERT USERS
 
