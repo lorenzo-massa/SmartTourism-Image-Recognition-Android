@@ -131,8 +131,8 @@ public abstract class CameraActivity extends AppCompatActivity
     private final ArrayList<String> recognitionList = new ArrayList<String>();
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-    private boolean dialogIsOpen = false;
-    private boolean sheetIsOpen = false;
+    protected boolean dialogIsOpen = false;
+    protected boolean sheetIsOpen = false;
 
     //Language
     private Spinner languageSpinner;

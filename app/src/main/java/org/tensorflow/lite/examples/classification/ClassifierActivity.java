@@ -100,17 +100,21 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
 
                         if (classifier != null) {
-                            final long startTime = SystemClock.uptimeMillis();
-                            final List<Classifier.Recognition> results =
-                                    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-                            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                            LOGGER.v("Detect: %s", results);
+                            List<Classifier.Recognition> results = null;
+                            if(!dialogIsOpen && !sheetIsOpen){
+                                final long startTime = SystemClock.uptimeMillis();
+                                results = classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
+                                lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+                                LOGGER.v("Detect: %s", results);
+                            }
 
+                            List<Classifier.Recognition> finalResults = results;
                             runOnUiThread(
                                     new Runnable() {
                                         @Override
                                         public void run() {
-                                            showResultsInBottomSheet(results, rgbFrameBitmap, sensorOrientation);
+                                            if(finalResults != null)
+                                                showResultsInBottomSheet(finalResults, rgbFrameBitmap, sensorOrientation);
                                             /*
                                             showFrameInfo(previewWidth + "x" + previewHeight);
                                             showCropInfo(imageSizeX + "x" + imageSizeY);
