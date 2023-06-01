@@ -42,13 +42,24 @@ You will find all the instuction you need just below.
 ### Prerequisites
 
 Python library required:
+* imutils
 * numpy
 * cv2
 * tflite
-* faiss (Anaconda required)
+* faiss-cpu (Anaconda required)
 * sklearn
 
+## Monument guides creation 
+Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder.</br>
+Text, images, audios and videos can be shown using Mardkown.
+
+IMPORTANT: Files must have the same name as the files in the template folder.
+
+NOTE: For the time being, Italian and English languages are supported.
+
 ## Database creation
+Complete the previous step before creating the database.
+
 The repository contains the file `Python/build_sqlite.py` which must be executed by adding the argument `-i` or `--images` indicating the path to the dataset folder as in the following example:
 
 ```sh
@@ -60,22 +71,22 @@ IMPORTANT: The indicated folder must contains one folder per monument and each o
 ```
 
 datasetFolder
-├───Battistero_SanGiovanni
+├───Battistero SanGiovanni
 │       img1.jpg
 │       img2.jpg
 │       img3.jpg
 │
-├───Campanile_Giotto
+├───Campanile Giotto
 │       img1.jpg
 │       img2.jpg
 │       img3.jpg
 │
-├───Cattedrale_Duomo
+├───Cattedrale Duomo
 │       img1.jpg
 │       img2.jpg
 │       img3.jpg
 │
-└───Palazzo_Vecchio
+└───Palazzo Vecchio
        img1.jpg
        img2.jpg
        img3.jpg
@@ -85,14 +96,6 @@ datasetFolder
 The file `build_sqlite.py` will create three `.sqlite` and `.pck` files. Each pair of files is created with a different neural network. To change the neural network see dedicated paagraph.
 
 IMORTANT: Do not change the names of the files created.
-
-## Create monument guides
-Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder.</br>
-Text, images, audios and videos can be shown using Mardkown.
-
-IMPORTANT: New files must have the same name as the files in the template folder.
-
-NOTE: For the time being, Italian and English languages are supported.
 
 ### ONLY FOR EXPERT USERS
 

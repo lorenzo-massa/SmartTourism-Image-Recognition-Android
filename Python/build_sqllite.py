@@ -14,6 +14,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import glob
+from processing_docToVec import createDTVectors
 
 np.set_printoptions(threshold=np.inf)
 
@@ -186,13 +187,11 @@ for dType,modelPath in types:
     con.close()
     pbar.finish()
 
-    print("Creating Doc2Vec vectors")
-    from testDocToVec import createDTVectors
-    textPaths = glob.glob("models/src/main/assets/guides/*/English/testo.txt")
-    createDTVectors(dType, textPaths)
-    print("Doc2Vec vectors created successfully")
-
 print("DB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
+
+print("Creating Doc2Vec vectors")
+createDTVectors()
+print("Doc2Vec vectors created successfully")
 
 
 
