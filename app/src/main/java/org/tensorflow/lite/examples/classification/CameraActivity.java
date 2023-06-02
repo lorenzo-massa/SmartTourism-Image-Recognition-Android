@@ -76,8 +76,10 @@ import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition
 import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
 
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public abstract class CameraActivity extends AppCompatActivity
@@ -167,13 +169,14 @@ public abstract class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
         setContentView(R.layout.tfe_ic_activity_camera);
 
-        loadingIndicator = findViewById(R.id.progressIndicator);
-        loadingIndicator.bringToFront();
+        if (hasPermission()) {
+            setFragment(); //first creation of classifier
+        } else {
+            requestPermission();
+        }
 
-        //TODO check the loading image
         imageViewBG = findViewById(R.id.imageViewBG);
 
         final Runnable r = new Runnable() {
@@ -185,14 +188,11 @@ public abstract class CameraActivity extends AppCompatActivity
         };
 
         Handler handler = new Handler();
-        handler.postDelayed(r, 5000);
+        handler.postDelayed(r, 4000);
 
 
-        if (hasPermission()) {
-            setFragment(); //first creation of classifier
-        } else {
-            requestPermission();
-        }
+        loadingIndicator = findViewById(R.id.progressIndicator);
+        loadingIndicator.bringToFront();
 
         threadsTextView = findViewById(R.id.threads);
         plusImageView = findViewById(R.id.plus);
@@ -213,13 +213,17 @@ public abstract class CameraActivity extends AppCompatActivity
         sharedPref = getSharedPreferences("myPref", MODE_PRIVATE);
 
         String uniqueID = sharedPref.getString("unique_id", "");
+
         if(uniqueID.equals("")){
-            uniqueID = UUID.randomUUID().toString();
-            sharedPref.edit().putString("unique_id", uniqueID).commit();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String date = sdf.format(System.currentTimeMillis());
+            uniqueID = date + "-" + UUID.randomUUID().toString()  ;
+
+            sharedPref.edit().putString("unique_id", uniqueID).apply();
         }
 
         LOGGER.d("uniqueID: " + uniqueID);
-        idView.setText(uniqueID);
+        idView.setText(uniqueID.substring(10));
 
 
 
@@ -564,7 +568,8 @@ public abstract class CameraActivity extends AppCompatActivity
                                 Toast.LENGTH_LONG)
                         .show();
             }
-            requestPermissions(new String[]{PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
+            while(checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED == false)
+                requestPermissions(new String[]{PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
         }
     }
 
