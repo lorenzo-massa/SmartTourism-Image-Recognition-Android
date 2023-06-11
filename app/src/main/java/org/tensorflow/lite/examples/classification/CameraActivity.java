@@ -151,6 +151,8 @@ public abstract class CameraActivity extends AppCompatActivity
     //To check if help (ORB or OBJ_DET) is needed
     private int nClearedList = 0;
 
+    private String uniqueID;
+
     private final String TAG = "Camera Activity";
 
     private static boolean allPermissionsGranted(final int[] grantResults) {
@@ -212,7 +214,7 @@ public abstract class CameraActivity extends AppCompatActivity
         SharedPreferences sharedPref;
         sharedPref = getSharedPreferences("myPref", MODE_PRIVATE);
 
-        String uniqueID = sharedPref.getString("unique_id", "");
+        uniqueID = sharedPref.getString("unique_id", "");
 
         if(uniqueID.equals("")){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -779,6 +781,7 @@ public abstract class CameraActivity extends AppCompatActivity
                         Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
                         intent.putExtra("monument_id", finalRecognition.getId());
                         intent.putExtra("language", language.toString());
+                        intent.putExtra("user_id", uniqueID);
 
                         startActivity(intent);
                         dialog.dismiss();

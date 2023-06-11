@@ -8,10 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.Element;
 
@@ -22,9 +26,19 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.mukesh.MarkdownView;
 
 public class GuideActivity extends AppCompatActivity {
@@ -34,6 +48,17 @@ public class GuideActivity extends AppCompatActivity {
     private Double xCord = 0d;
     private Double yCord = 0d;
 
+    private TextView textView;
+    private String user_id;
+    private String monumentId;
+    private String language;
+    private String user_id_db;
+    private String monument_id_db;
+    private String monumentDescription;
+
+    private boolean recommendationsReceived = false;
+    private ArrayList<Element> hints = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +66,9 @@ public class GuideActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_guide_md);
 
-        String monumentId = getIntent().getStringExtra("monument_id");
-        String language = getIntent().getStringExtra("language");
+        monumentId = getIntent().getStringExtra("monument_id");
+        language = getIntent().getStringExtra("language");
+        user_id = getIntent().getStringExtra("user_id");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
         toolbar.setTitle(monumentId);
@@ -55,52 +81,7 @@ public class GuideActivity extends AppCompatActivity {
         MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdown_view);
         markdownView.loadMarkdownFromAssets("guides/" + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
 
-
-        //Show hints
-
-        ArrayList<Element> hints = getHints(monumentId);
-
-        Button p1_button = findViewById(R.id.hintButton1);
-        String monument1 = hints.get(0).getMonument();
-        p1_button.setText(monument1);
-        p1_button.setOnClickListener(view -> {
-            Intent intent = new Intent(GuideActivity.this, GuideActivity.class);
-            intent.putExtra("monument_id", monument1);
-            intent.putExtra("language", language);
-            startActivity(intent);
-        });
-
-        Button p2_button = findViewById(R.id.hintButton2);
-        String monument2 = hints.get(1).getMonument();
-        p2_button.setText(monument2);
-        p2_button.setOnClickListener(view -> {
-            Intent intent = new Intent(GuideActivity.this, GuideActivity.class);
-            intent.putExtra("monument_id", monument2);
-            intent.putExtra("language", language);
-            startActivity(intent);
-        });
-
-        Button p3_button = findViewById(R.id.hintButton3);
-        String monument3 = hints.get(2).getMonument();
-        p3_button.setText(monument3);
-        p3_button.setOnClickListener(view -> {
-            Intent intent = new Intent(GuideActivity.this, GuideActivity.class);
-            intent.putExtra("monument_id", monument3);
-            intent.putExtra("language", language);
-            startActivity(intent);
-        });
-
-        View hintsView = findViewById(R.id.hintsView);
-
-
-        //Wait few seconds to let the md file open
-
-        final Runnable r = () -> hintsView.setVisibility(View.VISIBLE);
-
-        Handler handler = new Handler();
-        handler.postDelayed(r, 2000);
-
-        //Read text from markdown
+        //Read text info from markdown
 
         InputStream inputStream = null;
         try {
@@ -109,7 +90,7 @@ public class GuideActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
 
-        if (inputStream != null && readTextFile(inputStream)){
+        if (inputStream != null && readCoordinates(inputStream)){
             Log.d(TAG, "Map coordinates: " + xCord + ", "+yCord);
 
             //Show button to open intent
@@ -133,30 +114,474 @@ public class GuideActivity extends AppCompatActivity {
         }
 
 
+        //Send request to API server
+        textView = (TextView) findViewById(R.id.textView);
+        if (internetIsConnected()){
+            volley_request();
+        }
 
-
+        //Show hints
+        //Wait few seconds to let the md file open
+        final Runnable r = this::showHInts;
+        Handler handler = new Handler();
+        handler.postDelayed(r, 2000);
 
     }
 
-    private Boolean readTextFile(InputStream inputStream) {
+    private void showHInts(){
+        View hintsView = findViewById(R.id.hintsView);
+
+        if(!recommendationsReceived){
+            hints = getHints(monumentId); //local DocToVec
+        }
+
+        Button p1_button = findViewById(R.id.hintButton1);
+        String monument1 = hints.get(0).getMonument();
+        p1_button.setText(monument1);
+        p1_button.setOnClickListener(view -> {
+            Intent intent = new Intent(GuideActivity.this, GuideActivity.class);
+            intent.putExtra("monument_id", monument1);
+            intent.putExtra("language", language);
+            intent.putExtra("user_id", user_id);
+
+            startActivity(intent);
+        });
+
+        Button p2_button = findViewById(R.id.hintButton2);
+        String monument2 = hints.get(1).getMonument();
+        p2_button.setText(monument2);
+        p2_button.setOnClickListener(view -> {
+            Intent intent = new Intent(GuideActivity.this, GuideActivity.class);
+            intent.putExtra("monument_id", monument2);
+            intent.putExtra("language", language);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
+        });
+
+        Button p3_button = findViewById(R.id.hintButton3);
+        String monument3 = hints.get(2).getMonument();
+        p3_button.setText(monument3);
+        p3_button.setOnClickListener(view -> {
+            Intent intent = new Intent(GuideActivity.this, GuideActivity.class);
+            intent.putExtra("monument_id", monument3);
+            intent.putExtra("language", language);
+            intent.putExtra("user_id", user_id);
+            startActivity(intent);
+        });
+
+        hintsView.setVisibility(View.VISIBLE);
+
+    }
+    private void volley_request(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/user";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        //textView.setText("Response is: " + response);
+
+                        //Log in + get user_id_db
+                        List<String> persIds = jsonGetUsers(response);
+                        Log.d(TAG, "persIds: " + persIds.toString());
+                        if(persIds == null || !persIds.contains(user_id)){
+                            //Register id to the server
+                            registerNewUser(user_id);
+                        }else{
+                            requestUserId();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("volley_request: JSON GET Request didn't work!");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void checkMonument(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/monument";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        List<String> monumentsIds = jsonGetMonuments(response);
+                        Log.d(TAG, "monumentsIds: " + monumentsIds.toString());
+                        if(monumentsIds == null || !monumentsIds.contains(monumentId)){
+                            //Register id to the server
+                            registerNewMonument();
+                        }else{
+                            requestMonumentId();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("checkMonument: JSON GET Request didn't work!");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+    private void requestUserId(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/user";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        user_id_db = jsonGetUserId(response);
+                        Log.d(TAG, "user_id_db: " + user_id_db);
+
+                        checkMonument(); //check if the monument already exist + get monument_id_db
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("requestUserId: JSON GET Request didn't work!");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+    private void requestMonumentId(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/monument";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        monument_id_db = jsonGetMonumentId(response);
+                        Log.d(TAG, "monument_id_db: " + monument_id_db);
+
+
+                        if (!Objects.equals(user_id_db, "") && !Objects.equals(monument_id_db, "")
+                                && !Objects.equals(user_id_db, "ID_DB NOT FOUND") && !Objects.equals(monument_id_db, "ID_DB NOT FOUND")
+                                && user_id_db != null && monument_id_db != null){
+                            Log.d(TAG,"Interacting ...");
+                            makeInteraction();
+                        }else{
+                            Log.d(TAG,"NOT interacting ...");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("requestUserId: JSON GET Request didn't work!");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+    private String jsonGetUserId(String jsonString){
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+            //List<String> IDs = new ArrayList<>();
+            String id = "ID_DB NOT FOUND";
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                id =  jsonObject.getString("id");
+                //IDs.add(id);
+            }
+
+            //Log.d(TAG, "user_id_db: " + id);
+
+            return id;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private String jsonGetMonumentId(String jsonString){
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+            //List<String> IDs = new ArrayList<>();
+            String id = "ID_DB NOT FOUND";
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                id =  jsonObject.getString("id");
+                //IDs.add(id);
+            }
+
+            //Log.d(TAG, "monument_id_db: " + id);
+
+            return id;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private List<String> jsonGetUsers(String jsonString){
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+            List<String> persIds = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String persId = jsonObject.getString("pers_id");
+                persIds.add(persId);
+            }
+
+            //Log.d(TAG, "persIds: " + persIds);
+
+            return persIds;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private List<String> jsonGetMonuments(String jsonString){
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+            List<String> monumentIds = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String monumentId = jsonObject.getString("name");
+                monumentIds.add(monumentId);
+            }
+
+            //Log.d(TAG, "monumentIds: " + monumentIds);
+
+            return monumentIds;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private boolean jsonGetRecommendation(String jsonString){
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+
+            hints.clear();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String r1 = jsonObject.getString("r1");
+                String r2 = jsonObject.getString("r2");
+                String r3 = jsonObject.getString("r3");
+                Element e1 = new Element(r1,null,0);
+                Element e2 = new Element(r1,null,0);
+                Element e3 = new Element(r1,null,0);
+
+                hints.add(e1);
+                hints.add(e2);
+                hints.add(e3);
+            }
+
+            //Log.d(TAG, "monumentIds: " + monumentIds);
+
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void registerNewUser(String user_id){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/user";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //textView.setText("Response is: " + response);
+                        requestUserId();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        textView.setText("registerNewUser: JSON POST Request didn't work!");
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+
+                params.put("personal_id",user_id);
+                params.put("firstname","FirstName");
+                params.put("lastname","LastName");
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+    }
+
+    private void registerNewMonument(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/monument";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //textView.setText("Response is: " + response);
+                        requestMonumentId();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        textView.setText("registerNewMonument: JSON POST Request didn't work!");
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+
+                params.put("name",monumentId);
+                params.put("description",monumentDescription);
+                params.put("category","category");
+                params.put("image","image");
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+    }
+
+    private boolean makeInteraction(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/interaction";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //textView.setText("Response is: " + response);
+                        getHintsFromServer();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        textView.setText("makeInteraction: JSON POST Request didn't work!");
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+
+                params.put("user_id",user_id_db);
+                params.put("monument_id",monument_id_db);
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+        return false;
+    }
+
+    private void getHintsFromServer(){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://smart-tourism.onrender.com/getRecommendation/"+user_id_db;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        recommendationsReceived = jsonGetRecommendation(response);
+                        if (recommendationsReceived)
+                            textView.setText("Using recommendations from the server API:" + hints);
+                        else
+                            textView.setText("Hints list is empty. Using local recommendations.");
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("getHintsFromServer: JSON GET Request didn't work!");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private Boolean readCoordinates(InputStream inputStream) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String lineCoordinates;
+        StringBuilder text = new StringBuilder();
         String line;
         try {
-            line = reader.readLine();
+            lineCoordinates = reader.readLine();
+
+            while((line = reader.readLine()) != null){
+                text.append(line);
+                text.append('\n');
+            }
             reader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        monumentDescription = text.toString();
+        if (monumentDescription.length() != 0)
+            Log.d(TAG, "Monument description found.");
+        else
+            Log.d(TAG, "Monument description NOT found.");
+
+
         String patternString = "<!--\\s*([-+]?\\d*\\.\\d+)\\s+([-+]?\\d*\\.\\d+)\\s*-->";
         Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(line);
+        Matcher matcher = pattern.matcher(lineCoordinates);
 
         if (matcher.find()) {
             String number1 = matcher.group(1);
             String number2 = matcher.group(2);
-            Log.d(TAG, "Number 1: " + number1);
-            Log.d(TAG, "Number 2: " + number2);
+            //Log.d(TAG, "Number 1: " + number1);
+            //Log.d(TAG, "Number 2: " + number2);
             assert number1 != null;
             xCord = Double.valueOf(number1);
             assert number2 != null;
@@ -201,7 +626,6 @@ public class GuideActivity extends AppCompatActivity {
         return results;
     }
 
-
     public static double euclideanDistance(float[] vector1, float[] vector2) {
         if (vector1.length != vector2.length) {
             throw new IllegalArgumentException("Vector dimensions must be equal");
@@ -214,5 +638,14 @@ public class GuideActivity extends AppCompatActivity {
         }
 
         return Math.sqrt(sumOfSquares);
+    }
+
+    private boolean internetIsConnected() {
+        try {
+            String command = "ping -c 1 google.com";
+            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
