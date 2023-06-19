@@ -117,7 +117,8 @@ public class GuideActivity extends AppCompatActivity {
         //Send request to API server
         textView = (TextView) findViewById(R.id.textView);
         if (internetIsConnected()){
-            volley_request();
+            //volley_request();
+            //For the moment we use the local DocToVec
         }
 
         //Show hints

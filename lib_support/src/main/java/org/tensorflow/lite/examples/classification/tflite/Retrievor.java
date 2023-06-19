@@ -12,7 +12,7 @@ public class Retrievor {
     private static final double MAX_DISTANCE = 1000000000;
     private static final int K = 5; //Divisor to upload database
 
-    public Retrievor(Activity activity, Classifier.Model model) {
+    public Retrievor(Activity activity, Classifier.Model model, Classifier.Language lang) {
         String dbName = "";
 
         switch (model) {
@@ -29,9 +29,12 @@ public class Retrievor {
                 throw new UnsupportedOperationException();
         }
 
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(activity, dbName, "doc2vec_db.sqlite");
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(activity, dbName,
+                "monuments_db.sqlite",
+                "list_of_attributes_categories_db.sqlite",
+                "logging_db.sqlite");
         databaseAccess.open();
-        databaseAccess.updateDatabase(K);
+        databaseAccess.updateDatabase(K, lang);
         databaseAccess.close();
 
         System.loadLibrary("faiss");

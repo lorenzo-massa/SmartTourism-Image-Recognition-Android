@@ -20,12 +20,14 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -73,6 +75,7 @@ import org.tensorflow.lite.examples.classification.tflite.Classifier.Language;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Mode;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
+import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
 
 import java.nio.ByteBuffer;
@@ -90,6 +93,8 @@ public abstract class CameraActivity extends AppCompatActivity
     private static final Logger LOGGER = new Logger();
 
     private static final int PERMISSIONS_REQUEST = 1;
+    private static final int PERMISSIONS_REQUEST_GPS = 2;
+
 
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     protected int previewWidth = 0;
@@ -132,8 +137,10 @@ public abstract class CameraActivity extends AppCompatActivity
     //Popup Recognized
     private final ArrayList<String> recognitionList = new ArrayList<String>();
     private AlertDialog.Builder dialogBuilder;
+
     private AlertDialog dialog;
     protected boolean dialogIsOpen = false;
+
     protected boolean sheetIsOpen = false;
 
     //Language
@@ -173,11 +180,13 @@ public abstract class CameraActivity extends AppCompatActivity
 
         setContentView(R.layout.tfe_ic_activity_camera);
 
-        if (hasPermission()) {
+        if (hasPermission() && hasPermissionGPS()){
             setFragment(); //first creation of classifier
         } else {
             requestPermission();
         }
+
+
 
         imageViewBG = findViewById(R.id.imageViewBG);
 
@@ -190,7 +199,7 @@ public abstract class CameraActivity extends AppCompatActivity
         };
 
         Handler handler = new Handler();
-        handler.postDelayed(r, 4000);
+        handler.postDelayed(r, 3000);
 
 
         loadingIndicator = findViewById(R.id.progressIndicator);
@@ -219,14 +228,12 @@ public abstract class CameraActivity extends AppCompatActivity
         if(uniqueID.equals("")){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String date = sdf.format(System.currentTimeMillis());
-            uniqueID = date + "-" + UUID.randomUUID().toString()  ;
-
+            uniqueID = date + "-" + UUID.randomUUID().toString() ;
             sharedPref.edit().putString("unique_id", uniqueID).apply();
         }
 
         LOGGER.d("uniqueID: " + uniqueID);
         idView.setText(uniqueID.substring(10));
-
 
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
@@ -470,8 +477,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
         //I added this if to continue using camera after having closed app
-        if (hasPermission()) {
-            setFragment();
+        if (hasPermission() && hasPermissionGPS()){
+            setFragment(); //first creation of classifier
         } else {
             requestPermission();
         }
@@ -545,7 +552,8 @@ public abstract class CameraActivity extends AppCompatActivity
             final int requestCode, final String[] permissions, final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST) {
-            if (allPermissionsGranted(grantResults)) {
+            if(hasPermission() && hasPermissionGPS()) {
+            //if (allPermissionsGranted(grantResults)) {
                 setFragment();
             } else {
                 requestPermission();
@@ -555,7 +563,15 @@ public abstract class CameraActivity extends AppCompatActivity
 
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED;
+            return (checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            return true;
+        }
+    }
+
+    private boolean hasPermissionGPS() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
         } else {
             return true;
         }
@@ -570,8 +586,25 @@ public abstract class CameraActivity extends AppCompatActivity
                                 Toast.LENGTH_LONG)
                         .show();
             }
-            while(checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED == false)
-                requestPermissions(new String[]{PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
+
+            //while(checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED == false)
+            requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
+        }
+    }
+
+    private void requestPermissionGPS() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Toast.makeText(
+                                CameraActivity.this,
+                                "GPS permission is required for this demo",
+                                Toast.LENGTH_LONG)
+                        .show();
+            }
+
+            //while(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED == false)
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_GPS);
+
         }
     }
 
@@ -777,6 +810,12 @@ public abstract class CameraActivity extends AppCompatActivity
                 moreInfoButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //Log the click
+                        DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
+                        databaseAccess.setOpenHelperLoggers();
+                        databaseAccess.log(finalRecognition.getId());
+                        databaseAccess.closeOpenHelperLoggers();
+
                         //define button function
                         Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
                         intent.putExtra("monument_id", finalRecognition.getId());
@@ -893,6 +932,10 @@ public abstract class CameraActivity extends AppCompatActivity
             threadsTextView.setText(threadsEnabled ? String.valueOf(numThreads) : "N/A");
             onInferenceConfigurationChanged();
         }
+    }
+
+    protected Language getLanguage() {
+        return language;
     }
 
     private void setLanguage(Language language) {

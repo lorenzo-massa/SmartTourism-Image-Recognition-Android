@@ -1,3 +1,9 @@
+<!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
+
+
+
+ -->
+
 <h1 align="center">Palazzo Vecchio</h1>
 
 <center>

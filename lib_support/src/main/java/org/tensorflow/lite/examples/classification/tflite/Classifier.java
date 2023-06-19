@@ -195,10 +195,10 @@ public abstract class Classifier {
      * @param numThreads The number of threads to use for classification.
      * @return A classifier with the desired configuration.
      */
-    public static Classifier create(Activity activity, Model model, Device device, int numThreads, Mode mode)
+    public static Classifier create(Activity activity, Model model, Device device, int numThreads, Mode mode, Language lang)
             throws IOException {
 
-        retrievor = new Retrievor(activity, model);
+        retrievor = new Retrievor(activity, model, lang);
 
         if (model == Model.PRECISE) {
             return new ClassifierMobileNetLarge100(activity, device, numThreads, mode);
@@ -209,6 +209,8 @@ public abstract class Classifier {
         } else {
             throw new UnsupportedOperationException();
         }
+
+
     }
 
     private static Map<String, Double> createMap(List<Element> results, List<Element> resultsZoom1, List<Element> resultsZoom2) {

@@ -14,7 +14,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import glob
-from processing_docToVec import createDTVectors
+from processing_monuments import createDB
 
 np.set_printoptions(threshold=np.inf)
 
@@ -25,7 +25,7 @@ types = [ #neural networks
 ]
 
 #Set ALL_DATASET True if you want to use all the images of the dataset to train the model, False if you want to split the datset in train_set and test_set
-ALL_DATASET = False
+ALL_DATASET = True
 
 ap = argparse.ArgumentParser()
 ap.add_argument('-i', '--images', help='path of datset images')
@@ -152,9 +152,9 @@ for dType,modelPath in types:
 
     #SAVING TEST_SET IF REQUIRED
 
-    if not ALL_DATASET:
-        with open('./features/test_set.pck', 'wb') as fp:
-            pickle.dump(test_set, fp)
+    #if not ALL_DATASET:
+    #    with open('./features/test_set.pck', 'wb') as fp:
+    #        pickle.dump(test_set, fp)
 
     
     #CREATING SQL LITE DATABASE
@@ -187,11 +187,11 @@ for dType,modelPath in types:
     con.close()
     pbar.finish()
 
-print("DB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
+#print("\n\nDB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
 
-print("Creating Doc2Vec vectors")
-createDTVectors()
-print("Doc2Vec vectors created successfully")
+print("\n\n[INFO]: Processing monuments")
+createDB()
+print("\n\n[INFO]: Script terminated correctly")
 
 
 
