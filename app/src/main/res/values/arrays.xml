@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Theme Entries -->
+    <string-array name="theme_entries">
+        <item>Light Theme</item>
+        <item>Dark Theme</item>
+        <item>Blue Theme</item>
+    </string-array>
+
+    <!-- App Theme Values -->
+    <string-array name="theme_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>blue</item>
+    </string-array>
+</resources>

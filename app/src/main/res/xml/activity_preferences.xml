@@ -1,0 +1,56 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+
+    <!-- Preference Category -->
+    <PreferenceCategory android:title="General Settings">
+
+        <!-- CheckBox Preference -->
+        <CheckBoxPreference
+            android:key="pref_key_notifications"
+            android:title="Enable Notifications"
+            android:summary="Receive notifications for updates"
+            android:defaultValue="true" />
+
+        <!-- List Preference -->
+        <ListPreference
+            android:key="pref_key_theme"
+            android:title="App Theme"
+            android:summary="Select the app theme"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_values"
+            android:defaultValue="1" />
+
+    </PreferenceCategory>
+
+    <!-- Preference Category -->
+    <PreferenceCategory android:title="Account Settings">
+
+        <!-- EditText Preference -->
+        <EditTextPreference
+            android:key="pref_key_username"
+            android:title="Username"
+            android:summary="Enter your username"
+            android:defaultValue="JohnDoe" />
+
+        <!-- EditText Preference (Password) -->
+        <EditTextPreference
+            android:key="pref_key_password"
+            android:title="Password"
+            android:summary="Enter your password"
+            android:defaultValue=""
+            android:password="true" />
+
+    </PreferenceCategory>
+
+    <!-- Preference Category -->
+    <PreferenceCategory android:title="About">
+
+        <!-- Preference (Static Text) -->
+        <Preference
+            android:title="App Version"
+            android:summary="1.0.0" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

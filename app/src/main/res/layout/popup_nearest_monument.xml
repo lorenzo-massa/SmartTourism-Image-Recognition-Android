@@ -9,7 +9,7 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/done"
+        android:background="@drawable/error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,14 +17,36 @@
         app:layout_constraintVertical_bias="0.15" />
 
     <TextView
-        android:id="@+id/monument_recognized"
+        android:id="@+id/textNotRecognized"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:text="No monument recognized."
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/textSuggested"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:text="Suggested monument:"
+        app:layout_constraintTop_toBottomOf="@+id/textNotRecognized" />
+
+    <TextView
+        android:id="@+id/nearest_monument"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/textSuggested" />
 
     <Button
         android:id="@+id/cancel_button"
@@ -38,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/monument_recognized" />
+        app:layout_constraintTop_toBottomOf="@+id/nearest_monument" />
 
     <Button
         android:id="@+id/more_info_button"
@@ -52,7 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/monument_recognized" />
+        app:layout_constraintTop_toBottomOf="@+id/nearest_monument" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

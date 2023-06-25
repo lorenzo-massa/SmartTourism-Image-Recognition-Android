@@ -33,6 +33,8 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.Image;
 import android.media.Image.Plane;
 import android.media.ImageReader;
@@ -51,6 +53,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -77,6 +80,7 @@ import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
+import org.tensorflow.lite.examples.classification.tflite.MyLocationListener;
 
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -93,7 +97,6 @@ public abstract class CameraActivity extends AppCompatActivity
     private static final Logger LOGGER = new Logger();
 
     private static final int PERMISSIONS_REQUEST = 1;
-    private static final int PERMISSIONS_REQUEST_GPS = 2;
 
 
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
@@ -158,9 +161,21 @@ public abstract class CameraActivity extends AppCompatActivity
     //To check if help (ORB or OBJ_DET) is needed
     private int nClearedList = 0;
 
+    //To check if we are too far from the monument
+    private int nFarMonuments = 0;
+
+
     private String uniqueID;
 
     private final String TAG = "Camera Activity";
+
+    //GPS
+    LocationManager locationManager;
+    MyLocationListener locationListener;
+
+    //Preferences
+
+    private ImageButton btnPreferences;
 
     private static boolean allPermissionsGranted(final int[] grantResults) {
         for (int result : grantResults) {
@@ -181,7 +196,7 @@ public abstract class CameraActivity extends AppCompatActivity
         setContentView(R.layout.tfe_ic_activity_camera);
 
         if (hasPermission() && hasPermissionGPS()){
-            setFragment(); //first creation of classifier
+            setFragment(); //first creation of classifier (maybe never called)
         } else {
             requestPermission();
         }
@@ -216,6 +231,16 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
+
+        //Preferences button
+        btnPreferences = findViewById(R.id.btnPreferences);
+        btnPreferences.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CameraActivity.this, PreferencesActivity.class);
+                startActivity(intent);
+            }
+        });
 
         idView = findViewById(R.id.idView);
 
@@ -329,6 +354,7 @@ public abstract class CameraActivity extends AppCompatActivity
         ((TextView) v).setTextColor(Color.WHITE);
         ((TextView) v).bringToFront();
         ((TextView) v).setTypeface((((TextView) v).getTypeface()), Typeface.BOLD);
+
     }
 
     protected int[] getRgbBytes() {
@@ -478,6 +504,23 @@ public abstract class CameraActivity extends AppCompatActivity
 
         //I added this if to continue using camera after having closed app
         if (hasPermission() && hasPermissionGPS()){
+            if (checkIfLocationOpened()) {
+                // Get the location manager
+                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+                // Create the location listener
+                locationListener = new MyLocationListener();
+
+                // Request location updates
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        0, 0, locationListener);
+
+                // Request location updates from NETWORK_PROVIDER
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        0, 0, locationListener);
+            }else{
+                //showGPSDisabledAlertToUser(); TODO create alert if GPS is disabled
+            }
             setFragment(); //first creation of classifier
         } else {
             requestPermission();
@@ -588,23 +631,8 @@ public abstract class CameraActivity extends AppCompatActivity
             }
 
             //while(checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED == false)
-            requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
-        }
-    }
-
-    private void requestPermissionGPS() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Toast.makeText(
-                                CameraActivity.this,
-                                "GPS permission is required for this demo",
-                                Toast.LENGTH_LONG)
-                        .show();
-            }
-
-            //while(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED == false)
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_GPS);
-
+            requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
         }
     }
 
@@ -736,23 +764,33 @@ public abstract class CameraActivity extends AppCompatActivity
             //Title of the winner monument
             String firstPosition = recognition.getTitle();
 
-            if (recognitionList.isEmpty())
-                recognitionList.add(firstPosition);
-            else if (recognitionList.get(recognitionList.size() - 1).equals(firstPosition))
-                recognitionList.add(firstPosition);
-            else { // If you do not recognize the same monument in a row, you clear the list
-                recognitionList.clear();
-                recognitionList.add(firstPosition);
+            if (recognition.getConfidence() < 7){
+                if (recognitionList.isEmpty())
+                    recognitionList.add(firstPosition);
+                else if (recognitionList.get(recognitionList.size() - 1).equals(firstPosition)) {
+                    recognitionList.add(firstPosition);
+                    nFarMonuments = 0;
+                    Log.d(TAG, "nFarMonuments (=0): " + nFarMonuments);
+                }
+                else { // If you do not recognize the same monument in a row, you clear the list
+                    recognitionList.clear();
+                    recognitionList.add(firstPosition);
 
-                //If you clear the list 2-3 times in a row
-                //If the option is selected
-                //You use ORB or OBJ_DET
+                    //If you clear the list 2-3 times in a row
+                    //If the option is selected
+                    //You use ORB or OBJ_DET
 
-                nClearedList += 1;
-                Log.i(TAG, "Pre-Helping classifier using mode " + mode.toString());
-                helped = checkIfHelpIsNeeded(bitmap, sensorOrientation, firstPosition);
+                    nClearedList += 1;
+                    Log.i(TAG, "Pre-Helping classifier using mode " + mode.toString());
+                    helped = checkIfHelpIsNeeded(bitmap, sensorOrientation, firstPosition);
 
+                }
+            }else{
+                nFarMonuments += 1;
+                Log.d(TAG, "nFarMonuments (+1): " + nFarMonuments);
             }
+
+
 
 
             //Printing results with confidences
@@ -790,6 +828,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
                 //Reset cleanings
                 nClearedList = 0;
+                nFarMonuments = 0;
 
                 //Show button more info
                 loadingIndicator.setVisibility(View.GONE);
@@ -844,9 +883,96 @@ public abstract class CameraActivity extends AppCompatActivity
                 dialogIsOpen = true;
 
             }
+
+            if(nFarMonuments >= 3){ //If the monument recognized is too far 3 times in a row, you show the popup
+                nFarMonuments = 0;
+                recognitionList.clear();
+                String nearestMonument = findNearestMonument();
+                if (nearestMonument != null){
+                    dialogIsOpen = true;
+                    loadingIndicator.setVisibility(View.GONE);
+
+                    //Show popup to advice to visit the nearest monument
+
+                    dialogBuilder = new AlertDialog.Builder(this);
+                    final View popupRecognizedView = getLayoutInflater().inflate(R.layout.popup_nearest_monument, null);
+                    dialogBuilder.setView(popupRecognizedView);
+                    dialog = dialogBuilder.create();
+                    dialog.show();
+
+
+                    TextView nearestMonumentTextView = popupRecognizedView.findViewById(R.id.nearest_monument);
+                    nearestMonumentTextView.setText(nearestMonument);
+
+                    Button moreInfoButton = popupRecognizedView.findViewById(R.id.more_info_button);
+
+                    moreInfoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            //define button function
+                            Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
+                            intent.putExtra("monument_id", nearestMonument);
+                            intent.putExtra("language", language.toString());
+                            intent.putExtra("user_id", uniqueID);
+
+                            startActivity(intent);
+                            dialog.dismiss();
+                            dialogIsOpen = false;
+                        }
+                    });
+
+                    Button cancelButton = popupRecognizedView.findViewById(R.id.cancel_button);
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //define button function
+                            dialog.dismiss();
+                            dialogIsOpen = false;
+                            loadingIndicator.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+
+
+                }
+
+            }
         }
 
 
+    }
+
+    private boolean checkIfLocationOpened() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            return true;
+        }
+        // otherwise return false
+        return false;
+    }
+
+    private String findNearestMonument() {
+        //Using the GPS, you find the nearest monument
+
+        //Check if the GPS is enabled
+        if (checkIfLocationOpened() && locationListener != null){
+
+            //If the GPS is enabled, you get the last known location
+            double[] location = locationListener.getCurrentLocation();
+
+            if (location[0] != 0.0) {
+
+                locationManager.removeUpdates(locationListener);
+
+                //You get the nearest monument
+                DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
+
+                return databaseAccess.getNearestMonument(location[0], location[1]);
+            }
+        }
+
+        return null;
     }
 
     /**

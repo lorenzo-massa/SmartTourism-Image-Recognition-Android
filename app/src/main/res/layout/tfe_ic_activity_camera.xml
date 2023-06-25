@@ -70,16 +70,31 @@
             android:layout_marginStart="-10dp"
             android:src="@drawable/logo_1"
             app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
-            app:layout_constraintEnd_toStartOf="@+id/language_spinner"
             app:layout_constraintStart_toStartOf="@+id/topAppBar"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/btnPreferences"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Add button for preferences -->
+        <ImageButton
+            android:id="@+id/btnPreferences"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ic_settings"
+            android:dropDownHorizontalOffset="-20dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
 
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/language_spinner"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="20dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="75dp"
             android:background="@drawable/language_icon"
             android:dropDownHorizontalOffset="-20dp"
             android:entries="@array/language_array"

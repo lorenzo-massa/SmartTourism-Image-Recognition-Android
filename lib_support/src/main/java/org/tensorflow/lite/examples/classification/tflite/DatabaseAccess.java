@@ -341,7 +341,32 @@ public class DatabaseAccess {
     }
 
 
+    public String getNearestMonument(double latitude, double longitude) {
+        Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
 
+        Element nearestElement = listDocToVec.get(0);
+        double minDistance = calculateDistance(latitude, longitude,
+                nearestElement.getCoordX(), nearestElement.getCoordY());
 
+        for (Element element : listDocToVec) {
+            double distance = calculateDistance(latitude, longitude, element.getCoordX(), element.getCoordY());
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestElement = element;
+            }
+        }
 
+        Log.d(TAG, "[INFO] Latitude: " + latitude + " Longitude: " + longitude);
+        Log.d(TAG, "Nearest monument: " + nearestElement.getMonument()
+                + " Latitude: " + nearestElement.getCoordX()
+                + " Longitude: " + nearestElement.getCoordY()
+                + " Distance: " + minDistance);
+        return nearestElement.getMonument();
+    }
+
+    private static double calculateDistance(double x1, double y1, double x2, double y2) {
+        double deltaX = x2 - x1;
+        double deltaY = y2 - y1;
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
 }

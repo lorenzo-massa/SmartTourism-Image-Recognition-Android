@@ -44,6 +44,7 @@ dependencies {
     implementation project(path: ':opencv')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.preference:preference:1.2.0'
 
     // Build off of nightly TensorFlow Lite
     implementation 'org.tensorflow:tensorflow-lite:2.7.0'

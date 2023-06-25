@@ -51,6 +51,13 @@ public class Element {
         this.coordY=coordY;
     }
 
+    public double getCoordX(){
+        return coordX;
+    }
+    public double getCoordY(){
+        return coordY;
+    }
+
     @NonNull
     @Override
     public String toString() {
