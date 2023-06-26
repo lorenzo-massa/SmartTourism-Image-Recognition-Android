@@ -43,11 +43,13 @@ You will find all the instuction you need just below.
 
 Python library required:
 * imutils
-* numpy
-* cv2
-* tflite
+* tensorflow
+* opencv
+* pandas
+* gensim
+* progressbar
 * faiss-cpu (Anaconda required)
-* sklearn
+* scikit-learn
 
 ## Monument guides creation 
 Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder.</br>
