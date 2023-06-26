@@ -3,9 +3,11 @@ package org.tensorflow.lite.examples.classification;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import org.tensorflow.lite.examples.classification.env.Logger;

@@ -14,7 +14,6 @@
     <string-array name="tfe_ic_devices" translatable="false">
         <item>CPU</item>
         <item>GPU</item>
-        <item>NNAPI</item>
     </string-array>
 
     <string-array name="language_array">

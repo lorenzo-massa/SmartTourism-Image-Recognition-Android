@@ -63,6 +63,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -131,8 +132,6 @@ public abstract class CameraActivity extends AppCompatActivity
     private Spinner deviceSpinner;
     private TextView threadsTextView;
 
-    private TextView idView;
-
     private Model model = Model.PRECISE;
     private Device device = Device.CPU;
     private int numThreads = -1;
@@ -147,10 +146,10 @@ public abstract class CameraActivity extends AppCompatActivity
     protected boolean sheetIsOpen = false;
 
     //Language
-    private Spinner languageSpinner;
-    private Language language = Language.English;
+    //private Spinner languageSpinner;
+    private Language language;
 
-    //Language
+    //Mode
     private Spinner modeSpinner;
     private Mode mode = Classifier.Mode.Standard;
 
@@ -163,6 +162,11 @@ public abstract class CameraActivity extends AppCompatActivity
 
     //To check if we are too far from the monument
     private int nFarMonuments = 0;
+
+    //Shared Preferences
+    SharedPreferences sharedPreferences;
+
+    SharedPreferences.OnSharedPreferenceChangeListener shared_listener;
 
 
     private String uniqueID;
@@ -225,7 +229,6 @@ public abstract class CameraActivity extends AppCompatActivity
         minusImageView = findViewById(R.id.minus);
         modelSpinner = findViewById(R.id.model_spinner);
         deviceSpinner = findViewById(R.id.device_spinner);
-        languageSpinner = findViewById(R.id.language_spinner);
         modeSpinner = findViewById(R.id.mode_spinner);
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
@@ -242,23 +245,32 @@ public abstract class CameraActivity extends AppCompatActivity
             }
         });
 
-        idView = findViewById(R.id.idView);
-
         //SharedPreferences
-        SharedPreferences sharedPref;
-        sharedPref = getSharedPreferences("myPref", MODE_PRIVATE);
 
-        uniqueID = sharedPref.getString("unique_id", "");
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        uniqueID = sharedPreferences.getString("pref_key_user_id", "");
+
 
         if(uniqueID.equals("")){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String date = sdf.format(System.currentTimeMillis());
             uniqueID = date + "-" + UUID.randomUUID().toString() ;
-            sharedPref.edit().putString("unique_id", uniqueID).apply();
+            sharedPreferences.edit().putString("pref_key_user_id", uniqueID).apply();
         }
 
-        LOGGER.d("uniqueID: " + uniqueID);
-        idView.setText(uniqueID.substring(10));
+        language = Language.valueOf(sharedPreferences.getString("pref_key_language", "English"));
+
+
+        shared_listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                    @Override
+                    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                        if(key.equals("pref_key_language")){
+                            language = Language.valueOf(prefs.getString("pref_key_language", "English"));
+                        }
+                    }
+                };
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(shared_listener);
 
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
@@ -324,17 +336,8 @@ public abstract class CameraActivity extends AppCompatActivity
         recognition2TextView = findViewById(R.id.detected_item2);
         recognition2ValueTextView = findViewById(R.id.detected_item2_value);
 
-        /*
-        frameValueTextView = findViewById(R.id.frame_info);
-        cropValueTextView = findViewById(R.id.crop_info);
-        cameraResolutionTextView = findViewById(R.id.view_info);
-        rotationTextView = findViewById(R.id.rotation_info);
-        inferenceTimeTextView = findViewById(R.id.inference_info);
-         */
-
         modelSpinner.setOnItemSelectedListener(this);
         deviceSpinner.setOnItemSelectedListener(this);
-        languageSpinner.setOnItemSelectedListener(this);
         modeSpinner.setOnItemSelectedListener(this);
 
         plusImageView.setOnClickListener(this);
@@ -342,18 +345,9 @@ public abstract class CameraActivity extends AppCompatActivity
 
         model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
         device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
-        language = Language.valueOf(languageSpinner.getSelectedItem().toString());
         mode = Mode.valueOf(modeSpinner.getSelectedItem().toString());
 
         numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
-
-        //languageSpinner.setAdapter(new SpinnerAdapter(getContext(), new String[]{"Overview", "Story", "Specifications", "Poll", "Video"}, accentColor, backgroundColor));
-        languageSpinner.setSelection(0, true);
-        View v = languageSpinner.getSelectedView();
-        ((TextView) v).setTextSize(15);
-        ((TextView) v).setTextColor(Color.WHITE);
-        ((TextView) v).bringToFront();
-        ((TextView) v).setTypeface((((TextView) v).getTypeface()), Typeface.BOLD);
 
     }
 
@@ -1118,7 +1112,7 @@ public abstract class CameraActivity extends AppCompatActivity
             setModel(Model.valueOf(parent.getItemAtPosition(pos).toString().toUpperCase()));
         } else if (parent == deviceSpinner) {
             setDevice(Device.valueOf(parent.getItemAtPosition(pos).toString()));
-        } else if (parent == languageSpinner) {
+        /*} else if (parent == languageSpinner) {
             String s = parent.getItemAtPosition(pos).toString();
             setLanguage(Language.valueOf(s));
             ((TextView) view).setText(s.substring(0, 2).toUpperCase());
@@ -1126,7 +1120,7 @@ public abstract class CameraActivity extends AppCompatActivity
             ((TextView) view).setTextColor(Color.WHITE);
             ((TextView) view).bringToFront();
             ((TextView) view).setTypeface((((TextView) view).getTypeface()), Typeface.BOLD);
-
+        */
         } else if (parent == modeSpinner) {
             setMode(Mode.valueOf(parent.getItemAtPosition(pos).toString()));
         }

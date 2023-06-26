@@ -45,7 +45,7 @@ public class DetectionHelper {
         this.exampleString = exampleString;
 
 
-        if (mode == Classifier.Mode.ORB) {
+        //if (mode == Classifier.Mode.ORB) {
             descriptors = new Mat();
             descriptorsExample = new Mat();
             try {
@@ -53,7 +53,7 @@ public class DetectionHelper {
             } catch (Exception e) {
 
             }
-        }
+        //}
 
     }
 

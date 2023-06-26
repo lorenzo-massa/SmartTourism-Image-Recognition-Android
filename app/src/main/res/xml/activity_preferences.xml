@@ -1,5 +1,6 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     >
 
     <!-- Preference Category -->
@@ -16,35 +17,45 @@
         <ListPreference
             android:key="pref_key_theme"
             android:title="App Theme"
-            android:summary="Select the app theme"
+            android:summary="Select app theme"
             android:entries="@array/theme_entries"
             android:entryValues="@array/theme_values"
+            android:defaultValue="1" />
+
+        <ListPreference
+            android:key="pref_key_language"
+            android:title="Language"
+            android:summary="Select language"
+            android:entries="@array/language_array"
+            android:entryValues="@array/language_array"
             android:defaultValue="1" />
 
     </PreferenceCategory>
 
     <!-- Preference Category -->
-    <PreferenceCategory android:title="Account Settings">
+    <PreferenceCategory android:title="Interests">
 
-        <!-- EditText Preference -->
-        <EditTextPreference
-            android:key="pref_key_username"
-            android:title="Username"
-            android:summary="Enter your username"
-            android:defaultValue="JohnDoe" />
+        <Preference
+            android:title="Categories"
+            android:summary="Select categories you are intrested in"
+            />
 
-        <!-- EditText Preference (Password) -->
-        <EditTextPreference
-            android:key="pref_key_password"
-            android:title="Password"
-            android:summary="Enter your password"
-            android:defaultValue=""
-            android:password="true" />
+        <Preference
+            android:title="Attributes"
+            android:summary="Select attributes you are intrested in"
+            />
 
     </PreferenceCategory>
 
     <!-- Preference Category -->
     <PreferenceCategory android:title="About">
+
+        <EditTextPreference
+            android:key="pref_key_user_id"
+            android:title="User ID"
+            app:useSimpleSummaryProvider="true"
+            android:selectable="false"
+            />
 
         <!-- Preference (Static Text) -->
         <Preference

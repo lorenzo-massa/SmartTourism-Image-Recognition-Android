@@ -28,7 +28,9 @@ types = [ #neural networks
 ALL_DATASET = True
 
 ap = argparse.ArgumentParser()
+
 ap.add_argument('-i', '--images', help='path of datset images')
+
 args = vars(ap.parse_args())
 
 # LOAD IMAGE PATHS
