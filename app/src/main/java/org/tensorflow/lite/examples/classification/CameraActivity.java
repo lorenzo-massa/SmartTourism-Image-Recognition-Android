@@ -50,6 +50,7 @@ import android.util.Size;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -63,6 +64,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -147,7 +149,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
     //Language
     //private Spinner languageSpinner;
-    private Language language;
+    protected Language language;
 
     //Mode
     private Spinner modeSpinner;
@@ -163,13 +165,10 @@ public abstract class CameraActivity extends AppCompatActivity
     //To check if we are too far from the monument
     private int nFarMonuments = 0;
 
-    //Shared Preferences
-    SharedPreferences sharedPreferences;
-
-    SharedPreferences.OnSharedPreferenceChangeListener shared_listener;
 
 
-    private String uniqueID;
+
+    protected String uniqueID;
 
     private final String TAG = "Camera Activity";
 
@@ -195,34 +194,24 @@ public abstract class CameraActivity extends AppCompatActivity
         LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.tfe_ic_activity_camera);
 
+        language = Language.valueOf(getIntent().getStringExtra("language"));
+
         if (hasPermission() && hasPermissionGPS()){
             setFragment(); //first creation of classifier (maybe never called)
-        } else {
-            requestPermission();
         }
 
+        //Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
 
-
-        imageViewBG = findViewById(R.id.imageViewBG);
-
-        final Runnable r = new Runnable() {
-            public void run() {
-                imageViewBG.setVisibility(View.GONE);
-                bottomSheetLayout.setVisibility(View.VISIBLE);
-
-            }
-        };
-
-        Handler handler = new Handler();
-        handler.postDelayed(r, 3000);
-
+        toolbar.setNavigationOnClickListener(view -> {
+            onBackPressed();
+            finish();
+        });
 
         loadingIndicator = findViewById(R.id.progressIndicator);
-        loadingIndicator.bringToFront();
 
         threadsTextView = findViewById(R.id.threads);
         plusImageView = findViewById(R.id.plus);
@@ -234,43 +223,6 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-
-        //Preferences button
-        btnPreferences = findViewById(R.id.btnPreferences);
-        btnPreferences.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CameraActivity.this, PreferencesActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        //SharedPreferences
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        uniqueID = sharedPreferences.getString("pref_key_user_id", "");
-
-
-        if(uniqueID.equals("")){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String date = sdf.format(System.currentTimeMillis());
-            uniqueID = date + "-" + UUID.randomUUID().toString() ;
-            sharedPreferences.edit().putString("pref_key_user_id", uniqueID).apply();
-        }
-
-        language = Language.valueOf(sharedPreferences.getString("pref_key_language", "English"));
-
-
-        shared_listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-                    @Override
-                    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                        if(key.equals("pref_key_language")){
-                            language = Language.valueOf(prefs.getString("pref_key_language", "English"));
-                        }
-                    }
-                };
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener(shared_listener);
 
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
@@ -486,6 +438,14 @@ public abstract class CameraActivity extends AppCompatActivity
     public synchronized void onStart() {
         LOGGER.d("onStart " + this);
         super.onStart();
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+        } else {
+            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
     }
 
     @Override
@@ -513,11 +473,9 @@ public abstract class CameraActivity extends AppCompatActivity
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         0, 0, locationListener);
             }else{
-                //showGPSDisabledAlertToUser(); TODO create alert if GPS is disabled
+                Toast.makeText(this, "GPS is disabled", Toast.LENGTH_LONG).show();
             }
             setFragment(); //first creation of classifier
-        } else {
-            requestPermission();
         }
 
         handlerThread = new HandlerThread("inference");
@@ -525,6 +483,7 @@ public abstract class CameraActivity extends AppCompatActivity
         handler = new Handler(handlerThread.getLooper());
 
 
+        /*
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
@@ -532,6 +491,7 @@ public abstract class CameraActivity extends AppCompatActivity
             Log.d(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
+        */
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -584,20 +544,6 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            final int requestCode, final String[] permissions, final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST) {
-            if(hasPermission() && hasPermissionGPS()) {
-            //if (allPermissionsGranted(grantResults)) {
-                setFragment();
-            } else {
-                requestPermission();
-            }
-        }
-    }
-
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return (checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED);
@@ -614,21 +560,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
-    private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA)) {
-                Toast.makeText(
-                                CameraActivity.this,
-                                "Camera permission is required for this demo",
-                                Toast.LENGTH_LONG)
-                        .show();
-            }
 
-            //while(checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED == false)
-            requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
-        }
-    }
 
     // Returns true if the device supports the required hardware level, or better.
     private boolean isHardwareLevelSupported(
@@ -677,7 +609,7 @@ public abstract class CameraActivity extends AppCompatActivity
         return null;
     }
 
-    protected void setFragment() {
+    protected void setFragment() { //creation of the classifier
 
         String cameraId = chooseCamera();
 
@@ -1112,15 +1044,6 @@ public abstract class CameraActivity extends AppCompatActivity
             setModel(Model.valueOf(parent.getItemAtPosition(pos).toString().toUpperCase()));
         } else if (parent == deviceSpinner) {
             setDevice(Device.valueOf(parent.getItemAtPosition(pos).toString()));
-        /*} else if (parent == languageSpinner) {
-            String s = parent.getItemAtPosition(pos).toString();
-            setLanguage(Language.valueOf(s));
-            ((TextView) view).setText(s.substring(0, 2).toUpperCase());
-            ((TextView) view).setTextSize(15);
-            ((TextView) view).setTextColor(Color.WHITE);
-            ((TextView) view).bringToFront();
-            ((TextView) view).setTypeface((((TextView) view).getTypeface()), Typeface.BOLD);
-        */
         } else if (parent == modeSpinner) {
             setMode(Mode.valueOf(parent.getItemAtPosition(pos).toString()));
         }

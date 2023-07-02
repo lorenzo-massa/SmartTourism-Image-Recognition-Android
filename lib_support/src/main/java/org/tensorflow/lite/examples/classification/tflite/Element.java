@@ -70,4 +70,16 @@ public class Element {
                 ", attributes=" + attributes + '\'' +
                 '}';
     }
+
+    public double[] getCoordinates() {
+        double[] coordinates = new double[2];
+        coordinates[0] = coordX;
+        coordinates[1] = coordY;
+
+        return coordinates;
+    }
+
+    public ArrayList<String> getCategories() {
+        return categories;
+    }
 }

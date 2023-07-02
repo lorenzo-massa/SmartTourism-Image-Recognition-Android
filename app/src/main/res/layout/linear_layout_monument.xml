@@ -1,33 +1,41 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout_monument"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="18sp"
+            android:textAppearance="?attr/textAppearanceHeadline6" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subtitle"
+            android:textAppearance="?attr/textAppearanceSubtitle2" />
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:id="@+id/action_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="16dp"
-        android:padding="16dp"
-        android:textSize="10sp"
-
-
-        android:text="Confirm"/>
+        android:text="More Info"
+        android:textSize="12sp"
+        android:padding="4dp"
+        />
 
 </LinearLayout>

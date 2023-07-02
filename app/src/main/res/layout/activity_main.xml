@@ -1,33 +1,43 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
+        android:layout_height="wrap_content">
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Home"
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="@color/white"
+            app:menu="@menu/top_app_bar" />
 
-    <Button
-        android:id="@+id/button"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listCardView"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:padding="16dp"
-        android:textSize="10sp"
+        android:src="@drawable/photo_camera"
+        app:layout_anchor="@id/listCardView"
+        app:layout_anchorGravity="bottom|end"
+        app:backgroundTint="@color/tfe_color_primary"
+        app:iconTint="@color/white"
+        />
 
-
-        android:text="Confirm"/>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

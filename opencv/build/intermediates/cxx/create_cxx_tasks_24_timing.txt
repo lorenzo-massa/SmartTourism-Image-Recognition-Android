@@ -98,3 +98,83 @@ create_cxx_tasks
   create-initial-cxx-model 68ms
 create_cxx_tasks completed in 70ms
 
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model
+    [gap of 24ms]
+    create-ARM64_V8A-model 10ms
+    [gap of 64ms]
+  create-initial-cxx-model completed in 98ms
+create_cxx_tasks completed in 101ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model 71ms
+create_cxx_tasks completed in 74ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model
+    [gap of 17ms]
+    create-ARMEABI_V7A-model 11ms
+    create-ARM64_V8A-model 10ms
+    create-X86_64-model 10ms
+    [gap of 54ms]
+  create-initial-cxx-model completed in 112ms
+create_cxx_tasks completed in 115ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model 51ms
+create_cxx_tasks completed in 52ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model 79ms
+create_cxx_tasks completed in 83ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model
+    [gap of 39ms]
+    create-module-model 10ms
+    [gap of 38ms]
+  create-initial-cxx-model completed in 87ms
+create_cxx_tasks completed in 90ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model 71ms
+create_cxx_tasks completed in 74ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model
+    [gap of 26ms]
+    create-X86-model 13ms
+    [gap of 51ms]
+  create-initial-cxx-model completed in 90ms
+create_cxx_tasks completed in 93ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model 68ms
+create_cxx_tasks completed in 72ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model 79ms
+create_cxx_tasks completed in 81ms
+
+# C/C++ build system timings
+create_cxx_tasks
+  create-initial-cxx-model
+    create-module-model 10ms
+    [gap of 25ms]
+    create-X86-model 11ms
+    create-X86_64-model 10ms
+    create-module-model 13ms
+    [gap of 39ms]
+  create-initial-cxx-model completed in 110ms
+create_cxx_tasks completed in 116ms
+

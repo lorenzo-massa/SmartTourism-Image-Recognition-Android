@@ -44,10 +44,10 @@ public class ColdStartActivity extends AppCompatActivity {
 
 
 
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-        databaseAccess.setOpenHelperColdStart();
-        databaseAccess.updateDatabaseColdStart(language);
-        databaseAccess.closeOpenHelperColdStart();
+        //DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
+        //databaseAccess.setOpenHelperColdStart();
+        //databaseAccess.updateDatabaseColdStart(language);
+        //databaseAccess.closeOpenHelperColdStart();
 
         listView = findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, DatabaseAccess.getListCategories());

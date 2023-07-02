@@ -5,5 +5,16 @@
         <item name="colorPrimary">@color/tfe_color_primary</item>
         <item name="colorPrimaryDark">@color/tfe_color_primary_dark</item>
         <item name="colorAccent">@color/tfe_color_accent</item>
+
+
+        <item name="android:windowAnimationStyle">@style/CustomActivityTransition</item>
+
+
+
     </style>
+
+    <style name="CustomActivityTransition">
+        <item name="android:windowEnterAnimation">@anim/slow_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/slow_fade_out</item>
+</style>
 </resources>

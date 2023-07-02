@@ -80,7 +80,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         borderedText.setTypeface(Typeface.MONOSPACE);
 
 
-        recreateClassifier(getModel(), getDevice(), getNumThreads(), getMode(), getLanguage());
+        recreateClassifier(getModel(), getDevice(), getNumThreads(), getMode());
         if (classifier == null) {
             LOGGER.e("No classifier on preview!");
             return;
@@ -112,14 +112,6 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                             List<Classifier.Recognition> results = null;
                             if(!dialogIsOpen && !sheetIsOpen){
                                 final long startTime = SystemClock.uptimeMillis();
-                                //Wait DatabaseAccess.thread to finish
-                                while(DatabaseAccess.thread.isAlive()){
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
 
                                 results = classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
                                 lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
@@ -159,12 +151,11 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         final Model model = getModel();
         final int numThreads = getNumThreads();
         final Classifier.Mode mode = getMode();
-        final Classifier.Language lang = getLanguage();
 
-        runInBackground(() -> recreateClassifier(model, device, numThreads, mode, lang));
+        runInBackground(() -> recreateClassifier(model, device, numThreads, mode));
     }
 
-    private void recreateClassifier(Model model, Device device, int numThreads, Classifier.Mode mode, Classifier.Language lang) {
+    private void recreateClassifier(Model model, Device device, int numThreads, Classifier.Mode mode) {
         if (classifier != null) {
             LOGGER.d("Closing classifier.");
             classifier.close();
@@ -181,20 +172,21 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         }
         try {
             LOGGER.d(
-                    "Creating classifier (model=%s, device=%s, numThreads=%d, mode=%s)", model, device, numThreads, mode);
-            classifier = Classifier.create(this, model, device, numThreads, mode, lang);
+                    "Creating classifier (model=%s, device=%s, numThreads=%d, mode=%s, language=%s)", model, device, numThreads, mode, language);
+
+            classifier = Classifier.create(this, model, device, numThreads, mode, language);
+
 
             //Check if it is the first time opening the app
             SharedPreferences sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
             Set<String> joinedStringSet = sharedPreferences.getStringSet("selectedCategories", null);
             if(joinedStringSet == null){
                 Intent intent = new Intent(ClassifierActivity.this, ColdStartActivity.class);
-                intent.putExtra("language", lang.toString());
+                intent.putExtra("language", language.toString());
                 startActivity(intent);
             }
 
-
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (Exception e) {
             LOGGER.e(e, "Failed to create classifier.");
             runOnUiThread(
                     () -> {

@@ -21,107 +21,45 @@
     android:layout_height="match_parent"
     android:background="#00000000">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#00000000"
-        android:orientation="vertical">
+        android:background="@android:color/black"
+        tools:context="org.tensorflow.lite.examples.classification.CameraActivity" >
+    </FrameLayout>
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progressIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:hideAnimationBehavior="inward"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:showAnimationBehavior="inward"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-            />
-
-
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/black"
-            tools:context="org.tensorflow.lite.examples.classification.CameraActivity" >
-
-        </FrameLayout>
-
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/tfe_semi_transparent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="-10dp"
-            android:src="@drawable/logo_1"
-            app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
-            app:layout_constraintStart_toStartOf="@+id/topAppBar"
-            app:layout_constraintEnd_toStartOf="@+id/btnPreferences"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <!-- Add button for preferences -->
-        <ImageButton
-            android:id="@+id/btnPreferences"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/ic_settings"
-            android:dropDownHorizontalOffset="-20dp"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="Settings"
-
+            app:title="Camera Classifier"
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/arrow_back"
 
             />
 
-        <!--
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/language_spinner"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="75dp"
-            android:background="@drawable/language_icon"
-            android:dropDownHorizontalOffset="-20dp"
-            android:entries="@array/language_array"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/topAppBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="visible"
+        app:hideAnimationBehavior="inward"
+        app:showAnimationBehavior="inward"
+        android:layout_gravity="center"
+        />
 
-
-            ></androidx.appcompat.widget.AppCompatSpinner>
--->
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/bottom_sheet_layout"
         layout="@layout/tfe_ic_layout_bottom_sheet"
-        android:visibility="invisible"
         />
-
-    <ImageView
-        android:id="@+id/imageViewBG"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        app:srcCompat="@drawable/bg_loading" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>

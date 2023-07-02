@@ -2,6 +2,7 @@ package org.tensorflow.lite.examples.classification.tflite;
 
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -9,8 +10,8 @@ import java.util.ArrayList;
 public class Retrievor {
 
     public static final String TAG = "Retrievor";
-    private static final double MAX_DISTANCE = 1000000000;
     private static final int K = 5; //Divisor to upload database
+    private static boolean firstRun = true;
 
     public Retrievor(Activity activity, Classifier.Model model, Classifier.Language lang) {
         String dbName = "";
@@ -29,13 +30,17 @@ public class Retrievor {
                 throw new UnsupportedOperationException();
         }
 
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(activity, dbName,
-                "monuments_db.sqlite",
-                "list_of_attributes_categories_db.sqlite",
-                "logging_db.sqlite");
-        databaseAccess.open();
-        databaseAccess.updateDatabase(K, lang);
-        databaseAccess.close();
+        if (firstRun) {
+
+            firstRun = false;
+        }else{
+            //TODO: Find a method to do it in background, once is finished, the app can be used
+            DatabaseAccess databaseAccess = DatabaseAccess.getInstance(activity, dbName);
+            databaseAccess.open();
+            databaseAccess.updateDatabaseColdStart(lang.toString());
+            databaseAccess.close();
+            Log.d(TAG, "[RETRIEVOR] Database updated");
+        }
 
         System.loadLibrary("faiss");
     }

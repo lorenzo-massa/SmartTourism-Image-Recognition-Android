@@ -45,9 +45,6 @@ public class GuideActivity extends AppCompatActivity {
 
     private final String TAG = "GuideActivity";
 
-    private Double xCord = 0d;
-    private Double yCord = 0d;
-
     private TextView textView;
     private String user_id;
     private String monumentId;
@@ -90,11 +87,15 @@ public class GuideActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
 
-        if (inputStream != null && readCoordinates(inputStream)){
-            Log.d(TAG, "Map coordinates: " + xCord + ", "+yCord);
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
+        double[] coordinates = databaseAccess.getCoordinates(monumentId);
+
+
+        if (coordinates != null){
+            Log.d(TAG, "Map coordinates: " + coordinates[0] + ", "+coordinates[1]);
 
             //Show button to open intent
-            Uri gmmIntentUri = Uri.parse("geo:+ "+ xCord + ","+ yCord + "?q=" + Uri.encode(monumentId));
+            Uri gmmIntentUri = Uri.parse("geo:+ "+ coordinates[0] + ","+ coordinates[1] + "?q=" + Uri.encode(monumentId));
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
 
@@ -115,7 +116,7 @@ public class GuideActivity extends AppCompatActivity {
 
 
         //Send request to API server
-        textView = (TextView) findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);
         if (internetIsConnected()){
             //volley_request();
             //For the moment we use the local DocToVec
@@ -173,6 +174,7 @@ public class GuideActivity extends AppCompatActivity {
         hintsView.setVisibility(View.VISIBLE);
 
     }
+    /*
     private void volley_request(){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -206,7 +208,6 @@ public class GuideActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-
     private void checkMonument(){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -549,7 +550,8 @@ public class GuideActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-
+    */
+    /*
     private Boolean readCoordinates(InputStream inputStream) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String lineCoordinates;
@@ -593,7 +595,7 @@ public class GuideActivity extends AppCompatActivity {
         return false;
 
     }
-
+    */
     private ArrayList<Element> getHints(String monumendId) { //hints just calculating the distances
         float[] recognizedVec = new float[0];
         ArrayList<Element> listDocToVec = DatabaseAccess.getListDocToVec();

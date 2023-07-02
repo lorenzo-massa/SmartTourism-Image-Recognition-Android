@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -38,6 +39,15 @@ public class DatabaseAccess {
 
     public static Thread thread;
 
+    private String dbName;
+    private final String dbName2 = "monuments_db.sqlite";
+    private final String dbName3 = "list_of_attributes_categories_db.sqlite";
+    private final String dbName4 = "logging_db.sqlite";
+
+    private AsyncTask<Void, Integer, Void> databaseLoadingTask;
+
+    private DatabaseUpdateListener updateListener;
+
 
 
 
@@ -46,8 +56,7 @@ public class DatabaseAccess {
      *
      * @param activity to get the contex
      */
-    private DatabaseAccess(Activity activity, String dbName, String dbName2,
-                           String dbName3, String dbName4) {
+    private DatabaseAccess(Activity activity, String dbName) {
         this.openHelper = new DatabaseOpenHelper(activity, dbName);
         this.openHelperDocToVec = new DatabaseOpenHelper(activity, dbName2);
         this.openHelperColdStart = new DatabaseOpenHelper(activity, dbName3);
@@ -60,18 +69,26 @@ public class DatabaseAccess {
      * @param activity the Activity
      * @return the instance of DabaseAccess
      */
-    public static DatabaseAccess getInstance(Activity activity, String dbName, String dbName2,
-                                             String dbName3, String dbName4) {
+    public static DatabaseAccess getInstance(Activity activity, String dbName) {
+        if (dbName.equals("")){
+            dbName = "MobileNetV3_Large_100_db.sqlite";
+        }
+
         if (instance == null){
-            instance = new DatabaseAccess(activity, dbName, dbName2, dbName3, dbName4);
+            instance = new DatabaseAccess(activity, dbName);
         }
 
         return instance;
     }
 
+    public void setDatabaseUpdateListener(DatabaseUpdateListener listener) {
+        this.updateListener = listener;
+    }
+
     public static DatabaseAccess getInstance() {
         if (instance == null){
             Log.d(TAG, "[ERROR] during Cold Start getInstance or Logging: instance is null");
+
         }
         return instance;
     }
@@ -103,6 +120,23 @@ public class DatabaseAccess {
         return a;
     }
 
+    public static ArrayList<String> getMonumentsByCategory(String category) {
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<String> list = new ArrayList<>();
+        for (Element e : listDocToVec) {
+            if (e.getCategories().contains(category)) {
+                list.add(e.getMonument());
+            }
+        }
+        return list;
+    }
+
     public void log(String id) {
 
 
@@ -110,15 +144,8 @@ public class DatabaseAccess {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String dateTime = sdf.format(System.currentTimeMillis());
 
-        /*
-        databaseLoggers.execSQL("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, monument_id TEXT)");
-        databaseLoggers.execSQL("INSERT INTO logs (date, monument) VALUES ('" + dateTime + "', '" + id + "')");
-        */
-
         // Create the "logs" table if it doesn't exist
         databaseLoggers.execSQL("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, monument TEXT)");
-
-
 
         // Insert a record
         ContentValues values = new ContentValues();
@@ -171,32 +198,36 @@ public class DatabaseAccess {
 
         setOpenHelperColdStart();
 
-        Log.d(TAG, "[INFO] updateDatabaseColdStart: updating categories...");
+        if (listCategories.isEmpty()) {
+            Log.d(TAG, "[INFO] updateDatabaseColdStart: updating categories...");
 
-        //Update database categories
-        Cursor cursorCategories = databaseColdStart.rawQuery("SELECT name FROM categories_"+ lang, null);
-        cursorCategories.moveToFirst();
-        while (!cursorCategories.isAfterLast()) {
-            String category = cursorCategories.getString(0);
-            listCategories.add(category);
-            cursorCategories.moveToNext();
+            //Update database categories
+            Cursor cursorCategories = databaseColdStart.rawQuery("SELECT name FROM categories_"+ lang, null);
+            cursorCategories.moveToFirst();
+            while (!cursorCategories.isAfterLast()) {
+                String category = cursorCategories.getString(0);
+                listCategories.add(category);
+                cursorCategories.moveToNext();
+            }
         }
 
-        Log.d(TAG, "[INFO] updateDatabaseColdStart: updating attributes...");
+        if (listAttributes.isEmpty()) {
+            Log.d(TAG, "[INFO] updateDatabaseColdStart: updating attributes...");
 
-        //Update database attributes
-        Cursor cursorAttributes = databaseColdStart.rawQuery("SELECT name FROM attributes_"+ lang, null);
-        cursorAttributes.moveToFirst();
-        while (!cursorAttributes.isAfterLast()) {
-            String attribute = cursorAttributes.getString(0);
-            listAttributes.add(attribute);
-            cursorAttributes.moveToNext();
+            //Update database attributes
+            Cursor cursorAttributes = databaseColdStart.rawQuery("SELECT name FROM attributes_"+ lang, null);
+            cursorAttributes.moveToFirst();
+            while (!cursorAttributes.isAfterLast()) {
+                String attribute = cursorAttributes.getString(0);
+                listAttributes.add(attribute);
+                cursorAttributes.moveToNext();
+            }
         }
 
         closeOpenHelperColdStart();
     }
 
-    public void updateDatabase(int k, Classifier.Language lang) {
+    public void updateDatabase(int k, String lang) {
 
         Log.d(TAG, "[INFO] updateDatabase: updating features...");
 
@@ -237,9 +268,14 @@ public class DatabaseAccess {
                     cursor.moveToNext();
                 }
                 cursor.close();
+
+                if (updateListener != null) {
+                    updateListener.onDatabaseUpdateProgress((i + 1) * 100 / k);
+                }
             }
 
         });
+
         thread.start();
 
         //wait for the thread to finish
@@ -249,44 +285,6 @@ public class DatabaseAccess {
             e.printStackTrace();
         }
 
-        /*
-
-        database.isOpen();
-        listDB = new ArrayList<>();
-        //i<k
-        for (int i = 0; i < k; i++) {
-            Log.v("DatabaseAccess", "id from " + i + "/" + k + " to " + (i + 1) + "/" + k);
-            Cursor cursor = database.rawQuery("SELECT * FROM monuments " +
-                    "WHERE rowid > " + i + " * (SELECT COUNT(*) FROM monuments)/" + k + " AND rowid <= (" + i + "+1) * (SELECT COUNT(*) FROM monuments)/" + k, null);
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                String monument = cursor.getString(0);
-                String matrix = cursor.getString(1);
-
-                //Convert matrix string to Float
-                String[] splitted = matrix.substring(1, matrix.length() - 1).split("\\s+");
-                float[] listMatrix = new float[splitted.length];
-
-                int z = 0;
-                for (String s : splitted
-                ) {
-                    if (!Objects.equals(s, "")) {
-                        listMatrix[z] = Float.parseFloat(s);
-                        z++;
-                    }
-
-                }
-
-                //element with converted matrix
-                Element e = new Element(monument, listMatrix, -1);
-                listDB.add(e);
-
-                cursor.moveToNext();
-            }
-            cursor.close();
-        }
-
-         */
 
         //Update database monuments
 
@@ -338,6 +336,19 @@ public class DatabaseAccess {
         }
         cursorMonuments.close();
 
+    }
+
+    public double[] getCoordinates(String monument) {
+
+        for (Element e : listDocToVec
+        ) {
+            if (Objects.equals(e.getMonument(), monument)) {
+                Log.d(TAG, "Coordinates: " + e.getCoordX() + " " + e.getCoordY());
+                return e.getCoordinates();
+            }
+        }
+
+        return null;
     }
 
 

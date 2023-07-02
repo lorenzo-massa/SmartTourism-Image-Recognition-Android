@@ -28,7 +28,7 @@
             android:summary="Select language"
             android:entries="@array/language_array"
             android:entryValues="@array/language_array"
-            android:defaultValue="1" />
+            android:defaultValue="English" />
 
     </PreferenceCategory>
 
