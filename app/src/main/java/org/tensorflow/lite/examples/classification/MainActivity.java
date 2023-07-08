@@ -33,11 +33,6 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
         DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
         databaseAccess.updateDatabaseColdStart(language);
 
-        RecyclerView recyclerView = findViewById(R.id.listCardView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        MonumentAdapter monumentAdapter = new MonumentAdapter(DatabaseAccess.getListCategories(), this);
-        recyclerView.setAdapter(monumentAdapter);
 
         //Preferences button
         ActionMenuItemView btnPreferences = findViewById(R.id.settings);
@@ -61,6 +56,17 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
         });
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Update attributes and categories if you edit preferences
+        RecyclerView recyclerView = findViewById(R.id.listCardView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        MonumentAdapter monumentAdapter = new MonumentAdapter(DatabaseAccess.getListCategoriesOrdered(), this);
+        recyclerView.setAdapter(monumentAdapter);
     }
 
     @Override

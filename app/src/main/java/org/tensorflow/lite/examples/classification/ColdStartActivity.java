@@ -1,5 +1,7 @@
 package org.tensorflow.lite.examples.classification;
 
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -70,7 +72,7 @@ public class ColdStartActivity extends AppCompatActivity {
             //Close the activity only if at least one category is selected
             SharedPreferences sharedPreferences;
             if (listSelectedCategories.size() > 0) {
-                sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
+                sharedPreferences = getDefaultSharedPreferences(getApplicationContext());
 
                 // Get the editor to make changes
                 SharedPreferences.Editor editor = sharedPreferences.edit();

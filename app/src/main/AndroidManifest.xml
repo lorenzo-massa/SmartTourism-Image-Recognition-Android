@@ -56,6 +56,14 @@
             android:name=".PreferencesActivity"
             android:label="Preferences">
         </activity>
+        <activity
+            android:name=".CategoriesPreferencesActivity"
+            android:label="Preferences">
+        </activity>
+        <activity
+            android:name=".AttributesPreferencesActivity"
+            android:label="Preferences">
+        </activity>
     </application>
 
 </manifest>

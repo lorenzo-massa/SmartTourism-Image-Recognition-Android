@@ -4,14 +4,14 @@
     >
 
     <!-- Preference Category -->
-    <PreferenceCategory android:title="General Settings">
+    <PreferenceCategory android:title="General Settings" app:iconSpaceReserved="false">
 
         <!-- CheckBox Preference -->
         <CheckBoxPreference
             android:key="pref_key_notifications"
             android:title="Enable Notifications"
             android:summary="Receive notifications for updates"
-            android:defaultValue="true" />
+            android:defaultValue="true" app:iconSpaceReserved="false"/>
 
         <!-- List Preference -->
         <ListPreference
@@ -20,7 +20,7 @@
             android:summary="Select app theme"
             android:entries="@array/theme_entries"
             android:entryValues="@array/theme_values"
-            android:defaultValue="1" />
+            android:defaultValue="1" app:iconSpaceReserved="false"/>
 
         <ListPreference
             android:key="pref_key_language"
@@ -28,39 +28,39 @@
             android:summary="Select language"
             android:entries="@array/language_array"
             android:entryValues="@array/language_array"
-            android:defaultValue="English" />
+            android:defaultValue="English" app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
 
     <!-- Preference Category -->
-    <PreferenceCategory android:title="Interests">
+    <PreferenceCategory android:title="Interests" app:iconSpaceReserved="false">
 
         <Preference
             android:title="Categories"
-            android:summary="Select categories you are intrested in"
-            />
+            android:summary="Configure settings for the categories"
+            android:key="key_categories_settings" app:iconSpaceReserved="false"/>
 
         <Preference
             android:title="Attributes"
-            android:summary="Select attributes you are intrested in"
-            />
+            android:summary="Configure settings for the attributes"
+            android:key="key_attributes_settings" app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
 
     <!-- Preference Category -->
-    <PreferenceCategory android:title="About">
+    <PreferenceCategory android:title="About" app:iconSpaceReserved="false">
 
-        <EditTextPreference
+        <Preference
             android:key="pref_key_user_id"
             android:title="User ID"
             app:useSimpleSummaryProvider="true"
-            android:selectable="false"
-            />
+
+            app:iconSpaceReserved="false"/>
 
         <!-- Preference (Static Text) -->
         <Preference
             android:title="App Version"
-            android:summary="1.0.0" />
+            android:summary="1.0.0" app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
 

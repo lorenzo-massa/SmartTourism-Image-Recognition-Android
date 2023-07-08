@@ -2,17 +2,22 @@ package org.tensorflow.lite.examples.classification.tflite;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class DatabaseAccess {
 
@@ -46,6 +51,12 @@ public class DatabaseAccess {
 
     private AsyncTask<Void, Integer, Void> databaseLoadingTask;
 
+    public static SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
+
+    private static SharedPreferences sharedPreferences;
+
     private DatabaseUpdateListener updateListener;
 
 
@@ -76,9 +87,70 @@ public class DatabaseAccess {
 
         if (instance == null){
             instance = new DatabaseAccess(activity, dbName);
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
         }
 
         return instance;
+    }
+
+    public static List<String> getListCategoriesOrdered() {
+        List<String> listCategoriesOrdered = new ArrayList<>();
+
+        for (String category : listCategories){
+            boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
+            if (b){
+                listCategoriesOrdered.add(category);
+            }
+            //Log.d(TAG, "getListCategoriesOrdered: category_checkbox: " + category + " b: " + b);
+        }
+
+        for (String category : listCategories){
+            if (!listCategoriesOrdered.contains(category)){
+                listCategoriesOrdered.add(category);
+            }
+        }
+
+        return listCategoriesOrdered;
+    }
+
+    public static List<String> getMonumentsByCategoryOrdered(String category) {
+        ArrayList<String> selectedAttributes = new ArrayList<>();
+        ArrayList<String> monumentList = new ArrayList<>();
+
+        for (String attribute : listAttributes){
+            boolean b = sharedPreferences.getBoolean("attribute_checkbox_" + attribute.toLowerCase(), false);
+            if (b){
+                selectedAttributes.add(attribute);
+            }
+            Log.d(TAG, "getMonumentsByCategoryOrdered: attribute_checkbox: " + attribute + " b: " + b);
+        }
+
+        if (!selectedAttributes.isEmpty()){
+
+            //create a list of monuments that have all the selected attributes and belong to the selected category
+            for (Element e : listDocToVec) {
+                if (e.getCategories().contains(category)) {
+                    //add only the monuments that have one of the the selected attributes
+                    for (String attribute : selectedAttributes) {
+                        if (e.getAttributes().contains(attribute)) {
+                            monumentList.add(e.getMonument());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Element e : listDocToVec) {
+            if (e.getCategories().contains(category)) {
+                if (!monumentList.contains(e.getMonument()))
+                    monumentList.add(e.getMonument());
+            }
+        }
+
+        Log.d(TAG, "getMonumentsByCategoryOrdered: list: " + monumentList);
+
+        return monumentList;
     }
 
     public void setDatabaseUpdateListener(DatabaseUpdateListener listener) {
