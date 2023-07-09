@@ -160,6 +160,10 @@ public class LoadingActivity extends AppCompatActivity {
             databaseAccess.open();
             databaseAccess.updateDatabase(5, language);
             databaseAccess.updateDatabaseColdStart(language);
+            databaseAccess.updateDatabaseDocToVec(language);
+            databaseAccess.setOpenHelperLoggers();
+            databaseAccess.updateMonumentInteractions();
+            databaseAccess.closeOpenHelperLoggers();
             databaseAccess.close();
 
             return null;

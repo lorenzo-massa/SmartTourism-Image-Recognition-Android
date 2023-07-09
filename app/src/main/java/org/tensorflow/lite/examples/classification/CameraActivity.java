@@ -775,12 +775,6 @@ public abstract class CameraActivity extends AppCompatActivity
                 moreInfoButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Log the click
-                        DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-                        databaseAccess.setOpenHelperLoggers();
-                        databaseAccess.log(finalRecognition.getId());
-                        databaseAccess.closeOpenHelperLoggers();
-
                         //define button function
                         Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
                         intent.putExtra("monument_id", finalRecognition.getId());

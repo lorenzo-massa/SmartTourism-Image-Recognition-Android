@@ -67,6 +67,8 @@ public class GuideActivity extends AppCompatActivity {
         language = getIntent().getStringExtra("language");
         user_id = getIntent().getStringExtra("user_id");
 
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
         toolbar.setTitle(monumentId);
 
@@ -89,6 +91,11 @@ public class GuideActivity extends AppCompatActivity {
 
         DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
         double[] coordinates = databaseAccess.getCoordinates(monumentId);
+
+        //Log monument interaction
+        databaseAccess.setOpenHelperLoggers();
+        databaseAccess.log(monumentId);
+        databaseAccess.closeOpenHelperLoggers();
 
 
         if (coordinates != null){

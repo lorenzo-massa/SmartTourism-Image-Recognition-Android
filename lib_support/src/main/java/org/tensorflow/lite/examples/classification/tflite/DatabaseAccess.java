@@ -14,8 +14,12 @@ import androidx.preference.PreferenceManager;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,6 +33,8 @@ public class DatabaseAccess {
     private static ArrayList<String> listCategories = new ArrayList<>();
 
     private static ArrayList<String> listAttributes = new ArrayList<>();
+
+    static HashMap<String, Integer> monumentInteractions = new HashMap<>();
 
 
     private final SQLiteOpenHelper openHelper;
@@ -94,16 +100,57 @@ public class DatabaseAccess {
     }
 
     public static List<String> getListCategoriesOrdered() {
-        List<String> listCategoriesOrdered = new ArrayList<>();
+        List<String> listCategoriesSelected = new ArrayList<>();
 
         for (String category : listCategories){
             boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
             if (b){
-                listCategoriesOrdered.add(category);
+                listCategoriesSelected.add(category);
             }
-            //Log.d(TAG, "getListCategoriesOrdered: category_checkbox: " + category + " b: " + b);
         }
 
+        /* the second version should be faster
+        HashMap<String, Integer> mapCategories = new HashMap<>();
+        for (String category : listCategoriesSelected){
+            mapCategories.put(category, 0);
+            //caculate the sum of interactions for each category
+            for (Map.Entry<String, Integer> entry : monumentInteractions.entrySet()){
+                //if the monument has the category
+                for (Element e : listDocToVec){
+                    if (e.getMonument().equals(entry.getKey())){
+                        if (e.getCategories().contains(category)){
+                            mapCategories.put(category, mapCategories.get(category) + entry.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        */
+
+        HashMap<String, Integer> mapCategories = new HashMap<>();
+        for (String category : listCategoriesSelected){
+            mapCategories.put(category, 0);
+
+            for (Element e : listDocToVec){
+                for (String c : e.getCategories()){
+                    if (c.equals(category)){
+                        mapCategories.put(category, mapCategories.get(category) + monumentInteractions.get(e.getMonument()));
+                    }
+                }
+            }
+        }
+
+
+        //sort the map by value
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(mapCategories.entrySet());
+        Collections.sort(list, (o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
+
+        List<String> listCategoriesOrdered = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : list){
+            listCategoriesOrdered.add(entry.getKey());
+        }
+
+        //add the categories that are not selected
         for (String category : listCategories){
             if (!listCategoriesOrdered.contains(category)){
                 listCategoriesOrdered.add(category);
@@ -174,7 +221,6 @@ public class DatabaseAccess {
     }
 
 
-
     public static ArrayList<Element> getListDB() {
         return listDB;
     }
@@ -192,42 +238,6 @@ public class DatabaseAccess {
         return a;
     }
 
-    public static ArrayList<String> getMonumentsByCategory(String category) {
-
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<String> list = new ArrayList<>();
-        for (Element e : listDocToVec) {
-            if (e.getCategories().contains(category)) {
-                list.add(e.getMonument());
-            }
-        }
-        return list;
-    }
-
-    public void log(String id) {
-
-
-        Log.d(TAG, "[INFO] log: logging monument " + id);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String dateTime = sdf.format(System.currentTimeMillis());
-
-        // Create the "logs" table if it doesn't exist
-        databaseLoggers.execSQL("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, monument TEXT)");
-
-        // Insert a record
-        ContentValues values = new ContentValues();
-        values.put("date", dateTime);
-        values.put("monument", id);
-        long newRowId = databaseLoggers.insert("logs", null, values);
-
-        Log.d(TAG, "[INFO] log: monument " + id + " logged with id " + newRowId);
-
-      }
 
     /**
      * Open the database connection.
@@ -356,7 +366,9 @@ public class DatabaseAccess {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
+    public void updateDatabaseDocToVec(String lang) {
 
         //Update database monuments
 
@@ -410,6 +422,61 @@ public class DatabaseAccess {
 
     }
 
+    public void updateMonumentInteractions(){
+
+        Log.d(TAG, "[INFO] updateMonumentInteractions: updating monument interactions...");
+
+        //count number of interactions for each monument
+        databaseLoggers.isOpen();
+        Cursor cursorMonumentInteractions = databaseLoggers.rawQuery("SELECT monument, COUNT(*) FROM logs GROUP BY monument", null);
+        cursorMonumentInteractions.moveToFirst();
+        while (!cursorMonumentInteractions.isAfterLast()) {
+            String monument = cursorMonumentInteractions.getString(0);
+            int interactions = cursorMonumentInteractions.getInt(1);
+
+            monumentInteractions.put(monument,interactions);
+
+            cursorMonumentInteractions.moveToNext();
+        }
+        cursorMonumentInteractions.close();
+
+        //print monument interactions
+        for (Map.Entry<String, Integer> entry : monumentInteractions.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            Log.d(TAG, "[INFO] updateMonumentInteractions: monument " + key + " has " + value + " interactions");
+        }
+
+    }
+
+    public void log(String id) {
+
+        Log.d(TAG, "[INFO] log: logging monument " + id);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String dateTime = sdf.format(System.currentTimeMillis());
+
+        // Create the "logs" table if it doesn't exist
+        databaseLoggers.execSQL("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, monument TEXT)");
+
+        // Insert a record
+        ContentValues values = new ContentValues();
+        values.put("date", dateTime);
+        values.put("monument", id);
+        long newRowId = databaseLoggers.insert("logs", null, values);
+
+        Log.d(TAG, "[INFO] log: monument " + id + " logged with id " + newRowId);
+
+        if (monumentInteractions.containsKey(id)){
+            monumentInteractions.put(id,monumentInteractions.get(id)+1);
+        }else{
+            monumentInteractions.put(id,1);
+        }
+
+
+
+    }
+
+
     public double[] getCoordinates(String monument) {
 
         for (Element e : listDocToVec
@@ -452,4 +519,5 @@ public class DatabaseAccess {
         double deltaY = y2 - y1;
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
+
 }
