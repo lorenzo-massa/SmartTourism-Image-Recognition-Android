@@ -8,7 +8,7 @@
   </a>
 
   <p align="center">
-    Image recognition for android devices
+    Image Recognition for Android Devices
     <br />
     <a href="https://github.com/lorenzo-massa/SmartTourism"><strong>Explore the docs »</strong></a>
     <br />
@@ -27,7 +27,7 @@
 ### APK
 You will find the APK in `app/build/outputs/apk/support/debug` . 
 
-If you wanto to generate another APK file take a look on the following guide: https://code.tutsplus.com/tutorials/how-to-generate-apk-and-signed-apk-files-in-android-studio--cms-37927
+If you want to generate another APK file, please refer to the following guide: [How to Generate APK and Signed APK Files in Android Studio](https://code.tutsplus.com/tutorials/how-to-generate-apk-and-signed-apk-files-in-android-studio--cms-37927)
 
 ### Guide
 The repository consists of two parts:
@@ -55,9 +55,24 @@ Python library required:
 Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder.</br>
 Text, images, audios and videos can be shown using Mardkown.
 
+### Markdown
+Each guide has to be given as a markdown file. The first 4 rows of each `.md` have to be completed as the following:
+ ```html
+<!-- Use the following commented lines to include monument coordinates, categories and attributes (leave empty lines if the monument has no additional info)
+Coordinate of the monument spaced by a blank space
+Categories of the monument spaced by commas
+Attributes of the monument spaced by commas
+ -->
+```
+
 IMPORTANT: Files must have the same name as the files in the template folder.
 
 NOTE: For the time being, Italian and English languages are supported.
+
+### Categories
+Go to the `models\src\main\assets\categories` folder and move inside it one image for each category present in at least one monument guide.
+
+IMPORTANT: Images must have the same name as the categories.
 
 ## Database creation
 Complete the previous step before creating the database.
@@ -98,6 +113,9 @@ datasetFolder
 The file `build_sqlite.py` will create three `.sqlite` and `.pck` files. Each pair of files is created with a different neural network. To change the neural network see dedicated paagraph.
 
 IMORTANT: Do not change the names of the files created.
+
+
+<!--
 
 ### ONLY FOR EXPERT USERS
 
@@ -179,7 +197,7 @@ if (model == Classifier.Model.MOBILENET_V3_LARGE_100) {
 IMORTANT: The model name must be the same as entered in step 2) of this paragraph, capitalization not required.
 Once you have completed these steps you can use the new model by selecting it directly in the application menu.
 
-
+-->
 <!-- CONTACT -->
 ## Contact
 
