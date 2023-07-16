@@ -21,7 +21,7 @@
 
 ## Getting Started
 <div align="center">
-  <img src="images/screen1.png" alt="Logo" width="200" height="380"> &nbsp; &nbsp; &nbsp; <img src="images/screen4.png" alt="Logo" width="200" height="380"> &nbsp; &nbsp; &nbsp; <img src="images/screen3.png" alt="Logo" width="200" height="380">
+  <img src="images/screen1.png" alt="Logo" width="200" height="380"> &nbsp; &nbsp; &nbsp; <img src="images/screen3.png" alt="Logo" width="200" height="380">
 </div>
 
 ### APK
