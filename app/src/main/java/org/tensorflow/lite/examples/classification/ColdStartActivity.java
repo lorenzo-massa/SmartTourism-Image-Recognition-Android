@@ -44,13 +44,6 @@ public class ColdStartActivity extends AppCompatActivity {
         toolbar.setTitle("Categories");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
-
-
-        //DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-        //databaseAccess.setOpenHelperColdStart();
-        //databaseAccess.updateDatabaseColdStart(language);
-        //databaseAccess.closeOpenHelperColdStart();
-
         listView = findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, DatabaseAccess.getListCategories());
         listView.setAdapter(adapter);
@@ -77,11 +70,12 @@ public class ColdStartActivity extends AppCompatActivity {
                 // Get the editor to make changes
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                // Convert the list of strings to a single string
-                Set<String> stringSet = new HashSet<>(listSelectedCategories);
-
-                // Save the string set to SharedPreferences
-                editor.putStringSet("selectedCategories", stringSet);
+                for ( String category : DatabaseAccess.getListCategories() ) {
+                    if(listSelectedCategories.contains(category))
+                        editor.putBoolean("category_checkbox_" + category.toLowerCase(), true);
+                    else
+                        editor.putBoolean("category_checkbox_" + category.toLowerCase(), false);
+                }
 
                 // Commit the changes
                 editor.apply();
@@ -90,6 +84,7 @@ public class ColdStartActivity extends AppCompatActivity {
                 Intent intent = new Intent(ColdStartActivity.this, ColdStartActivitySkippable.class);
                 intent.putExtra("language", language);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
 
                 finish();
             } else

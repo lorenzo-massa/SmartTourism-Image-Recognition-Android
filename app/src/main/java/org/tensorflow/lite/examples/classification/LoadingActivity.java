@@ -2,17 +2,21 @@ package org.tensorflow.lite.examples.classification;
 
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.ProgressBar;
         import android.widget.Toast;
 
-        import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
@@ -21,15 +25,20 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseUpdateListener
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 public class LoadingActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
-    private String TAG = "LoadingActivity";
+    private final String TAG = "LoadingActivity";
 
     private String language;
     private String uniqueID;
+
+    private Classifier.Model model;
+
+    private boolean firstStart;
 
     //Shared Preferences
     public SharedPreferences sharedPreferences;
@@ -61,21 +70,22 @@ public class LoadingActivity extends AppCompatActivity {
         uniqueID = sharedPreferences.getString("pref_key_user_id", "");
 
         if(uniqueID.equals("")){
+            firstStart = true;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String date = sdf.format(System.currentTimeMillis());
             uniqueID = date + "-" + UUID.randomUUID().toString() ;
             sharedPreferences.edit().putString("pref_key_user_id", uniqueID).apply();
+        }else{
+            firstStart = false;
         }
 
         language = sharedPreferences.getString("pref_key_language", "English");
+        model = Classifier.Model.valueOf(sharedPreferences.getString("pref_key_model", "Precise"));
 
 
-        shared_listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                if(key.equals("pref_key_language")){
-                    language = prefs.getString("pref_key_language", "English");
-                }
+        shared_listener = (prefs, key) -> {
+            if(key.equals("pref_key_language")){
+                language = prefs.getString("pref_key_language", "English");
             }
         };
 
@@ -84,12 +94,14 @@ public class LoadingActivity extends AppCompatActivity {
 
         // Check permissions
 
-        if (hasPermission() && hasPermissionGPS()){
+        if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()) {
             //setFragment(); //first creation of classifier (maybe never called)
             new LoadingActivityTask().execute();         // Start the database upload process
         } else {
             requestPermission();
         }
+
+
 
 
 
@@ -111,26 +123,41 @@ public class LoadingActivity extends AppCompatActivity {
         }
     }
 
-    private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA)) {
-                Toast.makeText(
-                                LoadingActivity.this,
-                                "Camera permission is required for this demo",
-                                Toast.LENGTH_LONG)
-                        .show();
-            }
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Toast.makeText(
-                        LoadingActivity.this,
-                        "Location permission is required for this demo",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-
-            requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
+    private boolean hasPermissionNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            return true;
         }
+    }
+
+    private void requestPermission() {
+        if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA)) {
+            Toast.makeText(
+                            LoadingActivity.this,
+                            "Camera permission is required for this demo",
+                            Toast.LENGTH_LONG)
+                    .show();
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Toast.makeText(
+                    LoadingActivity.this,
+                    "Location permission is required for this demo",
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            Toast.makeText(
+                            LoadingActivity.this,
+                            "Notification permission is required for this demo",
+                            Toast.LENGTH_LONG)
+                    .show();
+        }
+
+
+        requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
+
     }
 
     @Override
@@ -138,7 +165,7 @@ public class LoadingActivity extends AppCompatActivity {
             final int requestCode, final String[] permissions, final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST) {
-            if (hasPermission() && hasPermissionGPS()) {
+            if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()) {
                 new LoadingActivityTask().execute();
             } else {
                 requestPermission();
@@ -155,16 +182,33 @@ public class LoadingActivity extends AppCompatActivity {
             // Perform the database upload process here
             // Update the progress using publishProgress() method
 
-            DatabaseAccess databaseAccess = DatabaseAccess.getInstance(LoadingActivity.this, "");
+            String dbName = "";
+
+            switch (model) {
+                case Precise:
+                    dbName = "MobileNetV3_Large_100_db.sqlite";
+                    break;
+                case Medium:
+                    dbName = "MobileNetV3_Large_075_db.sqlite";
+                    break;
+                case Fast:
+                    dbName = "MobileNetV3_Small_100_db.sqlite";
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+
+            DatabaseAccess databaseAccess = DatabaseAccess.getInstance(LoadingActivity.this, dbName);
             databaseAccess.setDatabaseUpdateListener(this);
-            databaseAccess.open();
+
             databaseAccess.updateDatabase(5, language);
             databaseAccess.updateDatabaseColdStart(language);
-            databaseAccess.updateDatabaseDocToVec(language);
-            databaseAccess.setOpenHelperLoggers();
-            databaseAccess.updateMonumentInteractions();
-            databaseAccess.closeOpenHelperLoggers();
-            databaseAccess.close();
+            databaseAccess.uploadDatabaseMonuments(language);
+
+            //TODO check if this is needed, android should create the database on its own
+            //databaseAccess.setOpenHelperLoggers();
+            //databaseAccess.updateMonumentInteractions();
+            //databaseAccess.closeOpenHelperLoggers();
 
             return null;
         }
@@ -182,10 +226,18 @@ public class LoadingActivity extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), "Database upload completed", Toast.LENGTH_SHORT).show();
             // You can start the next activity or finish the current activity here
 
-            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-            intent.putExtra("language", language);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
+            if (firstStart){
+                Intent intent = new Intent(LoadingActivity.this, ColdStartActivity.class);
+                intent.putExtra("language", language.toString());
+                startActivity(intent);
+                overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
+            }else {
+                Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+                intent.putExtra("language", language.toString());
+                startActivity(intent);
+                overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
+            }
+
             finish();
         }
 

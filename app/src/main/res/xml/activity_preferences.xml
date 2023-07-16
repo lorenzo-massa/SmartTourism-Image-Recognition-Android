@@ -48,6 +48,46 @@
     </PreferenceCategory>
 
     <!-- Preference Category -->
+    <PreferenceCategory android:title="Classifier" app:iconSpaceReserved="false">
+
+        <!-- Integer preference -->
+        <EditTextPreference
+            android:key="pref_key_num_threads"
+            android:title="Threads"
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="1" app:iconSpaceReserved="false"/>
+
+        <ListPreference
+            android:key="pref_key_model"
+            android:title="Model"
+            app:useSimpleSummaryProvider="true"
+            android:entries="@array/tfe_ic_models"
+            android:entryValues= "@array/tfe_ic_models"
+            android:defaultValue="Precise" app:iconSpaceReserved="false"/>
+
+        <ListPreference
+            android:key="pref_key_device"
+            android:title="Device"
+            app:useSimpleSummaryProvider="true"
+            android:entries="@array/tfe_ic_devices"
+            android:entryValues= "@array/tfe_ic_devices"
+            android:defaultValue="CPU" app:iconSpaceReserved="false"/>
+
+        <ListPreference
+            android:key="pref_key_mode"
+            android:title="Mode"
+            app:useSimpleSummaryProvider="true"
+            android:entries="@array/modes_array"
+            android:entryValues= "@array/modes_array"
+            android:defaultValue="Standard" app:iconSpaceReserved="false"/>
+
+
+
+    </PreferenceCategory>
+
+
+
+    <!-- Preference Category -->
     <PreferenceCategory android:title="About" app:iconSpaceReserved="false">
 
         <Preference

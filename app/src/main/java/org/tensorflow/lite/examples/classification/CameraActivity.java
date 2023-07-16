@@ -16,6 +16,8 @@
 
 package org.tensorflow.lite.examples.classification;
 
+import static org.tensorflow.lite.examples.classification.tflite.DatabaseAccess.getNearestMonument;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -65,6 +67,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -129,14 +132,6 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
     private BottomSheetBehavior<LinearLayout> sheetBehavior;
-    private ImageView plusImageView, minusImageView;
-    private Spinner modelSpinner;
-    private Spinner deviceSpinner;
-    private TextView threadsTextView;
-
-    private Model model = Model.PRECISE;
-    private Device device = Device.CPU;
-    private int numThreads = -1;
 
     //Popup Recognized
     private final ArrayList<String> recognitionList = new ArrayList<String>();
@@ -166,8 +161,6 @@ public abstract class CameraActivity extends AppCompatActivity
     private int nFarMonuments = 0;
 
 
-
-
     protected String uniqueID;
 
     private final String TAG = "Camera Activity";
@@ -176,18 +169,7 @@ public abstract class CameraActivity extends AppCompatActivity
     LocationManager locationManager;
     MyLocationListener locationListener;
 
-    //Preferences
-
-    private ImageButton btnPreferences;
-
-    private static boolean allPermissionsGranted(final int[] grantResults) {
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
+    protected SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -199,7 +181,9 @@ public abstract class CameraActivity extends AppCompatActivity
 
         language = Language.valueOf(getIntent().getStringExtra("language"));
 
-        if (hasPermission() && hasPermissionGPS()){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if (hasPermission() && hasPermissionGPS()) {
             setFragment(); //first creation of classifier (maybe never called)
         }
 
@@ -213,12 +197,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
         loadingIndicator = findViewById(R.id.progressIndicator);
 
-        threadsTextView = findViewById(R.id.threads);
-        plusImageView = findViewById(R.id.plus);
-        minusImageView = findViewById(R.id.minus);
-        modelSpinner = findViewById(R.id.model_spinner);
-        deviceSpinner = findViewById(R.id.device_spinner);
-        modeSpinner = findViewById(R.id.mode_spinner);
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
@@ -288,32 +266,11 @@ public abstract class CameraActivity extends AppCompatActivity
         recognition2TextView = findViewById(R.id.detected_item2);
         recognition2ValueTextView = findViewById(R.id.detected_item2_value);
 
-        modelSpinner.setOnItemSelectedListener(this);
-        deviceSpinner.setOnItemSelectedListener(this);
-        modeSpinner.setOnItemSelectedListener(this);
-
-        plusImageView.setOnClickListener(this);
-        minusImageView.setOnClickListener(this);
-
-        model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
-        device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
-        mode = Mode.valueOf(modeSpinner.getSelectedItem().toString());
-
-        numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
-
     }
 
     protected int[] getRgbBytes() {
         imageConverter.run();
         return rgbBytes;
-    }
-
-    protected int getLuminanceStride() {
-        return yRowStride;
-    }
-
-    protected byte[] getLuminance() {
-        return yuvBytes[0];
     }
 
     /**
@@ -457,41 +414,39 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
         //I added this if to continue using camera after having closed app
-        if (hasPermission() && hasPermissionGPS()){
+        /*
+        if (hasPermission() && hasPermissionGPS()) {
             if (checkIfLocationOpened()) {
                 // Get the location manager
                 locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
                 // Create the location listener
-                locationListener = new MyLocationListener();
+                locationListener = new MyLocationListener(CameraActivity.this);
 
                 // Request location updates
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        0, 0, locationListener);
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                            0, 0, locationListener);
 
-                // Request location updates from NETWORK_PROVIDER
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        0, 0, locationListener);
+                    // Request location updates from NETWORK_PROVIDER
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                            0, 0, locationListener);
+                }
+
             }else{
                 Toast.makeText(this, "GPS is disabled", Toast.LENGTH_LONG).show();
             }
             setFragment(); //first creation of classifier
         }
+         */
+
+        setFragment(); //first creation of classifier
 
         handlerThread = new HandlerThread("inference");
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
 
-
-        /*
-        if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
-        } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        }
-        */
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -883,12 +838,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             if (location[0] != 0.0) {
 
-                locationManager.removeUpdates(locationListener);
-
-                //You get the nearest monument
-                DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-
-                return databaseAccess.getNearestMonument(location[0], location[1]);
+                return getNearestMonument(location[0], location[1], 10000);
             }
         }
 
@@ -920,30 +870,11 @@ public abstract class CameraActivity extends AppCompatActivity
         return false;
     }
 
-    protected void showFrameInfo(String frameInfo) {
-        frameValueTextView.setText(frameInfo);
-    }
-
-    protected void showCropInfo(String cropInfo) {
-        cropValueTextView.setText(cropInfo);
-    }
-
-    protected void showCameraResolution(String cameraInfo) {
-        cameraResolutionTextView.setText(cameraInfo);
-    }
-
-    protected void showRotationInfo(String rotation) {
-        rotationTextView.setText(rotation);
-    }
-
-    protected void showInference(String inferenceTime) {
-        inferenceTimeTextView.setText(inferenceTime);
-    }
-
     protected Model getModel() {
-        return model;
+        return Model.valueOf(sharedPreferences.getString("pref_key_model", "Precise"));
     }
 
+    /*
     private void setModel(Model model) {
         if (this.model != model) {
             LOGGER.d("Updating  model: " + model);
@@ -951,56 +882,18 @@ public abstract class CameraActivity extends AppCompatActivity
             onInferenceConfigurationChanged();
         }
     }
+     */
 
     protected Mode getMode() {
-        return mode;
-    }
-
-    private void setMode(Mode mode) {
-        if (this.mode != mode) {
-            LOGGER.d("Updating  mode: " + mode);
-            this.mode = mode;
-            onInferenceConfigurationChanged();
-        }
+        return Mode.valueOf(sharedPreferences.getString("pref_key_mode", "Standard"));
     }
 
     protected Device getDevice() {
-        return device;
-    }
-
-    private void setDevice(Device device) {
-        if (this.device != device) {
-            LOGGER.d("Updating  device: " + device);
-            this.device = device;
-            final boolean threadsEnabled = device == Device.CPU;
-            plusImageView.setEnabled(threadsEnabled);
-            minusImageView.setEnabled(threadsEnabled);
-            threadsTextView.setText(threadsEnabled ? String.valueOf(numThreads) : "N/A");
-            onInferenceConfigurationChanged();
-        }
-    }
-
-    protected Language getLanguage() {
-        return language;
-    }
-
-    private void setLanguage(Language language) {
-        if (this.language != language) {
-            LOGGER.d("Updating  Language: " + language);
-            this.language = language;
-        }
+        return Device.valueOf(sharedPreferences.getString("pref_key_device", "CPU"));
     }
 
     protected int getNumThreads() {
-        return numThreads;
-    }
-
-    private void setNumThreads(int numThreads) {
-        if (this.numThreads != numThreads) {
-            LOGGER.d("Updating  numThreads: " + numThreads);
-            this.numThreads = numThreads;
-            onInferenceConfigurationChanged();
-        }
+        return Integer.parseInt(sharedPreferences.getString("pref_key_num_threads", "1"));
     }
 
     protected abstract void processImage();
@@ -1012,39 +905,4 @@ public abstract class CameraActivity extends AppCompatActivity
     protected abstract Size getDesiredPreviewFrameSize();
 
     protected abstract void onInferenceConfigurationChanged();
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.plus) {
-            String threads = threadsTextView.getText().toString().trim();
-            int numThreads = Integer.parseInt(threads);
-            if (numThreads >= 9) return;
-            setNumThreads(++numThreads);
-            threadsTextView.setText(String.valueOf(numThreads));
-        } else if (v.getId() == R.id.minus) {
-            String threads = threadsTextView.getText().toString().trim();
-            int numThreads = Integer.parseInt(threads);
-            if (numThreads == 1) {
-                return;
-            }
-            setNumThreads(--numThreads);
-            threadsTextView.setText(String.valueOf(numThreads));
-        }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        if (parent == modelSpinner) {
-            setModel(Model.valueOf(parent.getItemAtPosition(pos).toString().toUpperCase()));
-        } else if (parent == deviceSpinner) {
-            setDevice(Device.valueOf(parent.getItemAtPosition(pos).toString()));
-        } else if (parent == modeSpinner) {
-            setMode(Mode.valueOf(parent.getItemAtPosition(pos).toString()));
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing.
-    }
 }

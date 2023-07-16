@@ -27,6 +27,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import org.tensorflow.lite.examples.classification.env.BorderedText;
@@ -147,12 +149,14 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
             // Defer creation until we're getting camera frames.
             return;
         }
+        /*
         final Device device = getDevice();
         final Model model = getModel();
         final int numThreads = getNumThreads();
         final Classifier.Mode mode = getMode();
 
         runInBackground(() -> recreateClassifier(model, device, numThreads, mode));
+        */
     }
 
     private void recreateClassifier(Model model, Device device, int numThreads, Classifier.Mode mode) {
@@ -176,15 +180,10 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
             classifier = Classifier.create(this, model, device, numThreads, mode, language);
 
+            Toast.makeText(this, "Classifier (model= "+model+", device= "+device+", numThreads= "+numThreads+", mode=" + mode, Toast.LENGTH_LONG).show();
 
-            //Check if it is the first time opening the app
-            SharedPreferences sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
-            Set<String> joinedStringSet = sharedPreferences.getStringSet("selectedCategories", null);
-            if(joinedStringSet == null){
-                Intent intent = new Intent(ClassifierActivity.this, ColdStartActivity.class);
-                intent.putExtra("language", language.toString());
-                startActivity(intent);
-            }
+
+
 
         } catch (Exception e) {
             LOGGER.e(e, "Failed to create classifier.");
@@ -198,5 +197,20 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         // Updates the input image size.
         imageSizeX = classifier.getImageSizeX();
         imageSizeY = classifier.getImageSizeY();
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

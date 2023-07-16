@@ -1,18 +1,25 @@
 package org.tensorflow.lite.examples.classification;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
@@ -42,7 +49,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
     }
 
-    public static class MySettingsFragment extends PreferenceFragmentCompat {
+    public static class MySettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.activity_preferences, rootKey);
@@ -53,6 +60,28 @@ public class PreferencesActivity extends AppCompatActivity {
             if (preference != null)
                 preference.setSummary(DatabaseAccess.getSharedPreferences().getString("pref_key_user_id", "Not found"));
 
+            // Register the listener to detect preference changes
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    .registerOnSharedPreferenceChangeListener(this);
+
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+
+            // Unregister the listener to avoid memory leaks
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    .unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        // Listener method to handle preference changes
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals("pref_key_model")) {
+                // Show the popup dialog when the specific preference is changed
+                showRestartConfirmationDialog();
+            }
         }
 
         @Override
@@ -70,6 +99,30 @@ public class PreferencesActivity extends AppCompatActivity {
 
             return super.onPreferenceTreeClick(preference);
         }
+
+        // Method to show the restart confirmation dialog
+        private void showRestartConfirmationDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Restart Application");
+            builder.setMessage("Changing this preference requires restarting the application. Do you want to restart now?");
+            builder.setPositiveButton("Restart", (dialog, which) -> {
+                // Restart the application
+                restartApplication();
+            });
+            builder.setNegativeButton("Cancel", null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
+        // Method to restart the application
+        private void restartApplication() {
+            Intent intent = new Intent(requireContext(), LoadingActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            ActivityCompat.finishAffinity(requireActivity());
+            startActivity(intent);
+        }
+
+
     }
 
 

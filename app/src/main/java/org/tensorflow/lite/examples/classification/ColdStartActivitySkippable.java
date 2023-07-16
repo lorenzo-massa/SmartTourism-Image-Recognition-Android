@@ -71,23 +71,26 @@ public class ColdStartActivitySkippable extends AppCompatActivity {
                 // Get the editor to make changes
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                // Convert the list of strings to a single string
-                Set<String> stringSet = new HashSet<>(listSelectedAttributes);
-
-                // Save the string set to SharedPreferences
-                editor.putStringSet("selectedAttributes", stringSet);
+                for ( String attribute : DatabaseAccess.getListAttributes() ) {
+                    if(listSelectedAttributes.contains(attribute))
+                        editor.putBoolean("attribute_checkbox_" + attribute.toLowerCase(), true);
+                    else
+                        editor.putBoolean("attribute_checkbox_" + attribute.toLowerCase(), false);
+                }
 
                 // Commit the changes
                 editor.apply();
 
             }
+
+            // Close the activity and start another one
+            Intent intent = new Intent(ColdStartActivitySkippable.this, MainActivity.class);
+            intent.putExtra("language", language);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
+
             finish();
         });
-
-
-
-
-
 
     }
 

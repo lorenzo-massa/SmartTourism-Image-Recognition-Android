@@ -13,32 +13,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.Element;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.mukesh.MarkdownView;
 
 public class GuideActivity extends AppCompatActivity {
@@ -89,13 +72,10 @@ public class GuideActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
 
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-        double[] coordinates = databaseAccess.getCoordinates(monumentId);
+        double[] coordinates = DatabaseAccess.getCoordinates(monumentId);
 
         //Log monument interaction
-        databaseAccess.setOpenHelperLoggers();
-        databaseAccess.log(monumentId);
-        databaseAccess.closeOpenHelperLoggers();
+        DatabaseAccess.getInstance().log(monumentId);
 
 
         if (coordinates != null){
@@ -605,7 +585,7 @@ public class GuideActivity extends AppCompatActivity {
     */
     private ArrayList<Element> getHints(String monumendId) { //hints just calculating the distances
         float[] recognizedVec = new float[0];
-        ArrayList<Element> listDocToVec = DatabaseAccess.getListDocToVec();
+        ArrayList<Element> listDocToVec = DatabaseAccess.getListMonuments();
 
         //find the vec of the recognized monument
         for (Element x:listDocToVec) {

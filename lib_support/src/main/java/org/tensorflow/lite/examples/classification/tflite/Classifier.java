@@ -200,11 +200,11 @@ public abstract class Classifier {
 
         retrievor = new Retrievor(activity, model, lang);
 
-        if (model == Model.PRECISE) {
+        if (model == Model.Precise) {
             return new ClassifierMobileNetLarge100(activity, device, numThreads, mode);
-        } else if (model == Model.MEDIUM) {
+        } else if (model == Model.Medium) {
             return new ClassifierMobileNetLarge075(activity, device, numThreads, mode);
-        } else if (model == Model.FAST) {
+        } else if (model == Model.Fast) {
             return new ClassifierMobileNetSmall100(activity, device, numThreads, mode);
         } else {
             throw new UnsupportedOperationException();
@@ -491,9 +491,9 @@ public abstract class Classifier {
      * The model type used for classification.
      */
     public enum Model {
-        PRECISE, //MOBILENET_V3_LARGE_100
-        MEDIUM, //MOBILENET_V3_LARGE_075
-        FAST, //OBILENET_V3_SMALL_100
+        Precise, //MOBILENET_V3_LARGE_100
+        Medium, //MOBILENET_V3_LARGE_075
+        Fast, //OBILENET_V3_SMALL_100
         QUANTIZED_MOBILENET //NOT USED
     }
 
