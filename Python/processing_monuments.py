@@ -22,6 +22,8 @@ def createDB():
         table_name_monuments = f"monuments_{lang}"
         table_name_attributes = f"attributes_{lang}"
         table_name_categories = f"categories_{lang}"
+        table_name_monuments_categories = f"monuments_categories_{lang}"
+        table_name_monuments_attributes = f"monuments_attributes_{lang}"
 
         #GETTING PATHS OF GUIDE FILES
         path = f"../models/src/main/assets/guides/*/{lang}/guide.md"
@@ -72,14 +74,12 @@ def createDB():
                 capitalized_categories = [s.strip().title() for s in categories]
 
                 #Add to attrivutes list each capitalized attribute if not already present
-                for attr in capitalized_categories:
-                    if attr not in categoriesList:
-                        categoriesList.append(attr)
+                for cat in capitalized_categories:
+                    if cat not in categoriesList:
+                        categoriesList.append(cat)
 
-                # Convert the capitalized strings list to a single string
-                capitalized_categories_as_string = ', '.join(capitalized_categories)
             else:
-                capitalized_categories_as_string = "null"
+                capitalized_categories = []
 
 
 
@@ -95,15 +95,14 @@ def createDB():
                     if attr not in attributesList:
                         attributesList.append(attr)
 
-                # Convert the capitalized strings list to a single string
-                capitalized_attributes_as_string = ', '.join(capitalized_attributes)
             else:
-                capitalized_attributes_as_string = "null"
+                capitalized_attributes = []
 
-            
+            print(path)
+            print(capitalized_attributes)
 
             # Create a tuple with the content, coordinates, categories and attributes
-            obj = (content, coordinates, capitalized_categories_as_string, capitalized_attributes_as_string)
+            obj = (content, coordinates, capitalized_categories, capitalized_attributes)
 
             monumentsList.append(obj)
             
@@ -121,38 +120,9 @@ def createDB():
         #CREATING SQL LITE DATABASE FOR MONUMENTS
 
         con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
-        cur = con.cursor()
 
-        cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments}")
-        cur.execute(f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, categories, attributes) """)
+        #CATEGORIES
 
-        widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ", progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-
-        pbar = progressbar.ProgressBar(maxval=len(desc_vectors), widgets=widgets).start()
-
-        for i, v in enumerate(desc_vectors):
-            # Insert a row of data
-            val = str(v)
-            pathSplitted = textPaths[i].split(os.path.sep)[-3].split(' ')
-            m = ' '.join([str(elem) for elem in pathSplitted])
-
-            sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY, categories, attributes)
-                    VALUES(?,?,?,?,?,?) '''
-            
-            new = cur.execute(sql, (m,val, monumentsList[i][1][0], monumentsList[i][1][1], str(monumentsList[i][2]), str(monumentsList[i][3])))
-
-            # Save (commit) the changes
-            con.commit()
-            pbar.update(i)
-
-        pbar.finish()
-        con.close()
-
-        #Save the following in another file
-
-        #CREATING SQL LITE DATABASE FOR CATEGORIES
-
-        con = sqlite3.connect("../models/src/main/assets/databases/list_of_attributes_categories_db.sqlite")
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_categories}")
@@ -172,7 +142,9 @@ def createDB():
 
         pbar.finish()
 
-        #CREATING SQL LITE DATABASE FOR ATTRIBUTES
+        #ATTRIBUTES
+
+        cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_attributes}")
         cur.execute(f""" CREATE TABLE {table_name_attributes} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
@@ -190,9 +162,80 @@ def createDB():
             con.commit()
             pbar.update(i)
 
+        pbar.finish()
+
+        #RELATIONS BETWEEN MONUMENTS AND CATEGORIES  monumentsList[i][2], str(monumentsList[i][3])
+
+        cur = con.cursor()
+
+        cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments_categories}")
+        cur.execute(f""" CREATE TABLE {table_name_monuments_categories} (
+                    monumentID INTEGER,
+                    categoryID INTEGER,
+                    PRIMARY KEY (monumentID, categoryID),
+                    FOREIGN KEY (monumentID) REFERENCES {table_name_monuments}(id),
+                    FOREIGN KEY (categoryID) REFERENCES {table_name_categories}(id)) """)
+        
+        #RELATIONS BETWEEN MONUMENTS AND ATTRIBUTES
+
+        cur = con.cursor()
+
+        cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments_attributes}")
+        cur.execute(f""" CREATE TABLE {table_name_monuments_attributes} (
+                    monumentID INTEGER,
+                    attributeID INTEGER,
+                    PRIMARY KEY (monumentID, attributeID),
+                    FOREIGN KEY (monumentID) REFERENCES {table_name_monuments}(id),
+                    FOREIGN KEY (attributeID) REFERENCES {table_name_attributes}(id)) """)
+
+        #MONUMENTS
+        
+        cur = con.cursor()
+
+        cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments}")
+        cur.execute(f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY) """)
+
+        widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ", progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+
+        pbar = progressbar.ProgressBar(maxval=len(desc_vectors), widgets=widgets).start()
+
+        for i, v in enumerate(desc_vectors):
+            # Insert a row of data
+            val = str(v)
+            pathSplitted = textPaths[i].split(os.path.sep)[-3].split(' ')
+            m = ' '.join([str(elem) for elem in pathSplitted])
+
+            sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY)
+                    VALUES(?,?,?,?) '''
+            
+            new = cur.execute(sql, (m,val, monumentsList[i][1][0], monumentsList[i][1][1]))
+
+            # Save (commit) the changes
+            con.commit()
+
+            lastID = new.lastrowid
+
+            for cat in monumentsList[i][2]:
+                
+                sql = f''' INSERT INTO {table_name_monuments_categories} (monumentID, categoryID)
+                        VALUES(?,?) '''
+                cur.execute(sql, (lastID, categoriesList.index(cat)+1))
+                con.commit()
+
+            for attr in monumentsList[i][3]:
+                    
+                    sql = f''' INSERT INTO {table_name_monuments_attributes} (monumentID, attributeID)
+                            VALUES(?,?) '''
+                    cur.execute(sql, (lastID, attributesList.index(attr)+1))
+                    con.commit()     
+
+            pbar.update(i)
+
+        pbar.finish()
+
+
         # Close the connection
         con.close()
-        pbar.finish()
 
     print("\n\nDatabases saved in " + os.path.realpath('../models/src/main/assets/databases'))
 

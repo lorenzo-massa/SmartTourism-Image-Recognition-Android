@@ -11,11 +11,11 @@
       "fieldsDescending": {}
     },
     "memoizedSize": -1,
-    "memoizedHashCode": 1233450961
+    "memoizedHashCode": -1504339997
   },
   {
     "level_": 0,
-    "message_": "rebuilding JSON C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\2i521r25\\armeabi-v7a\\android_gradle_build.json due to:",
+    "message_": "JSON \u0027C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\2i521r25\\armeabi-v7a\\android_gradle_build.json\u0027 was up-to-date",
     "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
     "tag_": "debug|armeabi-v7a",
     "diagnosticCode_": 0,
@@ -25,119 +25,7 @@
       "fieldsDescending": {}
     },
     "memoizedSize": -1,
-    "memoizedHashCode": -1931802333
-  },
-  {
-    "level_": 0,
-    "message_": "- no fingerprint file, will remove stale configuration folder",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": -1662971553
-  },
-  {
-    "level_": 0,
-    "message_": "removing stale contents from \u0027C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\2i521r25\\armeabi-v7a\u0027",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": 1485958537
-  },
-  {
-    "level_": 0,
-    "message_": "created folder \u0027C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\2i521r25\\armeabi-v7a\u0027",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": -1342285163
-  },
-  {
-    "level_": 0,
-    "message_": "executing cmake @echo off\n\"C:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\cmake.exe\" ^\n  \"-HC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\src\\\\main\\\\cpp\\\\source\" ^\n  \"-DCMAKE_SYSTEM_NAME\u003dAndroid\" ^\n  \"-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\" ^\n  \"-DCMAKE_SYSTEM_VERSION\u003d26\" ^\n  \"-DANDROID_PLATFORM\u003dandroid-26\" ^\n  \"-DANDROID_ABI\u003darmeabi-v7a\" ^\n  \"-DCMAKE_ANDROID_ARCH_ABI\u003darmeabi-v7a\" ^\n  \"-DANDROID_NDK\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\23.1.7779620\" ^\n  \"-DCMAKE_ANDROID_NDK\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\23.1.7779620\" ^\n  \"-DCMAKE_TOOLCHAIN_FILE\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\23.1.7779620\\\\build\\\\cmake\\\\android.toolchain.cmake\" ^\n  \"-DCMAKE_MAKE_PROGRAM\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\ninja.exe\" ^\n  \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\2i521r25\\\\obj\\\\armeabi-v7a\" ^\n  \"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\2i521r25\\\\obj\\\\armeabi-v7a\" ^\n  \"-DCMAKE_BUILD_TYPE\u003dDebug\" ^\n  \"-BC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\.cxx\\\\Debug\\\\2i521r25\\\\armeabi-v7a\" ^\n  -GNinja\n",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": 1087157791
-  },
-  {
-    "level_": 0,
-    "message_": "@echo off\n\"C:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\cmake.exe\" ^\n  \"-HC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\src\\\\main\\\\cpp\\\\source\" ^\n  \"-DCMAKE_SYSTEM_NAME\u003dAndroid\" ^\n  \"-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\" ^\n  \"-DCMAKE_SYSTEM_VERSION\u003d26\" ^\n  \"-DANDROID_PLATFORM\u003dandroid-26\" ^\n  \"-DANDROID_ABI\u003darmeabi-v7a\" ^\n  \"-DCMAKE_ANDROID_ARCH_ABI\u003darmeabi-v7a\" ^\n  \"-DANDROID_NDK\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\23.1.7779620\" ^\n  \"-DCMAKE_ANDROID_NDK\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\23.1.7779620\" ^\n  \"-DCMAKE_TOOLCHAIN_FILE\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\23.1.7779620\\\\build\\\\cmake\\\\android.toolchain.cmake\" ^\n  \"-DCMAKE_MAKE_PROGRAM\u003dC:\\\\Users\\\\Lorenzo\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\ninja.exe\" ^\n  \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\2i521r25\\\\obj\\\\armeabi-v7a\" ^\n  \"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\2i521r25\\\\obj\\\\armeabi-v7a\" ^\n  \"-DCMAKE_BUILD_TYPE\u003dDebug\" ^\n  \"-BC:\\\\Users\\\\Lorenzo\\\\StudioProjects\\\\SmartTourism v2\\\\lib_support\\\\.cxx\\\\Debug\\\\2i521r25\\\\armeabi-v7a\" ^\n  -GNinja\n",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": 18793630
-  },
-  {
-    "level_": 0,
-    "message_": "Exiting generation of C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\2i521r25\\armeabi-v7a\\compile_commands.json.bin normally",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": 882639403
-  },
-  {
-    "level_": 0,
-    "message_": "done executing cmake",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": 221984223
-  },
-  {
-    "level_": 0,
-    "message_": "hard linked C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\Debug\\2i521r25\\armeabi-v7a\\compile_commands.json to C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\.cxx\\tools\\debug\\armeabi-v7a\\compile_commands.json",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\lib_support\\src\\main\\cpp\\source\\CMakeLists.txt",
-    "tag_": "debug|armeabi-v7a",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": -1241418708
+    "memoizedHashCode": 1656218796
   },
   {
     "level_": 0,
@@ -151,6 +39,6 @@
       "fieldsDescending": {}
     },
     "memoizedSize": -1,
-    "memoizedHashCode": -2134909989
+    "memoizedHashCode": -577733651
   }
 ]

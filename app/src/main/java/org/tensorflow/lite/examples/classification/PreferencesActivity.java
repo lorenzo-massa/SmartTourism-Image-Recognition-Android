@@ -82,6 +82,10 @@ public class PreferencesActivity extends AppCompatActivity {
                 // Show the popup dialog when the specific preference is changed
                 showRestartConfirmationDialog();
             }
+
+            if(key.equals("pref_key_language")){
+                DatabaseAccess.setLanguage(sharedPreferences.getString(key,"English"));
+            }
         }
 
         @Override

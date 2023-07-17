@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
     private static final String TAG = "MainActivity";
 
+    private LocationListener locationListener;
+    private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
         uniqueID = getIntent().getStringExtra("user_id");
 
         DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-        databaseAccess.updateDatabaseColdStart(language);
+        databaseAccess.updateDatabaseColdStart();
 
 
         //Preferences button
@@ -73,8 +76,10 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
 
         // Get the current location
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            private long lastNotificationTime = 0;
+
             @Override
             public void onLocationChanged(Location location) {
                 double currentLat = location.getLatitude();
@@ -83,15 +88,17 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
                 Log.d(TAG, "onLocationChanged: " + currentLat + " " + currentLng);
 
                 // Define the target location
+                String nearestMonument = DatabaseAccess.getNearestMonument(currentLat, currentLng, MAX_DISTANCE);
 
-                String nearestMonument = DatabaseAccess.getNearestMonument(currentLat, currentLng,MAX_DISTANCE);
+                // Check proximity and send notification if within range and enough time has passed
+                if (nearestMonument != null && System.currentTimeMillis() - lastNotificationTime >= 60000) {
+                    // Update the last notification time
+                    lastNotificationTime = System.currentTimeMillis();
 
-                // Check proximity and send notification if within range
-                if (nearestMonument != null) { // Example range in meters
                     // Create an explicit intent for the app's main activity
                     Intent intent = new Intent(MainActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, 0);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
                     // Create and send notification
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "channel_id")
@@ -130,12 +137,14 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
                 // Handle status changed
-                Log.d(TAG, "onStatusChanged: " + provider+ " status: " + status);
+                Log.d(TAG, "onStatusChanged: " + provider + " status: " + status);
             }
         };
 
+
         // Request location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
 
     }
@@ -147,8 +156,19 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
         //Update attributes and categories if you edit preferences
         RecyclerView recyclerView = findViewById(R.id.listCardView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MonumentAdapter monumentAdapter = new MonumentAdapter(DatabaseAccess.getListCategoriesOrdered(), this);
+        MonumentAdapter monumentAdapter = new MonumentAdapter(DatabaseAccess.getInstance().getListCategoriesOrdered(), this);
         recyclerView.setAdapter(monumentAdapter);
+
+
+        //check if notifications are enabed in preferences
+        if (!DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", true)) {
+            locationManager.removeUpdates(locationListener);
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
+        }
     }
 
     @Override

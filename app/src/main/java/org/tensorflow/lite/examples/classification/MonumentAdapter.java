@@ -51,7 +51,7 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
         holder.title.setText(category);
 
         // Set monument list
-        List<String> monuments = DatabaseAccess.getMonumentsByCategoryOrdered(category);
+        List<String> monuments = DatabaseAccess.getInstance().getMonumentsByCategoryOrdered(category);
         holder.monumentLayout.removeAllViews();
         for (String monument : monuments) {
             View monumentView;

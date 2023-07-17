@@ -12,8 +12,8 @@ public class Element {
 
     private double coordX;
     private double coordY;
-    private ArrayList<String> categories;
-    private ArrayList<String> attributes;
+    private ArrayList<String> categories = new ArrayList<>();
+    private ArrayList<String> attributes = new ArrayList<>();
 
 
 

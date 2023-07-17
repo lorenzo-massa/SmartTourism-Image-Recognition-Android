@@ -201,9 +201,9 @@ public class LoadingActivity extends AppCompatActivity {
             DatabaseAccess databaseAccess = DatabaseAccess.getInstance(LoadingActivity.this, dbName);
             databaseAccess.setDatabaseUpdateListener(this);
 
-            databaseAccess.updateDatabase(5, language);
-            databaseAccess.updateDatabaseColdStart(language);
-            databaseAccess.uploadDatabaseMonuments(language);
+            databaseAccess.updateDatabase(5);
+            databaseAccess.updateDatabaseColdStart();
+            databaseAccess.uploadDatabaseMonuments();
 
             //TODO check if this is needed, android should create the database on its own
             //databaseAccess.setOpenHelperLoggers();
