@@ -24,18 +24,13 @@
   <img src="images/screen1.png" alt="Logo" width="200" height="380"> &nbsp; &nbsp; &nbsp; <img src="images/screen3.png" alt="Logo" width="200" height="380">
 </div>
 
-### APK
-You will find the APK in `app/build/outputs/apk/support/debug` . 
-
-If you want to generate another APK file, please refer to the following guide: [How to Generate APK and Signed APK Files in Android Studio](https://code.tutsplus.com/tutorials/how-to-generate-apk-and-signed-apk-files-in-android-studio--cms-37927)
-
 ### Guide
 The repository consists of two parts:
 * Python
 * Android
 
-The python part is used to generate sqlite files from an image dataset. You should use and edit this part only if you want to use another neural network or image dataset.
-The android application is ready to use and you should change it just to add files to the monuments guides.
+The python part is used to generate sqlite files from an image dataset and a guides folder.
+The android application is ready to use and you should generate a new APK every time you compile the python code.
 
 You will find all the instuction you need just below.
 
@@ -67,15 +62,15 @@ Attributes of the monument spaced by commas
 
 IMPORTANT: Files must have the same name as the files in the template folder.
 
-NOTE: For the time being, Italian and English languages are supported.
+NOTE: For the time being, Italian and English languages are supported. English guides are required.
 
 ### Categories
 Go to the `models\src\main\assets\categories` folder and move inside it one image for each category present in at least one monument guide.
 
-IMPORTANT: Images must have the same name as the categories.
+IMPORTANT: Images must have the same name as the categories written in the monument guides. No images are needed for the attributes.
 
 ## Database creation
-Complete the previous step before creating the database.
+Complete the previous step before creating the database. The guides have to be completed and if you make any modification in any guide you have to create again the database.
 
 The repository contains the file `Python/build_sqlite.py` which must be executed by adding the argument `-i` or `--images` indicating the path to the dataset folder as in the following example:
 
@@ -110,9 +105,14 @@ datasetFolder
 
 ```
 
-The file `build_sqlite.py` will create three `.sqlite` and `.pck` files. Each pair of files is created with a different neural network. To change the neural network see dedicated paagraph.
+The file `build_sqlite.py` will create three `.sqlite` and `.pck` files.
 
 IMORTANT: Do not change the names of the files created.
+
+### APK
+If you want to generate a new APK file, please refer to the following guide: [How to Generate APK and Signed APK Files in Android Studio](https://code.tutsplus.com/tutorials/how-to-generate-apk-and-signed-apk-files-in-android-studio--cms-37927)
+
+You will find the APK in `app/build/outputs/apk/support/debug` . 
 
 
 <!--
