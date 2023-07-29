@@ -80,7 +80,6 @@ import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
-import org.tensorflow.lite.examples.classification.tflite.Classifier.Language;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Mode;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
@@ -144,7 +143,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
     //Language
     //private Spinner languageSpinner;
-    protected Language language;
+    protected String language;
 
     //Mode
     private Spinner modeSpinner;
@@ -179,7 +178,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
         setContentView(R.layout.tfe_ic_activity_camera);
 
-        language = Language.valueOf(getIntent().getStringExtra("language"));
+        language = getIntent().getStringExtra("language");
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 

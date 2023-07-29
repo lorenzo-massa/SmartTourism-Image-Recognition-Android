@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -63,6 +64,14 @@ public class PreferencesActivity extends AppCompatActivity {
             // Register the listener to detect preference changes
             PreferenceManager.getDefaultSharedPreferences(requireContext())
                     .registerOnSharedPreferenceChangeListener(this);
+
+            //Set language entries programmatically
+            ListPreference languagePreference = findPreference("pref_key_language");
+            if (languagePreference != null){
+                languagePreference.setEntries(DatabaseAccess.getListLanguages().toArray(new String[0]));
+                languagePreference.setEntryValues(DatabaseAccess.getListLanguages().toArray(new String[0]));
+            }
+
 
         }
 

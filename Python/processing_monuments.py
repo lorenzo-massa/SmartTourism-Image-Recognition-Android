@@ -11,7 +11,25 @@ languages = ['English', 'Italian']  # Add more languages as needed
 
 
 
+
+
 def createDB():
+
+    #Get languages from names of folders in guides folder
+    languages = [name for name in os.listdir('../models/src/main/assets/guides/Template Monument') if os.path.isdir(os.path.join('../models/src/main/assets/guides/Template Monument', name))]
+    print("Language found: ", languages)
+
+    #create a table and insert the languages
+    con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
+    cur = con.cursor()
+    cur.execute(f"DROP TABLE IF EXISTS Languages")
+    cur.execute(f""" CREATE TABLE Languages (id INTEGER PRIMARY KEY AUTOINCREMENT, language) """)
+    for i, lang in enumerate(languages):
+        sql = f''' INSERT INTO Languages (language)
+                    VALUES(?) '''
+        cur.execute(sql, (lang,))
+        con.commit()
+
 
     for lang in languages:
 
@@ -119,7 +137,7 @@ def createDB():
 
         #CREATING SQL LITE DATABASE FOR MONUMENTS
 
-        con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
+        #con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
 
         #CATEGORIES
 
@@ -235,7 +253,7 @@ def createDB():
 
 
         # Close the connection
-        con.close()
+    con.close()
 
     print("\n\nDatabases saved in " + os.path.realpath('../models/src/main/assets/databases'))
 

@@ -195,7 +195,7 @@ public abstract class Classifier {
      * @param numThreads The number of threads to use for classification.
      * @return A classifier with the desired configuration.
      */
-    public static Classifier create(Activity activity, Model model, Device device, int numThreads, Mode mode, Language lang)
+    public static Classifier create(Activity activity, Model model, Device device, int numThreads, Mode mode, String lang)
             throws IOException {
 
         retrievor = new Retrievor(activity, model, lang);
@@ -506,10 +506,12 @@ public abstract class Classifier {
         GPU
     }
 
-    public enum Language {
+    /*public enum Language {
         English,
         Italian
     }
+
+     */
 
     public enum Mode {
         Standard,

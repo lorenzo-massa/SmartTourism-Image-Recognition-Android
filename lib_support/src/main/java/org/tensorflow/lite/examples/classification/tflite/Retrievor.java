@@ -10,7 +10,7 @@ public class Retrievor {
 
     public static final String TAG = "Retrievor";
 
-    public Retrievor(Activity activity, Classifier.Model model, Classifier.Language lang) {
+    public Retrievor(Activity activity, Classifier.Model model, String lang) {
         System.loadLibrary("faiss");
     }
 

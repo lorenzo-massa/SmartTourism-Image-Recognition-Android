@@ -31,6 +31,14 @@ ap = argparse.ArgumentParser()
 
 ap.add_argument('-i', '--images', help='path of datset images')
 
+#add optional argument to skip the creation of the test_set (default False)
+ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
+
+if ap.parse_args().fast:
+    createDB()
+    exit()
+
+
 args = vars(ap.parse_args())
 
 # LOAD IMAGE PATHS

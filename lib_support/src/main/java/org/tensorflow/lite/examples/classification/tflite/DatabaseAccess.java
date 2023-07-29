@@ -35,6 +35,7 @@ public class DatabaseAccess {
 
     static HashMap<String, Integer> monumentInteractions = new HashMap<>(); //TODO remove it using queries
 
+    private static ArrayList<String> listLanguages = new ArrayList<>(); //All possible languages
 
     private final SQLiteOpenHelper openHelperRetrieval;
     private final SQLiteOpenHelper openHelperMonuments;
@@ -241,6 +242,10 @@ public class DatabaseAccess {
         return listMonuments;
     }
 
+    public static ArrayList<String> getListLanguages() {
+        return listLanguages;
+    }
+
     private List<String> getMonumentsByCategory(String category) {
         List<String> monumentList = new ArrayList<>();
         databaseMonuments = openHelperMonuments.getWritableDatabase();
@@ -439,6 +444,25 @@ public class DatabaseAccess {
             this.databaseMonuments.close();
         }
 
+    }
+
+    public void uploadLanguages(){
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
+
+        Log.d(TAG, "[INFO] updateDatabase: updating languages...");
+
+        Cursor cursorLanguages = databaseMonuments.rawQuery("SELECT language FROM languages", null);
+        cursorLanguages.moveToFirst();
+        while (!cursorLanguages.isAfterLast()) {
+            String language = cursorLanguages.getString(0);
+            listLanguages.add(language);
+            cursorLanguages.moveToNext();
+        }
+        cursorLanguages.close();
+
+        if (databaseMonuments != null) {
+            databaseMonuments.close();
+        }
     }
 
     private int getMonumentId(String monumentName) {
