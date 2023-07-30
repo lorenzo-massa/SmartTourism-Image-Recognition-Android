@@ -63,7 +63,12 @@ Attributes of the monument spaced by commas
 
 IMPORTANT: Files must have the same name as the files in the template folder.
 
-NOTE: For the time being, Italian and English languages are supported. English guides are required.
+### Languages
+If you want to add guides in more languages, simply create additional language folders, like French, German, and so on.
+You can create separate markdown guides for each monument in different languages by providing the relevant information for each language in the corresponding `guide.md` files. Remember to keep the folder and file names consistent across languages. This way, you can provide guides for monuments in multiple languages using the same structure and template.
+
+IMPORTANT: Each monument's folder must have the guide for all the languages supported by the app. (Template Monument included)
+
 
 ### Categories
 Go to the `models\src\main\assets\categories` folder and move inside it one image for each category present in at least one monument guide.
