@@ -32,7 +32,7 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements MonumentAdapter.OnButtonClickListener {
-    final double MAX_DISTANCE = 10000;  //TODO test range
+    final double MAX_DISTANCE = 100;  //TODO test range
     private String language;
     private String uniqueID;
 

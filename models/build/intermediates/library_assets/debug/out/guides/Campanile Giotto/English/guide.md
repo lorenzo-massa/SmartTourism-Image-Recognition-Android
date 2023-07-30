@@ -1,10 +1,10 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
-43.76943676239535 11.25619381345626
-Art, Monument
-palazzo ducale, museo, accessibilità carrozzina, anni 1300, medici 
+43.772798252828416 11.255710464284064
+Arte, Campanile
+museo 
  -->
 
-<h1 align="center">Palazzo Vecchio</h1>
+<h1 align="center">Campanile di Giotto</h1>
 
 <center>
   <img src="https://th.bing.com/th?id=OSK.HEROpTwAdRiYn9xhrVPdBz6Nrx9lNtj7tSxYbriPV5vHE4Y&w=472&h=280&c=1&rs=2&o=6&pid=SANGAM" alt="Immagine principale">

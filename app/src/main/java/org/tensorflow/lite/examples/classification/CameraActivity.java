@@ -837,7 +837,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             if (location[0] != 0.0) {
 
-                return getNearestMonument(location[0], location[1], 10000);
+                return getNearestMonument(location[0], location[1], 100);
             }
         }
 

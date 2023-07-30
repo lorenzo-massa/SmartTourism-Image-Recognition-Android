@@ -1,7 +1,7 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
-43.76943676239535 11.25619381345626
-Art, Museum
-palazzo ducale, museo, accessibilità carrozzina, anni 1300, medici 
+43.76933219048999 11.256124077775087
+palazzo, arte
+palazzo ducale, museo, accessibilità carrozzina
  -->
 
 <h1 align="center">Palazzo Vecchio</h1>

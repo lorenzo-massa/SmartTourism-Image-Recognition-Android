@@ -33,8 +33,6 @@ public class DatabaseAccess {
 
     private static ArrayList<String> listAttributes = new ArrayList<>(); //All possible attributes
 
-    static HashMap<String, Integer> monumentInteractions = new HashMap<>(); //TODO remove it using queries
-
     private static ArrayList<String> listLanguages = new ArrayList<>(); //All possible languages
 
     private final SQLiteOpenHelper openHelperRetrieval;

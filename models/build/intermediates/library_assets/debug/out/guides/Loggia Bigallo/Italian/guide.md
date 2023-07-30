@@ -1,10 +1,10 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
-
-
-
+43.77285868865991 11.255334864274364
+monumento, religione
+accessibilità, religione
  -->
 
-<h1 align="center">Palazzo Vecchio</h1>
+<h1 align="center">Loggia del Bigallo</h1>
 
 <center>
   <img src="https://th.bing.com/th?id=OSK.HEROpTwAdRiYn9xhrVPdBz6Nrx9lNtj7tSxYbriPV5vHE4Y&w=472&h=280&c=1&rs=2&o=6&pid=SANGAM" alt="Immagine principale">
