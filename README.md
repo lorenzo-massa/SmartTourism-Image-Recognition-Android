@@ -27,7 +27,7 @@
 </div>
 
 The repository consists of two parts:
-* Python
+* Python (Docker supported)
 * Android
 
 The python part is used to generate sqlite files from an image dataset and a guides folder.
@@ -35,20 +35,8 @@ The android application is ready to use and you should generate a new APK every 
 
 You will find all the instuction you need just below.
 
-### Prerequisites
-
-Python library required:
-* imutils
-* tensorflow
-* opencv
-* pandas
-* gensim
-* progressbar
-* faiss-cpu (Anaconda required)
-* scikit-learn
-
 ## Monument guides creation 
-Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder.</br>
+Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument` which is to be used as a template, so without altering its structure. It is only possible to change the name of the folder with the name of the monument which, however, must be the same uilized in the dataset folder. Please do not remove the folder `Template Monument`.</br>
 Text, images, audios and videos can be shown using Mardkown.
 
 ### Markdown
@@ -78,17 +66,10 @@ IMPORTANT: Images must have the same name as the categories written in the monum
 ## Database creation
 Complete the previous step before creating the database. The guides have to be completed and if you make any modification in any guide you have to create again the database.
 
-The repository contains the file `Python/build_sqlite.py` which must be executed by adding the argument `-i` or `--images` indicating the path to the dataset folder as in the following example:
+The repository contains the folder `Python/datasetImages` which must contains one folder per monument and each of which contains the images, as in the following example:
 
-```sh
-python build_sqlite.py -i datasetFolder
-```
-
-IMPORTANT: The indicated folder must contains one folder per monument and each of which contains the images, as in the following example:
-
-```
-
-datasetFolder
+```java
+datasetImages
 ├───Battistero SanGiovanni
 │       img1.jpg
 │       img2.jpg
@@ -111,9 +92,16 @@ datasetFolder
 
 ```
 
-The file `build_sqlite.py` will create three `.sqlite` and `.pck` files.
+Go to the `models\src\main\assets\categories` folder and run the following commands in a terminal:
 
-IMORTANT: Do not change the names of the files created.
+```sh
+1. docker build -t tfimage .
+2. docker run -it tfimage
+3. docker container ls -all
+4. docker cp containerID:/app/models/src/main/assets/databases .\models\src\main\assets\
+```
+
+NOTE: You can find containerID in the list of the containers in the third instruction.
 
 ### APK
 If you want to generate a new APK file, please refer to the following guide: [How to Generate APK and Signed APK Files in Android Studio](https://code.tutsplus.com/tutorials/how-to-generate-apk-and-signed-apk-files-in-android-studio--cms-37927)

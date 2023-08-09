@@ -7,7 +7,6 @@ import faiss
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import manhattan_distances
 from sklearn.metrics.pairwise import euclidean_distances
-import time
 
 
 class Retrievor:

@@ -1,0 +1,6 @@
+pandas
+opencv-python
+imutils
+progressbar
+scikit-learn
+gensim

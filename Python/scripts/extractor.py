@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
-import cv2
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import Model
-from tensorflow.keras.models import load_model
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.applications import VGG19
-from tensorflow.keras.applications import MobileNetV2
-
-
-import pathlib
-
-
 
 
 class Extractor:

@@ -1,0 +1,17 @@
+.gradle
+.idea
+app
+gradle
+images
+libsupport
+opencv
+.gitignore
+build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+settings.gradle
+README.md
+local.properties
+
+

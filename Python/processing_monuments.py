@@ -1,26 +1,18 @@
 import numpy as np
-import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import glob
 import sqlite3
 import progressbar
 import os
-import argparse
-
-languages = ['English', 'Italian']  # Add more languages as needed
-
-
-
-
 
 def createDB():
 
     #Get languages from names of folders in guides folder
-    languages = [name for name in os.listdir('../models/src/main/assets/guides/Template Monument') if os.path.isdir(os.path.join('../models/src/main/assets/guides/Template Monument', name))]
+    languages = [name for name in os.listdir('models/src/main/assets/guides/Template Monument') if os.path.isdir(os.path.join('models/src/main/assets/guides/Template Monument', name))]
     print("Language found: ", languages)
 
     #create a table and insert the languages
-    con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
+    con = sqlite3.connect("models/src/main/assets/databases/monuments_db.sqlite")
     cur = con.cursor()
     cur.execute(f"DROP TABLE IF EXISTS Languages")
     cur.execute(f""" CREATE TABLE Languages (id INTEGER PRIMARY KEY AUTOINCREMENT, language) """)
@@ -44,7 +36,7 @@ def createDB():
         table_name_monuments_attributes = f"monuments_attributes_{lang}"
 
         #GETTING PATHS OF GUIDE FILES
-        path = f"../models/src/main/assets/guides/*/{lang}/guide.md"
+        path = f"models/src/main/assets/guides/*/{lang}/guide.md"
         textPaths = glob.glob(path)
 
         print("Path used for guides: " + path + '\n' + "Number of files found: " + str(len(textPaths)))
@@ -255,7 +247,7 @@ def createDB():
         # Close the connection
     con.close()
 
-    print("\n\nDatabases saved in " + os.path.realpath('../models/src/main/assets/databases'))
+    print("\n\nDatabases saved in " + os.path.realpath('models/src/main/assets/databases'))
 
 
 
