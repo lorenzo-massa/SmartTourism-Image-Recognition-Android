@@ -11,34 +11,6 @@
       "fieldsDescending": {}
     },
     "memoizedSize": -1,
-    "memoizedHashCode": -1374191072
-  },
-  {
-    "level_": 0,
-    "message_": "JSON \u0027C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\opencv\\.cxx\\Debug\\5e1p6t2a\\x86_64\\android_gradle_build.json\u0027 was up-to-date",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\opencv\\libcxx_helper\\CMakeLists.txt",
-    "tag_": "debug|x86_64",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": -1473170138
-  },
-  {
-    "level_": 0,
-    "message_": "JSON generation completed without problems",
-    "file_": "C:\\Users\\Lorenzo\\StudioProjects\\SmartTourism v2\\opencv\\libcxx_helper\\CMakeLists.txt",
-    "tag_": "debug|x86_64",
-    "diagnosticCode_": 0,
-    "memoizedIsInitialized": 1,
-    "unknownFields": {
-      "fields": {},
-      "fieldsDescending": {}
-    },
-    "memoizedSize": -1,
-    "memoizedHashCode": -948974180
+    "memoizedHashCode": 2066921009
   }
 ]

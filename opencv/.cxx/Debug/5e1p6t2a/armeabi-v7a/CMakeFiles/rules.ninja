@@ -12,25 +12,6 @@
 # =============================================================================
 
 #############################################
-# Rule for compiling CXX files.
-
-rule CXX_COMPILER__opencv_jni_shared_Debug
-  depfile = $DEP_FILE
-  deps = gcc
-  command = C:\Users\Lorenzo\AppData\Local\Android\Sdk\ndk\23.1.7779620\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe --target=armv7-none-linux-androideabi21 --sysroot=C:/Users/Lorenzo/AppData/Local/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/windows-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
-  description = Building CXX object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER__opencv_jni_shared_Debug
-  command = cmd.exe /C "$PRE_LINK && C:\Users\Lorenzo\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe -E rm -f $TARGET_FILE && C:\Users\Lorenzo\AppData\Local\Android\Sdk\ndk\23.1.7779620\toolchains\llvm\prebuilt\windows-x86_64\bin\llvm-ar.exe qc $TARGET_FILE $LINK_FLAGS $in && C:\Users\Lorenzo\AppData\Local\Android\Sdk\ndk\23.1.7779620\toolchains\llvm\prebuilt\windows-x86_64\bin\llvm-ranlib.exe $TARGET_FILE && $POST_BUILD"
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
 # Rule for running custom commands.
 
 rule CUSTOM_COMMAND
