@@ -20,6 +20,12 @@ captures/
 *.apk
 output.json
 
+lib_support/.cxx/
+lib_support/build/
+
+opencv/.cxx/
+opencv/build/
+
 # IntelliJ
 *.iml
 .idea/
