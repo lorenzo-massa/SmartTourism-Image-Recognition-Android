@@ -22,7 +22,8 @@ output.json
 
 lib_support/.cxx/
 lib_support/build/
-
+models/.cxx/
+models/build/
 opencv/.cxx/
 opencv/build/
 

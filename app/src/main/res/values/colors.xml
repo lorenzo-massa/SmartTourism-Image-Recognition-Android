@@ -2,9 +2,10 @@
 <resources>
     <!-- tfe_color_primary #ffa800
             tfe_color_accent #425066 -->
-    <color name="tfe_color_primary">#ff6f00</color>
-    <color name="tfe_color_primary_dark">#ff6f00</color>
-    <color name="tfe_color_accent">#ff6f00</color>
+    <!-- <color name="tfe_color_primary">#ff6f00</color> -->
+    <color name="tfe_color_primary">#DA95F0</color>
+    <color name="tfe_color_primary_dark">#DA95F0</color>
+    <color name="tfe_color_accent">#DA95F0</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#E0E0E0</color>

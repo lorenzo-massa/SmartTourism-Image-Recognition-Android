@@ -1,3 +1,0 @@
-ninja: Entering directory `C:\Users\Lorenzo\StudioProjects\SmartTourism v2\opencv\.cxx\Debug\5e1p6t2a\armeabi-v7a'
-[1/2] Building CXX object CMakeFiles/opencv_jni_shared.dir/dummy.cpp.o
-[2/2] Linking CXX static library libopencv_jni_shared.a

@@ -37,6 +37,7 @@ android {
     buildFeatures {
         mlModelBinding true
     }
+    namespace 'org.tensorflow.lite.examples.classification.lib_support'
 }
 
 dependencies {

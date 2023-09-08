@@ -104,8 +104,6 @@ android {
         minSdkVersion 26
         targetSdkVersion 33
 
-        versionCode openCVersionCode
-        versionName openCVersionName
 
         externalNativeBuild {
             cmake {
@@ -144,6 +142,18 @@ android {
         cmake {
             path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
         }
+    }
+    buildFeatures {
+        aidl true
+    }
+    namespace 'org.opencv'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
     }
 }
 

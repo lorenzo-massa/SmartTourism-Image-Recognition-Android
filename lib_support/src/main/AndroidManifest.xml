@@ -1,5 +1,4 @@
-<manifest package="org.tensorflow.lite.examples.classification.tflite"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 </manifest>

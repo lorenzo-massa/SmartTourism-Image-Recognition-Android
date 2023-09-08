@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import glob
 from processing_monuments import createDB
+from deep_augumentation import augment
 
 np.set_printoptions(threshold=np.inf)
 
@@ -35,8 +36,10 @@ ap.add_argument('-i', '--images', help='path of datset images')
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
 
 if ap.parse_args().fast:
+    print("\n\n[INFO]: Skipping the creation of the features dataset")
     createDB()
     exit()
+
 
 
 args = vars(ap.parse_args())
@@ -61,14 +64,39 @@ pbar = progressbar.ProgressBar(
     maxval=len(dataImages), widgets=widgets
 ).start()
 
+if len(dataImages) == 0:
+    print("\n\n[ERROR]: No images found in the specified path")
+    exit()
+
+monuments = dict()
 
 for (i, path) in enumerate(dataImages):
     pathSplitted = path.split(os.path.sep)[-2].split('_')
     monument = pathSplitted[0]+" "+pathSplitted[1]
     tupleImage = (monument,path)
     dataset.append(tupleImage)
+    if monument not in monuments.keys():
+        monuments[monument] = 1
+    else:
+        monuments[monument] += 1
     pbar.update(i)
 pbar.finish()
+
+IMAGE_PER_MONUMENT = 20
+
+# for each monumtent with less than 20 images, augment the dataset with the images of the same monument calling de function augment_images
+for monument in monuments.keys():
+    if monuments[monument] < IMAGE_PER_MONUMENT:
+        print("\n\n[INFO]: Augmenting "+ str(IMAGE_PER_MONUMENT-monuments[monument]) +" images of "+ monument + " ...")
+        #Get n random images of the monument
+        images = [path for (m,path) in dataset if m == monument]
+        images = np.random.choice(images, size=IMAGE_PER_MONUMENT-monuments[monument])
+        for image in images:
+            newpath = augment(image)
+            tupleImage = (monument,newpath)
+            dataset.append(tupleImage)  
+
+exit()
 
 
 #BUILD FEATURES
