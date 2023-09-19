@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/shareButton"
+        android:icon="@drawable/baseline_share_48"
+        android:title="Share"
+        android:contentDescription="Share"
+        app:showAsAction="ifRoom" />
+
+</menu>

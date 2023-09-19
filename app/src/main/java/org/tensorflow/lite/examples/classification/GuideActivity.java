@@ -1,21 +1,32 @@
 package org.tensorflow.lite.examples.classification;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.Element;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -58,6 +69,63 @@ public class GuideActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
             finish();
+        });
+
+        //Preferences button
+        ActionMenuItemView btnShare = findViewById(R.id.shareButton);
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Instantiate an intent
+                Intent intent = new Intent(Intent.ACTION_SEND);
+
+                intent.setType("image/*");
+
+                // Get bitmap from assets
+                InputStream is = null;
+                try {
+                    is = getAssets().open("categories/Arte.jpg");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                Uri uri = getmageToShare(bitmap);
+
+                // Add the URI to the Intent.
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+                // Add extra text to the Intent (optional)
+                intent.putExtra(Intent.EXTRA_TEXT, "I'm visiting " + monumentId + " with SmartTourism app!");
+                intent.putExtra(Intent.EXTRA_TITLE, "SmartTourism");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "SmartTourism");
+
+                // Attach your App ID to the intent
+                //String sourceApplication = getResources().getString(R.string.facebook_app_id);
+                //intent.putExtra("source_application", sourceApplication);
+
+                // Broadcast the Intent.
+                startActivity(Intent.createChooser(intent, "Share to"));
+
+            }
+
+            // Retrieving the url to share
+            private Uri getmageToShare(Bitmap bitmap) {
+                File imagefolder = new File(getCacheDir(), "images");
+                Uri uri = null;
+                try {
+                    imagefolder.mkdirs();
+                    File file = new File(imagefolder, "shared_image.jpeg");
+                    FileOutputStream outputStream = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                    outputStream.flush();
+                    outputStream.close();
+                    uri = FileProvider.getUriForFile(GuideActivity.this, "org.tensorflow.lite.examples.classification.fileprovider", file);
+                } catch (Exception e) {
+                    Toast.makeText(GuideActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                return uri;
+            }
         });
 
         MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdown_view);
@@ -161,6 +229,8 @@ public class GuideActivity extends AppCompatActivity {
         hintsView.setVisibility(View.VISIBLE);
 
     }
+
+
     /*
     private void volley_request(){
         // Instantiate the RequestQueue.

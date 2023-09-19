@@ -26,4 +26,7 @@
         <item>ORB</item>
         <item>OBJ</item>
     </string-array>
+
+    <string name="facebook_app_id">218738254251107</string><string name="facebook_client_token">0bda6f1f4f80c1f3259d06e2b4acfb8e</string>
+
 </resources>
