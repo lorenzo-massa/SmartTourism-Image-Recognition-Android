@@ -198,11 +198,6 @@ public class LoadingActivity extends AppCompatActivity {
             databaseAccess.uploadDatabaseMonuments();
             databaseAccess.uploadLanguages();
 
-            //TODO check if this is needed, android should create the database on its own
-            //databaseAccess.setOpenHelperLoggers();
-            //databaseAccess.updateMonumentInteractions();
-            //databaseAccess.closeOpenHelperLoggers();
-
             return null;
         }
 

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
@@ -29,10 +32,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.ExecutionException;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.mukesh.MarkdownView;
 
 public class GuideActivity extends AppCompatActivity {
@@ -71,7 +79,7 @@ public class GuideActivity extends AppCompatActivity {
             finish();
         });
 
-        //Preferences button
+        //Share button
         ActionMenuItemView btnShare = findViewById(R.id.shareButton);
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +90,10 @@ public class GuideActivity extends AppCompatActivity {
 
                 intent.setType("image/*");
 
+                String link = DatabaseAccess.getImageLink(monumentId);
+
                 // Get bitmap from assets
+/*
                 InputStream is = null;
                 try {
                     is = getAssets().open("categories/Arte.jpg");
@@ -91,21 +102,47 @@ public class GuideActivity extends AppCompatActivity {
                 }
                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                 Uri uri = getmageToShare(bitmap);
+*/
+                //Save image from url
+                Glide.with(GuideActivity.this)
+                        .load(link)
+                        .into(new CustomTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
 
-                // Add the URI to the Intent.
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                                Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
+                                Toast.makeText(GuideActivity.this, "Saving Image...", Toast.LENGTH_SHORT).show();
+                                Uri uri = getmageToShare(bitmap);
 
-                // Add extra text to the Intent (optional)
-                intent.putExtra(Intent.EXTRA_TEXT, "I'm visiting " + monumentId + " with SmartTourism app!");
-                intent.putExtra(Intent.EXTRA_TITLE, "SmartTourism");
-                intent.putExtra(Intent.EXTRA_SUBJECT, "SmartTourism");
+                                // Add the URI to the Intent.
+                                intent.putExtra(Intent.EXTRA_STREAM, uri);
 
-                // Attach your App ID to the intent
-                //String sourceApplication = getResources().getString(R.string.facebook_app_id);
-                //intent.putExtra("source_application", sourceApplication);
+                                // Add extra text to the Intent (optional)
+                                intent.putExtra(Intent.EXTRA_TEXT, "I'm visiting " + monumentId + " with SmartTourism app!");
+                                intent.putExtra(Intent.EXTRA_TITLE, "SmartTourism");
+                                intent.putExtra(Intent.EXTRA_SUBJECT, "SmartTourism");
 
-                // Broadcast the Intent.
-                startActivity(Intent.createChooser(intent, "Share to"));
+                                // Broadcast the Intent.
+                                startActivity(Intent.createChooser(intent, "Share to"));
+
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                            }
+
+                            @Override
+                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                super.onLoadFailed(errorDrawable);
+
+                                Toast.makeText(GuideActivity.this, "Failed to Download Image! Please try again later.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+
+
 
             }
 
@@ -131,14 +168,6 @@ public class GuideActivity extends AppCompatActivity {
         MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdown_view);
         markdownView.loadMarkdownFromAssets("guides/" + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
 
-        //Read text info from markdown
-
-        InputStream inputStream = null;
-        try {
-            inputStream = getAssets().open("guides/" + monumentId + "/" + language + "/guide.md");
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
 
         double[] coordinates = DatabaseAccess.getCoordinates(monumentId);
 

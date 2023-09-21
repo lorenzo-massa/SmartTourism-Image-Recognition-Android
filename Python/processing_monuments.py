@@ -4,6 +4,21 @@ import glob
 import sqlite3
 import progressbar
 import os
+from bs4 import BeautifulSoup
+
+def getImageLink(content):
+    # Parse the HTML content
+    soup = BeautifulSoup(content, 'html.parser')
+
+    # Find the img tag
+    img_tag = soup.find('img')
+
+    # Extract the src attribute
+    if img_tag:
+        image_src = img_tag.get('src')
+        return image_src
+    else:
+        return None
 
 def createDB():
 
@@ -60,10 +75,10 @@ def createDB():
         #READING GUIDE FILES
         for i, path in enumerate(textPaths):
             
-            #open text file in read mode
+            # Open text file in read mode
             file = open(textPaths[i], "r", encoding="utf-8")
             
-            #Read whole file to a string
+            # Read whole file to a string
             content = file.read()
 
             # Split the content into lines
@@ -108,11 +123,11 @@ def createDB():
             else:
                 capitalized_attributes = []
 
-            print(path)
-            print(capitalized_attributes)
+            # Find image link from the markdown file 
+            imgLink = getImageLink(content)
 
-            # Create a tuple with the content, coordinates, categories and attributes
-            obj = (content, coordinates, capitalized_categories, capitalized_attributes)
+            # Create a tuple with the content, coordinates, categories, attributes and image link
+            obj = (content, coordinates, capitalized_categories, capitalized_attributes, imgLink)
 
             monumentsList.append(obj)
             
@@ -165,7 +180,6 @@ def createDB():
         pbar = progressbar.ProgressBar(maxval=len(attributesList), widgets=widgets).start()
 
         for i, attr in enumerate(attributesList):
-            print("\n",attr)
             sql = f''' INSERT INTO {table_name_attributes} (name)
                     VALUES(?) '''
             cur.execute(sql, (attr,))
@@ -203,7 +217,7 @@ def createDB():
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments}")
-        cur.execute(f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY) """)
+        cur.execute(f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, path) """)
 
         widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ", progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
 
@@ -215,10 +229,10 @@ def createDB():
             pathSplitted = textPaths[i].split(os.path.sep)[-3].split(' ')
             m = ' '.join([str(elem) for elem in pathSplitted])
 
-            sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY)
-                    VALUES(?,?,?,?) '''
+            sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY, path)
+                    VALUES(?,?,?,?,?) '''
             
-            new = cur.execute(sql, (m,val, monumentsList[i][1][0], monumentsList[i][1][1]))
+            new = cur.execute(sql, (m,val, monumentsList[i][1][0], monumentsList[i][1][1], monumentsList[i][4]))
 
             # Save (commit) the changes
             con.commit()

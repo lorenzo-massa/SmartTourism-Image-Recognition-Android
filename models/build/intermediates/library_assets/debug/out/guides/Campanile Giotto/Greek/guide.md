@@ -7,7 +7,7 @@ museo
 <h1 align="center">Campanile di Giotto</h1>
 
 <center>
-  <img src="https://th.bing.com/th?id=OSK.HEROpTwAdRiYn9xhrVPdBz6Nrx9lNtj7tSxYbriPV5vHE4Y&w=472&h=280&c=1&rs=2&o=6&pid=SANGAM" alt="Immagine principale">
+  <img src="https://www.touringclub.it/sites/default/files/styles/gallery_full/public/immagini_georiferite/thinkstockphotos-637986426.jpg?itok=V1fLE4FX" alt="Immagine principale">
 </center>
 
 

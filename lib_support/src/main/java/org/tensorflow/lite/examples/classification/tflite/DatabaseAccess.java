@@ -406,13 +406,14 @@ public class DatabaseAccess {
 
         Log.d(TAG, "[INFO] updateDatabase: updating monuments...");
 
-        Cursor cursorMonuments = databaseMonuments.rawQuery("SELECT monument,vec,coordX,coordY FROM monuments_"+ language, null);
+        Cursor cursorMonuments = databaseMonuments.rawQuery("SELECT monument,vec,coordX,coordY,path FROM monuments_"+ language, null);
         cursorMonuments.moveToFirst();
         while (!cursorMonuments.isAfterLast()) {
             String monument = cursorMonuments.getString(0);
             String vec = cursorMonuments.getString(1);
             double coordX = cursorMonuments.getFloat(2);
             double coordY = cursorMonuments.getFloat(3);
+            String path = cursorMonuments.getString(4);
 
             //Convert vec string to Float
             String[] splittedVec = vec.substring(1, vec.length() - 1).split("\\s+");
@@ -431,6 +432,7 @@ public class DatabaseAccess {
             //element with converted matrix
             Element e = new Element(monument, listVec, -1);
             e.setCoordinates(coordX,coordY);
+            e.setPath(path);
 
             listMonuments.add(e);
 
@@ -529,7 +531,17 @@ public class DatabaseAccess {
             }
         }
 
-        //get coordinates from db
+        return null;
+    }
+
+    public static String getImageLink(String monument){
+        for (Element e : listMonuments
+        ) {
+            if (Objects.equals(e.getMonument(), monument)) {
+                Log.d(TAG, "Image link: " + e.getPath());
+                return e.getPath();
+            }
+        }
 
         return null;
     }

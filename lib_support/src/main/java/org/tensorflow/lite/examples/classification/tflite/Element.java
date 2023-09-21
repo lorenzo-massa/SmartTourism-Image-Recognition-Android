@@ -14,6 +14,8 @@ public class Element {
     private ArrayList<String> categories = new ArrayList<>();
     private ArrayList<String> attributes = new ArrayList<>();
 
+    private String path;
+
 
 
     public Element(String monument, float[] matrix, double distance) {
@@ -36,6 +38,10 @@ public class Element {
 
     public void setDistance(double distance){
         this.distance=distance;
+    }
+
+    public void setPath(String path){
+        this.path=path;
     }
 
     public void setCategories(ArrayList<String> categories){
@@ -77,6 +83,10 @@ public class Element {
         coordinates[1] = coordY;
 
         return coordinates;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public ArrayList<String> getCategories() {

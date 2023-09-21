@@ -7,7 +7,7 @@ museo, accessibilità carrozzina
 <h1 align="center">Cattedrale di Santa Maria del Fiore</h1>
 
 <center>
-  <img src="https://th.bing.com/th?id=OSK.HEROpTwAdRiYn9xhrVPdBz6Nrx9lNtj7tSxYbriPV5vHE4Y&w=472&h=280&c=1&rs=2&o=6&pid=SANGAM" alt="Immagine principale">
+  <img src="https://tourismmedia.italia.it/is/image/mitur/800X500_cupola_brunelleschi?wid=1240&hei=500&fit=constrain,1&fmt=webp" alt="Immagine principale">
 </center>
 
 
