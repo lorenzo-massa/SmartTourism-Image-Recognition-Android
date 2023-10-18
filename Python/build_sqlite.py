@@ -119,6 +119,9 @@ for dType,modelPath in types:
     for monument,path in dataset:
         # preprocessing
         image = cv2.imread(path)
+        if np.shape(image) == (): # latest numpy / py3
+            print("\n\n[ERROR]: Image not found: " + path)
+            continue  # fail !!
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         h = image.shape[0]
