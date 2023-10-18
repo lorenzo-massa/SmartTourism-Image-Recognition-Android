@@ -4,5 +4,6 @@ imutils
 progressbar
 scikit-learn
 gensim
-
+beautifulsoup4
+matplotlib
 albumentations
