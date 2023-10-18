@@ -1,17 +1,17 @@
 package org.tensorflow.lite.examples.classification;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,13 +30,9 @@ import org.tensorflow.lite.examples.classification.tflite.Element;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.concurrent.ExecutionException;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -111,7 +107,9 @@ public class GuideActivity extends AppCompatActivity {
                             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
 
                                 Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
-                                Toast.makeText(GuideActivity.this, "Saving Image...", Toast.LENGTH_SHORT).show();
+                                bitmap = addWatermark(bitmap);
+
+                                //Toast.makeText(GuideActivity.this, "Saving Image...", Toast.LENGTH_SHORT).show();
                                 Uri uri = getmageToShare(bitmap);
 
                                 // Add the URI to the Intent.
@@ -154,7 +152,7 @@ public class GuideActivity extends AppCompatActivity {
                     imagefolder.mkdirs();
                     File file = new File(imagefolder, "shared_image.jpeg");
                     FileOutputStream outputStream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                     outputStream.flush();
                     outputStream.close();
                     uri = FileProvider.getUriForFile(GuideActivity.this, "org.tensorflow.lite.examples.classification.fileprovider", file);
@@ -162,6 +160,53 @@ public class GuideActivity extends AppCompatActivity {
                     Toast.makeText(GuideActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 return uri;
+            }
+
+            // Add watermark to image
+            private Bitmap addWatermark(Bitmap src) {
+                int w = src.getWidth();
+                int h = src.getHeight();
+                Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
+                Canvas canvas = new Canvas(result);
+                canvas.drawBitmap(src, 0, 0, null);
+
+                //Draw Text
+                /*
+                Paint paint = new Paint();
+                paint.setColor(Color.RED);
+                paint.setTextSize(15);
+                paint.setAntiAlias(true);
+                paint.setUnderlineText(false);
+                canvas.drawText(watermark, 10, h-10, paint);
+                 */
+
+                //Draw drawable
+                Drawable drawable = getResources().getDrawable(R.drawable.logo_name);
+                Bitmap bitmapLogo = ((BitmapDrawable)drawable).getBitmap();
+                //Resize bitmap
+                bitmapLogo = BITMAP_RESIZER(bitmapLogo, 50, 50);
+                canvas.drawBitmap(bitmapLogo, w-60, h-60, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+                return result;
+            }
+
+            private Bitmap BITMAP_RESIZER(Bitmap bitmap,int newWidth,int newHeight) {
+                Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+                float ratioX = newWidth / (float) bitmap.getWidth();
+                float ratioY = newHeight / (float) bitmap.getHeight();
+                float middleX = newWidth / 2.0f;
+                float middleY = newHeight / 2.0f;
+
+                Matrix scaleMatrix = new Matrix();
+                scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+                Canvas canvas = new Canvas(scaledBitmap);
+                canvas.setMatrix(scaleMatrix);
+                canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+                return scaledBitmap;
+
             }
         });
 
