@@ -1,7 +1,15 @@
-
+# build temp files
 .DS_Store
-/models/src/main/assets/images/
 /app/src/main/res/raw/
+
+lib_support/.cxx/
+lib_support/build/
+/models/build/
+/lib_support/build/
+models/.cxx/
+models/build/
+opencv/.cxx/
+opencv/build/
 
 # Gradle files
 .gradle/
@@ -20,13 +28,6 @@ captures/
 *.apk
 output.json
 
-lib_support/.cxx/
-lib_support/build/
-models/.cxx/
-models/build/
-opencv/.cxx/
-opencv/build/
-
 # IntelliJ
 *.iml
 .idea/
@@ -43,5 +44,3 @@ google-services.json
 
 # Android Profiling
 *.hprof
-/models/build/
-/lib_support/build/
