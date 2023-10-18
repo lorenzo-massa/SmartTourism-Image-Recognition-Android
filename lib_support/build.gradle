@@ -49,13 +49,13 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.0'
 
     // Build off of nightly TensorFlow Lite
-    implementation 'org.tensorflow:tensorflow-lite:2.7.0'
-    implementation 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
-    implementation 'org.tensorflow:tensorflow-lite-support:0.3.0'
+    implementation 'org.tensorflow:tensorflow-lite:2.14.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.14.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu-api:2.14.0'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.4.4'
 
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
-    implementation 'org.tensorflow:tensorflow-lite-metadata:0.3.0'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.4.4'
     implementation 'androidx.core:core-ktx:1.10.1'
-
 
 }
