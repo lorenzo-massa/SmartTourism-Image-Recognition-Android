@@ -116,13 +116,13 @@ datasetImages
 
 ```
 
-Go to the `models\src\main\assets\categories` folder and run the following commands in a terminal:
+Go to the folder containing the Dockerfile (i.e. the project folder) and run the following commands in a terminal:
 
 ```sh
 1. docker build -t tfimage .
 2. docker run -it tfimage
 3. docker container ls -all
-4. docker cp containerID:/app/models/src/main/assets/databases .\models\src\main\assets\
+4. docker cp containerID:/app/models/src/main/assets/databases ./models/src/main/assets/
 ```
 
 NOTE: You can find containerID in the list of the containers in the third instruction.

@@ -30,7 +30,7 @@ ALL_DATASET = True
 
 ap = argparse.ArgumentParser()
 
-ap.add_argument('-i', '--images', help='path of datset images')
+ap.add_argument('-i', '--images', help='path of dataset images')
 
 #add optional argument to skip the creation of the test_set (default False)
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
@@ -84,7 +84,7 @@ pbar.finish()
 
 IMAGE_PER_MONUMENT = 20
 
-# for each monumtent with less than 20 images, augment the dataset with the images of the same monument calling de function augment_images
+# for each monument with less than 20 images, augment the dataset with the images of the same monument calling de function augment_images
 for monument in monuments.keys():
     if monuments[monument] < IMAGE_PER_MONUMENT:
         print("\n\n[INFO]: Augmenting "+ str(IMAGE_PER_MONUMENT-monuments[monument]) +" images of "+ monument + " ...")
@@ -95,8 +95,6 @@ for monument in monuments.keys():
             newpath = augment(image)
             tupleImage = (monument,newpath)
             dataset.append(tupleImage)  
-
-exit()
 
 
 #BUILD FEATURES
