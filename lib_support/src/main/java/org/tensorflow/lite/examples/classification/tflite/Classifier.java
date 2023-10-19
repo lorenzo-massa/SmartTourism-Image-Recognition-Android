@@ -366,6 +366,7 @@ public abstract class Classifier {
         Log.v(TAG, "Timecost to run Post Process: " + (endTimeForPostProcess - startTimeForPostProcess));
         Trace.endSection();
 
+        Log.v(TAG, "# recognized results: " + finalResult.size());
         Trace.endSection(); //end recognize image section
 
         return finalResult;

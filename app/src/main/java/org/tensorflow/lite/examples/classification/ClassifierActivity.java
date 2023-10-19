@@ -175,15 +175,11 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
             return;
         }
         try {
-            LOGGER.d(
-                    "Creating classifier (model=%s, device=%s, numThreads=%d, mode=%s, language=%s)", model, device, numThreads, mode, language);
+            LOGGER.d("Creating classifier (model=%s, device=%s, numThreads=%d, mode=%s, language=%s)", model, device, numThreads, mode, language);
 
             classifier = Classifier.create(this, model, device, numThreads, mode, language);
 
             Toast.makeText(this, "Classifier (model= "+model+", device= "+device+", numThreads= "+numThreads+", mode=" + mode, Toast.LENGTH_LONG).show();
-
-
-
 
         } catch (Exception e) {
             LOGGER.e(e, "Failed to create classifier.");
