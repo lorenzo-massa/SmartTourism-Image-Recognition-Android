@@ -1,2 +1,0 @@
-ninja: Entering directory `C:\Users\Lorenzo\StudioProjects\SmartTourism\lib_support\.cxx\Debug\41r1g196\x86_64'
-ninja: no work to do.

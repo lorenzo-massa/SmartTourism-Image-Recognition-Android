@@ -1,3 +1,0 @@
-C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/.cxx/Debug/41r1g196/x86/CMakeFiles/faiss.dir
-C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/.cxx/Debug/41r1g196/x86/CMakeFiles/edit_cache.dir
-C:/Users/Lorenzo/StudioProjects/SmartTourism/lib_support/.cxx/Debug/41r1g196/x86/CMakeFiles/rebuild_cache.dir
