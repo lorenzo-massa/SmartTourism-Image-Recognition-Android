@@ -83,7 +83,10 @@
 
     </application>
 
-
+    <queries>
+        <!-- Specific intents you query for -->
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
 
 </manifest>
 

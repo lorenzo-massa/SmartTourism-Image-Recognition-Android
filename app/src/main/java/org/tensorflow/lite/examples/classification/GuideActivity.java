@@ -238,7 +238,7 @@ public class GuideActivity extends AppCompatActivity {
                 mapsButton.setVisibility(View.VISIBLE);
 
             } else {
-                Log.d(TAG, "No maps app found.");
+                Log.w(TAG, "No maps app found.");
             }
 
         }else{

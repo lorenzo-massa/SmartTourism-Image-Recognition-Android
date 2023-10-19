@@ -37,7 +37,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Camera Classifier"
+            app:title="What is this ?"
             android:background="?attr/colorPrimary"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/arrow_back"
