@@ -62,7 +62,7 @@ public class DatabaseAccess {
         this.openHelperMonuments = new DatabaseOpenHelper(activity, dbName2);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
-        language = sharedPreferences.getString("pref_key_language","English");
+        language = sharedPreferences.getString("pref_key_language", "English");
     }
 
     public static void setLanguage(String language) {
@@ -76,11 +76,11 @@ public class DatabaseAccess {
      * @return the instance of DabaseAccess
      */
     public static DatabaseAccess getInstance(Activity activity, String dbName) {
-        if (dbName.equals("")){
+        if (dbName.equals("")) {
             dbName = "MobileNetV3_Large_100_db.sqlite";
         }
 
-        if (instance == null){
+        if (instance == null) {
             instance = new DatabaseAccess(activity, dbName);
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
         }
@@ -92,10 +92,10 @@ public class DatabaseAccess {
         List<String> selectedCategories = new ArrayList<>();
         List<String> listCategoriesOrdered = new ArrayList<>();
 
-        for (String category : listCategories){
+        for (String category : listCategories) {
             boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
             Log.d(TAG, "getListCategoriesOrdered: category_checkbox: " + category + " b: " + b);
-            if (b){
+            if (b) {
                 selectedCategories.add(category);
             }
         }
@@ -109,9 +109,9 @@ public class DatabaseAccess {
         //create a list with the selected categories ordered by the number of interactions
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT c.name, COUNT(l.id) AS interaction_count ")
-                .append("FROM categories_"+language+" c ")
-                .append("JOIN monuments_categories_"+language+" mc ON c.id = mc.categoryID ")
-                .append("JOIN monuments_"+language+" m ON mc.monumentID = m.id ")
+                .append("FROM categories_" + language + " c ")
+                .append("JOIN monuments_categories_" + language + " mc ON c.id = mc.categoryID ")
+                .append("JOIN monuments_" + language + " m ON mc.monumentID = m.id ")
                 .append("LEFT JOIN logs l ON m.id = l.monumentId ")
                 .append("WHERE c.name IN (");
 
@@ -139,12 +139,11 @@ public class DatabaseAccess {
 
         //add the categories that are not selected
 
-        for (String category : listCategories){
-            if (!listCategoriesOrdered.contains(category)){
+        for (String category : listCategories) {
+            if (!listCategoriesOrdered.contains(category)) {
                 listCategoriesOrdered.add(category);
             }
         }
-
 
         return listCategoriesOrdered;
     }
@@ -153,26 +152,24 @@ public class DatabaseAccess {
         ArrayList<String> selectedAttributes = new ArrayList<>();
         ArrayList<String> monumentList = new ArrayList<>();
 
-        for (String attribute : listAttributes){
+        for (String attribute : listAttributes) {
             boolean b = sharedPreferences.getBoolean("attribute_checkbox_" + attribute.toLowerCase(), false);
-            if (b){
+            if (b) {
                 selectedAttributes.add(attribute);
             }
             Log.d(TAG, "getMonumentsByCategoryOrdered: attribute_checkbox: " + attribute + " b: " + b);
         }
 
-
-        if (!selectedAttributes.isEmpty()){
-
+        if (!selectedAttributes.isEmpty()) {
             databaseMonuments = openHelperMonuments.getWritableDatabase();
 
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.append("SELECT DISTINCT m.id, m.monument ")
-                    .append("FROM monuments_"+language+" m ")
-                    .append("JOIN monuments_attributes_"+language+" ma ON m.id = ma.monumentID ")
-                    .append("JOIN attributes_"+language+" a ON ma.attributeID = a.id ")
-                    .append("JOIN monuments_categories_"+language+" mc ON m.id = mc.monumentID ")
-                    .append("JOIN categories_"+language+" c ON mc.categoryID = c.id ")
+                    .append("FROM monuments_" + language + " m ")
+                    .append("JOIN monuments_attributes_" + language + " ma ON m.id = ma.monumentID ")
+                    .append("JOIN attributes_" + language + " a ON ma.attributeID = a.id ")
+                    .append("JOIN monuments_categories_" + language + " mc ON m.id = mc.monumentID ")
+                    .append("JOIN categories_" + language + " c ON mc.categoryID = c.id ")
                     .append("WHERE a.name IN (");
 
             // Add placeholders for attribute names
@@ -199,11 +196,10 @@ public class DatabaseAccess {
 
             cursor.close();
             databaseMonuments.close();
-
         }
 
-        for (String m : getMonumentsByCategory(category)){
-            if(!monumentList.contains(m)){
+        for (String m : getMonumentsByCategory(category)) {
+            if (!monumentList.contains(m)) {
                 monumentList.add(m);
             }
         }
@@ -218,7 +214,7 @@ public class DatabaseAccess {
     }
 
     public static DatabaseAccess getInstance() {
-        if (instance == null){
+        if (instance == null) {
             Log.d(TAG, "[ERROR] DatabaseAccess instance is null");
         }
         return instance;
@@ -249,12 +245,12 @@ public class DatabaseAccess {
         databaseMonuments = openHelperMonuments.getWritableDatabase();
 
         String query = "SELECT m.monument " +
-                "FROM monuments_"+language+" m " +
-                "JOIN monuments_categories_"+language+" mc ON m.id = mc.monumentID " +
-                "JOIN categories_"+language+" c ON mc.categoryID = c.id " +
+                "FROM monuments_" + language + " m " +
+                "JOIN monuments_categories_" + language + " mc ON m.id = mc.monumentID " +
+                "JOIN categories_" + language + " c ON mc.categoryID = c.id " +
                 "WHERE c.name = ?";
 
-        String[] selectionArgs = { category };
+        String[] selectionArgs = {category};
 
         Cursor cursor = databaseMonuments.rawQuery(query, selectionArgs);
 
@@ -268,10 +264,6 @@ public class DatabaseAccess {
 
         return monumentList;
     }
-
-
-
-
 
 
     public static float[][] getMatrixDB() {
@@ -289,6 +281,10 @@ public class DatabaseAccess {
      * Open the database connection.
      */
     public void open() {
+        // check SQLLite DB file really exists in app filesystem
+
+
+
         this.databaseRetrieval = openHelperRetrieval.getWritableDatabase();
         this.databaseMonuments = openHelperMonuments.getWritableDatabase();
     }
@@ -298,7 +294,7 @@ public class DatabaseAccess {
      * Close the database connection.
      */
 
-    public void updateDatabaseColdStart(){
+    public void updateDatabaseColdStart() {
 
         this.databaseMonuments = openHelperMonuments.getWritableDatabase();
 
@@ -306,7 +302,7 @@ public class DatabaseAccess {
             Log.d(TAG, "[INFO] updateDatabaseColdStart: updating categories...");
 
             //Update database categories
-            Cursor cursorCategories = databaseMonuments.rawQuery("SELECT name FROM categories_"+ language, null);
+            Cursor cursorCategories = databaseMonuments.rawQuery("SELECT name FROM categories_" + language, null);
             cursorCategories.moveToFirst();
             while (!cursorCategories.isAfterLast()) {
                 String category = cursorCategories.getString(0);
@@ -319,7 +315,7 @@ public class DatabaseAccess {
             Log.d(TAG, "[INFO] updateDatabaseColdStart: updating attributes...");
 
             //Update database attributes
-            Cursor cursorAttributes = databaseMonuments.rawQuery("SELECT name FROM attributes_"+ language, null);
+            Cursor cursorAttributes = databaseMonuments.rawQuery("SELECT name FROM attributes_" + language, null);
             cursorAttributes.moveToFirst();
             while (!cursorAttributes.isAfterLast()) {
                 String attribute = cursorAttributes.getString(0);
@@ -328,7 +324,7 @@ public class DatabaseAccess {
             }
         }
 
-        if (databaseMonuments != null){
+        if (databaseMonuments != null) {
             databaseMonuments.close();
         }
     }
@@ -344,36 +340,39 @@ public class DatabaseAccess {
             //open the database
             open();
             //check if the database is open
-            databaseRetrieval.isOpen();
+            if (!databaseRetrieval.isOpen())
+                Log.e(TAG, "[Error] updateDatabase: databaseRetrieval database is not open");
             listRetrieval = new ArrayList<>();
             //i<k
             for (int i = 0; i < k; i++) {
                 Log.v("DatabaseAccess", "id from " + i + "/" + k + " to " + (i + 1) + "/" + k);
-                Cursor cursor = databaseRetrieval.rawQuery("SELECT * FROM monuments " +
-                        "WHERE rowid > " + i + " * (SELECT COUNT(*) FROM monuments)/" + k + " AND rowid <= (" + i + "+1) * (SELECT COUNT(*) FROM monuments)/" + k, null);
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    String monument = cursor.getString(0);
-                    String matrix = cursor.getString(1);
+                String SQLQuery = "SELECT * FROM monuments WHERE rowid > " + i + " * (SELECT COUNT(*) FROM monuments)/" + k + " AND rowid <= (" + i + "+1) * (SELECT COUNT(*) FROM monuments)/" + k;
+                Cursor cursor = databaseRetrieval.rawQuery(SQLQuery, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        String monument = cursor.getString(0);
+                        String matrix = cursor.getString(1);
 
-                    //Convert matrix string to Float
-                    String[] splitted = matrix.substring(1, matrix.length() - 1).split("\\s+");
-                    float[] listMatrix = new float[splitted.length];
+                        //Convert matrix string to Float
+                        String[] splitted = matrix.substring(1, matrix.length() - 1).split("\\s+");
+                        float[] listMatrix = new float[splitted.length];
 
-                    int z = 0;
-                    for (String s : splitted
-                    ) {
-                        if (!Objects.equals(s, "")) {
-                            listMatrix[z] = Float.parseFloat(s);
-                            z++;
+                        int z = 0;
+                        for (String s : splitted
+                        ) {
+                            if (!Objects.equals(s, "")) {
+                                listMatrix[z] = Float.parseFloat(s);
+                                z++;
+                            }
                         }
 
-                    }
-
-                    //element with converted matrix
-                    Element e = new Element(monument, listMatrix, 0);
-                    listRetrieval.add(e);
-                    cursor.moveToNext();
+                        //element with converted matrix
+                        Element e = new Element(monument, listMatrix, 0);
+                        listRetrieval.add(e);
+                        cursor.moveToNext();
+                    } while (!cursor.isAfterLast());
+                } else {
+                    Log.e(TAG, "[Error] updateDatabase: databaseRetrieval cursor is empty");
                 }
                 cursor.close();
 
@@ -381,7 +380,6 @@ public class DatabaseAccess {
                     updateListener.onDatabaseUpdateProgress((i + 1) * 100 / k);
                 }
             }
-
         });
 
         thread.start();
@@ -406,7 +404,7 @@ public class DatabaseAccess {
 
         Log.d(TAG, "[INFO] updateDatabase: updating monuments...");
 
-        Cursor cursorMonuments = databaseMonuments.rawQuery("SELECT monument,vec,coordX,coordY,path FROM monuments_"+ language, null);
+        Cursor cursorMonuments = databaseMonuments.rawQuery("SELECT monument,vec,coordX,coordY,path FROM monuments_" + language, null);
         cursorMonuments.moveToFirst();
         while (!cursorMonuments.isAfterLast()) {
             String monument = cursorMonuments.getString(0);
@@ -426,12 +424,11 @@ public class DatabaseAccess {
                     listVec[z] = Float.parseFloat(s);
                     z++;
                 }
-
             }
 
             //element with converted matrix
             Element e = new Element(monument, listVec, -1);
-            e.setCoordinates(coordX,coordY);
+            e.setCoordinates(coordX, coordY);
             e.setPath(path);
 
             listMonuments.add(e);
@@ -443,10 +440,9 @@ public class DatabaseAccess {
         if (databaseMonuments != null) {
             this.databaseMonuments.close();
         }
-
     }
 
-    public void uploadLanguages(){
+    public void uploadLanguages() {
         databaseMonuments = openHelperMonuments.getWritableDatabase();
 
         Log.d(TAG, "[INFO] updateDatabase: updating languages...");
@@ -515,7 +511,7 @@ public class DatabaseAccess {
 
         Log.d(TAG, "[LOG] log: monument " + id + " logged with id " + newRowId);
 
-        if (this.databaseMonuments != null){
+        if (this.databaseMonuments != null) {
             this.databaseMonuments.close();
         }
     }
@@ -523,8 +519,7 @@ public class DatabaseAccess {
 
     public static double[] getCoordinates(String monument) {
 
-        for (Element e : listMonuments
-        ) {
+        for (Element e : listMonuments) {
             if (Objects.equals(e.getMonument(), monument)) {
                 Log.d(TAG, "Coordinates: " + e.getCoordX() + " " + e.getCoordY());
                 return e.getCoordinates();
@@ -534,9 +529,8 @@ public class DatabaseAccess {
         return null;
     }
 
-    public static String getImageLink(String monument){
-        for (Element e : listMonuments
-        ) {
+    public static String getImageLink(String monument) {
+        for (Element e : listMonuments) {
             if (Objects.equals(e.getMonument(), monument)) {
                 Log.d(TAG, "Image link: " + e.getPath());
                 return e.getPath();
@@ -551,7 +545,6 @@ public class DatabaseAccess {
         Location currentLocation = new Location("");
         currentLocation.setLatitude(latitude);
         currentLocation.setLongitude(longitude);
-
 
         Element nearestElement = listMonuments.get(0);
         double minDistance = maxDistance;
@@ -568,7 +561,7 @@ public class DatabaseAccess {
             }
         }
 
-        if(minDistance >= maxDistance){
+        if (minDistance >= maxDistance) {
             return null;
         }
 

@@ -18,7 +18,7 @@ def augment(path, save = True):
         extension = pathSplitted[-1]
         newpath = pathSplitted[0]+"_aug"+"."+extension
         cv2.imwrite(newpath, transformed['image'])
-        return path+"_aug"
+        return newpath
     else:
         return transformed['image']
 
