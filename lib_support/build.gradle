@@ -38,6 +38,10 @@ android {
         mlModelBinding true
     }
     namespace 'org.tensorflow.lite.examples.classification.lib_support'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 }
 
 dependencies {
@@ -54,7 +58,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-gpu-api:2.14.0'
     implementation 'org.tensorflow:tensorflow-lite-support:0.4.4'
 
-    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.4.4'
     implementation 'androidx.core:core-ktx:1.10.1'
 
