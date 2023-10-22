@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
     public static boolean isRunning = false;
     final double MAX_DISTANCE = 100;  //TODO test range
+
+    final long NOTIFICATION_TIME = 6000; //60000 = 1 minute
     private String language;
     private String uniqueID;
 
@@ -90,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
                 Log.d(TAG, "onLocationChanged: " + currentLat + " " + currentLng);
 
-                if (System.currentTimeMillis() - lastNotificationTime >= 60000){
+                if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", false) //Check if notifications are enabled
+                        && System.currentTimeMillis() - lastNotificationTime >= NOTIFICATION_TIME){ //At least 1 minute between notifications
                     // Define the target location
                     String nearestMonument = DatabaseAccess.getNearestMonument(currentLat, currentLng, MAX_DISTANCE);
                     Log.d(TAG, "onLocationChanged: " + nearestMonument);
