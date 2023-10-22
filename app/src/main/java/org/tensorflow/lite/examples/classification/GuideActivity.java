@@ -72,6 +72,8 @@ public class GuideActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
+            if(!MainActivity.isRunning)
+                startActivity(new Intent(GuideActivity.this, MainActivity.class));
             finish();
         });
 

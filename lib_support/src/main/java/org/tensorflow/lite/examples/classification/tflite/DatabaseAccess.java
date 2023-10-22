@@ -561,9 +561,11 @@ public class DatabaseAccess {
             }
         }
 
+        /* COMMENTED FOR TESTING PURPOSES
         if (minDistance >= maxDistance) {
             return null;
         }
+         */
 
         Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
         Log.d(TAG, "Nearest monument: " + nearestElement.getMonument()
