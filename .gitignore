@@ -44,3 +44,5 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+/models/src/main/assets/databases/
