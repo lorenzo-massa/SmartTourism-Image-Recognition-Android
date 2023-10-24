@@ -1,27 +1,16 @@
 package org.tensorflow.lite.examples.classification;
 
-import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,20 +18,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
-import java.util.Random;
-
 public class MainActivity extends AppCompatActivity implements MonumentAdapter.OnButtonClickListener {
 
     public static boolean isRunning = false;
-    final double MAX_DISTANCE = 100;  //TODO test range
+    public static final double MAX_DISTANCE = 5000 / 111.139 ;  //TODO test range
+    public static final double MAX_DISTANCE_RECOGNIZED = 300 / 111.139 ; //TODO test range
 
-    final long NOTIFICATION_TIME = 6000; //60000 = 1 minute
-    private String language;
-    private String uniqueID;
+    static final long NOTIFICATION_TIME = 60000; //60000 = 1 minute
+    public static String language;
+    public static String uniqueID;
 
     private static final String TAG = "MainActivity";
 
-    private LocationListener locationListener;
+    public static MyLocationListener locationListener;
     private LocationManager locationManager;
 
     @Override
@@ -82,81 +70,23 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
         // Get the current location
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            private long lastNotificationTime = System.currentTimeMillis();
-
-            @Override
-            public void onLocationChanged(Location location) {
-                double currentLat = location.getLatitude();
-                double currentLng = location.getLongitude();
-
-                Log.d(TAG, "onLocationChanged: " + currentLat + " " + currentLng);
-
-                if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", false) //Check if notifications are enabled
-                        && System.currentTimeMillis() - lastNotificationTime >= NOTIFICATION_TIME){ //At least 1 minute between notifications
-                    // Define the target location
-                    String nearestMonument = DatabaseAccess.getNearestMonument(currentLat, currentLng, MAX_DISTANCE);
-                    Log.d(TAG, "onLocationChanged: " + nearestMonument);
-
-                    // Check proximity and send notification if within range and enough time has passed
-                    if (nearestMonument != null) {
-                        // Update the last notification time
-                        lastNotificationTime = System.currentTimeMillis();
-
-                        // Create an explicit intent for the app's main activity
-                        Intent intent = new Intent(MainActivity.this, GuideActivity.class);
-                        intent.putExtra("monument_id", nearestMonument);
-                        intent.putExtra("language", language);
-                        intent.putExtra("user_id", uniqueID);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-
-                        // Create and send notification
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "channel_id")
-                                .setSmallIcon(R.drawable.done)
-                                .setContentTitle("Nearby Monument")
-                                .setContentText("You are near " + nearestMonument + "! Click here to learn more.")
-                                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                                .setContentIntent(pendingIntent) // Set the pending intent
-                                .setAutoCancel(true) // Dismiss the notification when the user taps on it
-                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MainActivity.this);
-                        NotificationChannel channel = new NotificationChannel("channel_id", "channel_name", NotificationManager.IMPORTANCE_HIGH);
-                        notificationManager.createNotificationChannel(channel);
-
-                        if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                            int notificationId = new Random().nextInt();
-                            notificationManager.notify(notificationId, builder.build());
-                        }
-                    }
-                }
-
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                // Handle provider disabled
-                Log.d(TAG, "onProviderDisabled: " + provider);
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-                // Handle provider enabled
-                Log.d(TAG, "onProviderEnabled: " + provider);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                // Handle status changed
-                Log.d(TAG, "onStatusChanged: " + provider + " status: " + status);
-            }
-        };
+        locationListener = new MyLocationListener(MainActivity.this);
 
 
         // Request location updates
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Consider calling ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Log.e(TAG, "ERROR: checkSelfPermission(ACCESS_FINE_LOCATION or ACCESS_COARSE_LOCATION)");
+            return;
+        }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
@@ -177,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
 
         //check if notifications are enabed in preferences
-        if (!DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", true)) {
+        if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", true)
+                && DatabaseAccess.getSharedPreferences().getBoolean("pref_key_gps_classifier", true)) {
             locationManager.removeUpdates(locationListener);
         } else {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

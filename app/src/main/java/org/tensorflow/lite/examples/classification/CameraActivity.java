@@ -22,20 +22,15 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.location.Location;
 import android.location.LocationManager;
 import android.media.Image;
 import android.media.Image.Plane;
@@ -46,28 +41,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -85,14 +75,10 @@ import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
-import org.tensorflow.lite.examples.classification.tflite.MyLocationListener;
 
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -163,10 +149,6 @@ public abstract class CameraActivity extends AppCompatActivity
     protected String uniqueID;
 
     private final String TAG = "Camera Activity";
-
-    //GPS
-    LocationManager locationManager;
-    MyLocationListener locationListener;
 
     protected SharedPreferences sharedPreferences;
 
@@ -705,57 +687,64 @@ public abstract class CameraActivity extends AppCompatActivity
 
             //If you recognize the same monument 3 times in a row, you show the popup
             if (recognitionList.size() >= 3 || helped) {
+                boolean openPopup = true;
+                if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_gps_classifier", true)){
+                    // If you want to use the GPS
+                    // Check if the recognized monument is in the range of the nearest monument
+                    openPopup = monumentIsNearMyLocation(firstPosition);
+                }
 
                 //Reset cleanings
                 nClearedList = 0;
                 nFarMonuments = 0;
 
-                //Show button more info
-                loadingIndicator.setVisibility(View.GONE);
+                //Show popup to advice to visit the monument
+                if(openPopup){
+                    loadingIndicator.setVisibility(View.GONE);
 
-                Recognition finalRecognition = recognition;
+                    Recognition finalRecognition = recognition;
 
-                dialogBuilder = new AlertDialog.Builder(this);
-                final View popupRecognizedView = getLayoutInflater().inflate(R.layout.popup_recognized, null);
-                TextView recognizedMonumentTextView = popupRecognizedView.findViewById(R.id.monument_recognized);
-                recognizedMonumentTextView.setText(finalRecognition.getTitle());
+                    dialogBuilder = new AlertDialog.Builder(this);
+                    final View popupRecognizedView = getLayoutInflater().inflate(R.layout.popup_recognized, null);
+                    TextView recognizedMonumentTextView = popupRecognizedView.findViewById(R.id.monument_recognized);
+                    recognizedMonumentTextView.setText(finalRecognition.getTitle());
 
-                dialogBuilder.setView(popupRecognizedView);
-                dialog = dialogBuilder.create();
-                dialog.show();
+                    dialogBuilder.setView(popupRecognizedView);
+                    dialog = dialogBuilder.create();
+                    dialog.show();
 
-                Button moreInfoButton = popupRecognizedView.findViewById(R.id.more_info_button);
+                    Button moreInfoButton = popupRecognizedView.findViewById(R.id.more_info_button);
 
-                moreInfoButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //define button function
-                        Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
-                        intent.putExtra("monument_id", finalRecognition.getId());
-                        intent.putExtra("language", language.toString());
-                        intent.putExtra("user_id", uniqueID);
+                    moreInfoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //define button function
+                            Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
+                            intent.putExtra("monument_id", finalRecognition.getId());
+                            intent.putExtra("language", language.toString());
+                            intent.putExtra("user_id", uniqueID);
 
-                        startActivity(intent);
-                        dialog.dismiss();
-                        dialogIsOpen = false;
-                    }
-                });
+                            startActivity(intent);
+                            dialog.dismiss();
+                            dialogIsOpen = false;
+                        }
+                    });
 
-                Button cancelButton = popupRecognizedView.findViewById(R.id.cancel_button);
-                cancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //define button function
-                        dialog.dismiss();
-                        dialogIsOpen = false;
-                        loadingIndicator.setVisibility(View.VISIBLE);
+                    Button cancelButton = popupRecognizedView.findViewById(R.id.cancel_button);
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //define button function
+                            dialog.dismiss();
+                            dialogIsOpen = false;
+                            loadingIndicator.setVisibility(View.VISIBLE);
 
-                    }
-                });
+                        }
+                    });
 
-                recognitionList.clear();
-                dialogIsOpen = true;
-
+                    recognitionList.clear();
+                    dialogIsOpen = true;
+                }
             }
 
             if(nFarMonuments >= 3){ //If the monument recognized is too far 3 times in a row, you show the popup
@@ -830,18 +819,51 @@ public abstract class CameraActivity extends AppCompatActivity
         //Using the GPS, you find the nearest monument
 
         //Check if the GPS is enabled
-        if (checkIfLocationOpened() && locationListener != null){
+        if (checkIfLocationOpened() && MainActivity.locationListener != null){
 
             //If the GPS is enabled, you get the last known location
-            double[] location = locationListener.getCurrentLocation();
+            double[] location = MainActivity.locationListener.getCurrentLocation();
 
             if (location[0] != 0.0) {
 
-                return getNearestMonument(location[0], location[1], 100);
+                return getNearestMonument(location[0], location[1], MainActivity.MAX_DISTANCE);
             }
         }
 
         return null;
+    }
+
+    private boolean monumentIsNearMyLocation(String monumentName) {
+
+        Log.d(TAG, "locationListener: " + MainActivity.locationListener);
+
+        //Check if the GPS is enabled
+        if (checkIfLocationOpened() && MainActivity.locationListener != null) {
+
+            //If the GPS is enabled, you get the last known location
+            double[] location = MainActivity.locationListener.getCurrentLocation();
+            Log.d(TAG, "Location: " + location[0] + " " + location[1]);
+
+            if (location[0] != 0.0) {
+
+                //Calculate distance between my location and the monument
+                double[] coord = DatabaseAccess.getCoordinates(monumentName);
+                if (coord == null) {
+                    Log.d(TAG, "Monument not found");
+                    return false; // monument not found (return false to avoid showing the popup)
+                }
+
+
+                double distance = DatabaseAccess.calculateDistance(location[0], location[1], coord[0], coord[1]);
+                Log.d(TAG, "Distance between Me and "+monumentName+": " + distance + " meters");
+
+
+                if (distance > MainActivity.MAX_DISTANCE_RECOGNIZED)
+                    return false; // monument too far (return false to avoid showing the popup)
+            }
+        }
+        Log.d(TAG, "Location is enabled: " + checkIfLocationOpened() );
+        return true; // location is not enabled
     }
 
     /**

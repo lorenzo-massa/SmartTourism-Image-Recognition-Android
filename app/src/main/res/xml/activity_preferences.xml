@@ -81,7 +81,11 @@
             android:entryValues= "@array/modes_array"
             android:defaultValue="Standard" app:iconSpaceReserved="false"/>
 
-
+        <CheckBoxPreference
+            android:key="pref_key_gps_classifier"
+            android:title="Use GPS"
+            android:summary="Enable GPS for helping the classifier"
+            android:defaultValue="true" app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
 
