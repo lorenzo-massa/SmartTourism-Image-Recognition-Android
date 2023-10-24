@@ -21,8 +21,8 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 public class MainActivity extends AppCompatActivity implements MonumentAdapter.OnButtonClickListener {
 
     public static boolean isRunning = false;
-    public static final double MAX_DISTANCE = 5000 / 111.139 ;  //TODO test range
-    public static final double MAX_DISTANCE_RECOGNIZED = 300 / 111.139 ; //TODO test range
+    public static final double MAX_DISTANCE = 700 / 111.139 ;  //TODO test range
+    public static final double MAX_DISTANCE_RECOGNIZED = 180 / 111.139 ; //TODO test range
 
     static final long NOTIFICATION_TIME = 60000; //60000 = 1 minute
     public static String language;
