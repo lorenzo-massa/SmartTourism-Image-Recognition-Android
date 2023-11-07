@@ -46,3 +46,10 @@ google-services.json
 *.hprof
 
 /models/src/main/assets/databases/
+
+# Datasets
+Python/datasetLeuven/
+Python/datasetImages/
+
+# Python cache
+Python/__pycache__/
