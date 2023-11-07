@@ -45,7 +45,7 @@ if ap.parse_args().fast:
 args = vars(ap.parse_args())
 
 # LOAD IMAGE PATHS
-dataImages = glob.glob(args['images']+"*/*/*.jpg")
+dataImages = glob.glob(args['images']+"*/*.jpg")
 dataset = list()
 
 # GENERATING SETS
@@ -65,13 +65,16 @@ pbar = progressbar.ProgressBar(
 ).start()
 
 if len(dataImages) == 0:
-    print("\n\n[ERROR]: No images found in the specified path")
+    print("\n\n[ERROR]: No images found in the specified path: " + args['images'] + "\n\n")
     exit()
 
 monuments = dict()
 
 for (i, path) in enumerate(dataImages):
-    pathSplitted = path.split(os.path.sep)[-2].split('_')
+    if path.split(os.path.sep)[-2].count('_') > 0:
+        pathSplitted = path.split(os.path.sep)[-2].split('_')
+    else:
+        pathSplitted = path.split(os.path.sep)[-2].split(' ')
     monument = pathSplitted[0]+" "+pathSplitted[1]
     tupleImage = (monument,path)
     dataset.append(tupleImage)
