@@ -7,19 +7,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseAccess {
@@ -36,7 +32,7 @@ public class DatabaseAccess {
     private static ArrayList<String> listLanguages = new ArrayList<>(); //All possible languages
 
     private final SQLiteOpenHelper openHelperRetrieval;
-    private final SQLiteOpenHelper openHelperMonuments;
+    private static SQLiteOpenHelper openHelperMonuments = null;
 
     private SQLiteDatabase databaseRetrieval;
     private static SQLiteDatabase databaseMonuments;
@@ -148,7 +144,7 @@ public class DatabaseAccess {
         return listCategoriesOrdered;
     }
 
-    public List<String> getMonumentsByCategoryOrdered(String category) {
+    public static List<String> getMonumentsByCategoryOrdered(String category) {
         ArrayList<String> selectedAttributes = new ArrayList<>();
         ArrayList<String> monumentList = new ArrayList<>();
 
@@ -240,7 +236,7 @@ public class DatabaseAccess {
         return listLanguages;
     }
 
-    private List<String> getMonumentsByCategory(String category) {
+    private static List<String> getMonumentsByCategory(String category) {
         List<String> monumentList = new ArrayList<>();
         databaseMonuments = openHelperMonuments.getWritableDatabase();
 
@@ -540,6 +536,18 @@ public class DatabaseAccess {
         return null;
     }
 
+    public static float distance2Positions(double[] m1, double[] m2) {
+        Location location1 = new Location("");
+        location1.setLatitude(m1[0]);
+        location1.setLongitude(m1[1]);
+
+        Location location2 = new Location("");
+        location2.setLatitude(m2[0]);
+        location2.setLongitude(m2[1]);
+
+        return location1.distanceTo(location2);
+    }
+
     public static String getNearestMonument(double latitude, double longitude, double maxDistance) {
 
         Location currentLocation = new Location("");
@@ -555,24 +563,46 @@ public class DatabaseAccess {
             targetLocation.setLatitude(element.getCoordX());
             targetLocation.setLongitude(element.getCoordY());
             float distance = currentLocation.distanceTo(targetLocation);
+            Log.d(TAG, "Distance to " + element.getMonument() + ": " + distance + " meters");
             if (distance < minDistance) {
                 minDistance = distance;
                 nearestElement = element;
             }
         }
 
-        /* COMMENTED FOR TESTING PURPOSES
         if (minDistance >= maxDistance) {
+            Log.d(TAG, "No monument found within " + maxDistance + " meters");
+            Log.d(TAG, "Nearest monument: " + nearestElement.getMonument() + " at " + minDistance + " meters");
             return null;
         }
-         */
 
-        Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
-        Log.d(TAG, "Nearest monument: " + nearestElement.getMonument()
-                + " Latitude: " + nearestElement.getCoordX()
-                + " Longitude: " + nearestElement.getCoordY()
-                + " Distance: " + minDistance);
+        Log.d(TAG, "Nearest monument: " + nearestElement.getMonument() + " at " + minDistance + " meters");
+
         return nearestElement.getMonument();
+    }
+
+    public static String getRandomMonumentFromPreferredCategories(){
+        List<String> selectedCategories = new ArrayList<>();
+
+        for (String category : listCategories) {
+            boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
+            if (b) {
+                selectedCategories.add(category);
+            }
+        }
+
+        if (selectedCategories.isEmpty()) {
+            return getRandomMonument();
+        }
+
+        List<String> monuments = getMonumentsByCategoryOrdered(selectedCategories.get(0));
+        Collections.shuffle(monuments);
+        return monuments.get(0);
+    }
+
+    public static String getRandomMonument(){
+        Collections.shuffle(listMonuments);
+        return listMonuments.get(0).getMonument();
     }
 
     public static double calculateDistance(double x1, double y1, double x2, double y2) {

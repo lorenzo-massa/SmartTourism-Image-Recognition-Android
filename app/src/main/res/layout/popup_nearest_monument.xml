@@ -14,13 +14,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.05" />
 
     <TextView
         android:id="@+id/textNotRecognized"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -31,50 +31,59 @@
         android:id="@+id/textSuggested"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:text="Suggested monument:"
+        android:text="Suggested monuments:"
         app:layout_constraintTop_toBottomOf="@+id/textNotRecognized" />
 
-    <TextView
-        android:id="@+id/nearest_monument"
-        android:layout_width="match_parent"
+
+    <Button
+        android:id="@+id/sButton1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:text="Monument 1"
+        android:textSize="10sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textSuggested" />
+
+    <Button
+        android:id="@+id/sButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monument 2"
+        android:textSize="10sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sButton1" />
+
+    <Button
+        android:id="@+id/sButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monument 3"
+        android:textSize="10sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sButton2" />
 
     <Button
         android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="50dp"
         android:text="Cancel"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nearest_monument" />
-
-    <Button
-        android:id="@+id/more_info_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="20dp"
-        android:text="More Info"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nearest_monument" />
+        app:layout_constraintTop_toBottomOf="@+id/sButton3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,8 +16,6 @@
 
 package org.tensorflow.lite.examples.classification;
 
-import static org.tensorflow.lite.examples.classification.tflite.DatabaseAccess.getNearestMonument;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -79,6 +77,7 @@ import org.tensorflow.lite.examples.classification.tflite.DetectionHelper;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -750,8 +749,8 @@ public abstract class CameraActivity extends AppCompatActivity
             if(nFarMonuments >= 3){ //If the monument recognized is too far 3 times in a row, you show the popup
                 nFarMonuments = 0;
                 recognitionList.clear();
-                String nearestMonument = findNearestMonument();
-                if (nearestMonument != null){
+                String[] nearestMonuments = find3SuggestedMonuments(); //TODO check if it works
+                if (nearestMonuments != null){
                     dialogIsOpen = true;
                     loadingIndicator.setVisibility(View.GONE);
 
@@ -763,29 +762,44 @@ public abstract class CameraActivity extends AppCompatActivity
                     dialog = dialogBuilder.create();
                     dialog.show();
 
+                    Button p1_button = popupRecognizedView.findViewById(R.id.sButton1);
+                    Log.d(TAG, p1_button.toString());
+                    String monument1 = nearestMonuments[0];
+                    p1_button.setText(monument1);
+                    p1_button.setOnClickListener(view -> {
+                        Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
+                        intent.putExtra("monument_id", monument1);
+                        intent.putExtra("language", language);
+                        intent.putExtra("user_id", uniqueID);
 
-                    TextView nearestMonumentTextView = popupRecognizedView.findViewById(R.id.nearest_monument);
-                    nearestMonumentTextView.setText(nearestMonument);
-
-                    Button moreInfoButton = popupRecognizedView.findViewById(R.id.more_info_button);
-
-                    moreInfoButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            //define button function
-                            Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
-                            intent.putExtra("monument_id", nearestMonument);
-                            intent.putExtra("language", language.toString());
-                            intent.putExtra("user_id", uniqueID);
-
-                            startActivity(intent);
-                            dialog.dismiss();
-                            dialogIsOpen = false;
-                        }
+                        startActivity(intent);
                     });
 
+                    Button p2_button = popupRecognizedView.findViewById(R.id.sButton2);
+                    String monument2 = nearestMonuments[1];
+                    p2_button.setText(monument2);
+                    p2_button.setOnClickListener(view -> {
+                        Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
+                        intent.putExtra("monument_id", monument2);
+                        intent.putExtra("language", language);
+                        intent.putExtra("user_id", uniqueID);
+                        startActivity(intent);
+                    });
+
+                    Button p3_button = popupRecognizedView.findViewById(R.id.sButton3);
+                    String monument3 = nearestMonuments[2];
+                    p3_button.setText(monument3);
+                    p3_button.setOnClickListener(view -> {
+                        Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
+                        intent.putExtra("monument_id", monument3);
+                        intent.putExtra("language", language);
+                        intent.putExtra("user_id", uniqueID);
+                        startActivity(intent);
+                    });
+
+
                     Button cancelButton = popupRecognizedView.findViewById(R.id.cancel_button);
+                    //TODO forse è meglio mettere icona con X invece che scrivere CANCEL
                     cancelButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -798,6 +812,11 @@ public abstract class CameraActivity extends AppCompatActivity
                     });
 
 
+                    //find 1 more monument from the preferred categories
+
+
+
+
                 }
 
             }
@@ -808,15 +827,18 @@ public abstract class CameraActivity extends AppCompatActivity
 
     private boolean checkIfLocationOpened() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
             return true;
         }
         // otherwise return false
         return false;
     }
 
-    private String findNearestMonument() {
-        //Using the GPS, you find the nearest monument
+    private String[] find3SuggestedMonuments() {
+        //Using the GPS, you find 2 nearest monument
+
+        String array[] = new String[3];
 
         //Check if the GPS is enabled
         if (checkIfLocationOpened() && MainActivity.locationListener != null){
@@ -826,7 +848,29 @@ public abstract class CameraActivity extends AppCompatActivity
 
             if (location[0] != 0.0) {
 
-                return getNearestMonument(location[0], location[1], MainActivity.MAX_DISTANCE);
+                // The first one is the nearest monument
+                array[0] = DatabaseAccess.getNearestMonument(location[0], location[1], MainActivity.MAX_DISTANCE);
+                int i = 0;
+                do{
+                    // The second one is randomly chosen from the preferred categories
+                    array[1] = DatabaseAccess.getRandomMonumentFromPreferredCategories();
+                    i++;
+                }while(Objects.equals(array[1], array[0]) && i < 3);
+                while(Objects.equals(array[1], array[0]))
+                    array[1] = DatabaseAccess.getRandomMonument();
+                // if the second one is the same as the first one, you choose another one
+                i = 0;
+                do {
+                    // The third one is randomly chosen
+                    array[2] = DatabaseAccess.getRandomMonument();
+                    i++;
+                }while (Objects.equals(array[2], array[0]) || Objects.equals(array[2], array[1]));
+                    // if the third one is the same as the first or the second one, you choose another one
+
+                if(array[0] == null || array[1] == null || array[2] == null)
+                    return null;
+
+                return array;
             }
         }
 
@@ -854,7 +898,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 }
 
 
-                double distance = DatabaseAccess.calculateDistance(location[0], location[1], coord[0], coord[1]);
+                double distance = DatabaseAccess.distance2Positions(location, coord);
                 Log.d(TAG, "Distance between Me and "+monumentName+": " + distance + " meters");
 
 

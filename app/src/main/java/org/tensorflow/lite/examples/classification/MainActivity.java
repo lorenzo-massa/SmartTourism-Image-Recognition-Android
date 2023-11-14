@@ -21,10 +21,10 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 public class MainActivity extends AppCompatActivity implements MonumentAdapter.OnButtonClickListener {
 
     public static boolean isRunning = false;
-    public static final double MAX_DISTANCE = 700 / 111.139 ;  //TODO test range
-    public static final double MAX_DISTANCE_RECOGNIZED = 180 / 111.139 ; //TODO test range
+    public static final double MAX_DISTANCE = 500 ;  //TODO test range
+    public static final double MAX_DISTANCE_RECOGNIZED = 150 ; //TODO test range
 
-    static final long NOTIFICATION_TIME = 60000; //60000 = 1 minute
+    static final long NOTIFICATION_TIME = 3*60000; //60000 = 1 minute
     public static String language;
     public static String uniqueID;
 
@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
 
         //check if notifications are enabed in preferences
-        if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", true)
-                && DatabaseAccess.getSharedPreferences().getBoolean("pref_key_gps_classifier", true)) {
+        if (!DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", true)
+                && !DatabaseAccess.getSharedPreferences().getBoolean("pref_key_gps_classifier", true)) {
             locationManager.removeUpdates(locationListener);
         } else {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
