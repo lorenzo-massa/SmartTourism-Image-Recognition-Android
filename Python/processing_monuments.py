@@ -6,6 +6,7 @@ import progressbar
 import os
 from bs4 import BeautifulSoup
 
+
 def getImageLink(content):
     # Parse the HTML content
     soup = BeautifulSoup(content, 'html.parser')
@@ -20,13 +21,14 @@ def getImageLink(content):
     else:
         return None
 
-def createDB():
 
-    #Get languages from names of folders in guides folder
-    languages = [name for name in os.listdir('models/src/main/assets/guides/Template Monument') if os.path.isdir(os.path.join('models/src/main/assets/guides/Template Monument', name))]
+def createDB():
+    # Get languages from names of folders in guides folder
+    languages = [name for name in os.listdir('models/src/main/assets/guides/Template Monument') if
+                 os.path.isdir(os.path.join('models/src/main/assets/guides/Template Monument', name))]
     print("Language found: ", languages)
 
-    #create a table and insert the languages
+    # create a table and insert the languages
     con = sqlite3.connect("models/src/main/assets/databases/monuments_db.sqlite")
     cur = con.cursor()
     cur.execute(f"DROP TABLE IF EXISTS Languages")
@@ -37,12 +39,11 @@ def createDB():
         cur.execute(sql, (lang,))
         con.commit()
 
-
     for lang in languages:
 
         print("\n\nCreating DB for " + lang + " language...")
 
-        #GETTING DB NAMES
+        # GETTING DB NAMES
         db_name = f"monuments_db_{lang}.sqlite"
         table_name_monuments = f"monuments_{lang}"
         table_name_attributes = f"attributes_{lang}"
@@ -50,12 +51,13 @@ def createDB():
         table_name_monuments_categories = f"monuments_categories_{lang}"
         table_name_monuments_attributes = f"monuments_attributes_{lang}"
 
-        #GETTING PATHS OF GUIDE FILES
+        # GETTING PATHS OF GUIDE FILES
         path = f"models/src/main/assets/guides/*/{lang}/guide.md"
         textPaths = glob.glob(path)
 
-        print("Path used for guides: " + path + '\n' + "Number of files found: " + str(len(textPaths)))
-        if(len(textPaths)==0):
+        print("Path used for guides: " + path + '\n' + "Number of files found: " + str(
+            len(textPaths)))
+        if (len(textPaths) == 0):
             print("No files found in " + path + '\n' + "Please check the path and try again")
             exit()
 
@@ -63,7 +65,7 @@ def createDB():
         attributesList = []
         categoriesList = []
 
-        #REMOVING TEMPLATE MONUMENT FROM LIST
+        # REMOVING TEMPLATE MONUMENT FROM LIST
         for i in range(len(textPaths)):
             pathSplitted = textPaths[i].split(os.path.sep)[-3].split(' ')
             m = ' '.join([str(elem) for elem in pathSplitted])
@@ -72,56 +74,53 @@ def createDB():
                 textPaths.pop(i)
                 break
 
-        #READING GUIDE FILES
+        # READING GUIDE FILES
         for i, path in enumerate(textPaths):
-            
+
             # Open text file in read mode
             file = open(textPaths[i], "r", encoding="utf-8")
-            
+
             # Read whole file to a string
             content = file.read()
 
             # Split the content into lines
             lines = content.split('\n')
 
-            #COORDINATES
+            # COORDINATES
             if lines[1] != '':
                 coordinates = lines[1].split()
             else:
                 coordinates = ("null", "null")
 
-
-            #CATEGORIES
+            # CATEGORIES
+            capitalized_categories = []
             if lines[2] != '':
                 categories = lines[2].split(',')
 
                 # Uppercase the first letter of each string
-                capitalized_categories = [s.strip().title() for s in categories]
+                temp_capitalized_categories = [s.strip().title() for s in categories]
 
-                #Add to attrivutes list each capitalized attribute if not already present
-                for cat in capitalized_categories:
+                # Add to attributes list each capitalized attribute if not already present
+                for cat in temp_capitalized_categories:
                     if cat not in categoriesList:
                         categoriesList.append(cat)
+                    if cat not in capitalized_categories:
+                        capitalized_categories.append(cat)
 
-            else:
-                capitalized_categories = []
-
-
-
-            #ATTRIBUTES
+            # ATTRIBUTES
+            capitalized_attributes = []
             if lines[3] != '':
                 attributes = lines[3].split(',')
 
                 # Uppercase the first letter of each string
-                capitalized_attributes = [s.strip().title() for s in attributes]
+                temp_capitalized_attributes = [s.strip().title() for s in attributes]
 
-                #Add to attrivutes list each capitalized attribute if not already present
-                for attr in capitalized_attributes:
+                # Add to attributes list each capitalized attribute if not already present
+                for attr in temp_capitalized_attributes:
                     if attr not in attributesList:
                         attributesList.append(attr)
-
-            else:
-                capitalized_attributes = []
+                    if attr not in capitalized_attributes:
+                        capitalized_attributes.append(attr)
 
             # Find image link from the markdown file 
             imgLink = getImageLink(content)
@@ -130,31 +129,31 @@ def createDB():
             obj = (content, coordinates, capitalized_categories, capitalized_attributes, imgLink)
 
             monumentsList.append(obj)
-            
-            #close file
+
+            # close file
             file.close()
 
-        #CREATING DOC2VEC MODEL
-        documents = [TaggedDocument(doc[0], [i]) for i, doc in enumerate(monumentsList)] 
+        # CREATING DOC2VEC MODEL
+        documents = [TaggedDocument(doc[0], [i]) for i, doc in enumerate(monumentsList)]
         model = Doc2Vec(documents, vector_size=100, window=5, min_count=1, workers=4, epochs=20)
         desc_vectors = np.zeros((len(monumentsList), model.vector_size))
         for i in range(len(monumentsList)):
             desc_vectors[i] = model.dv[i]
 
+        # CREATING SQL LITE DATABASE FOR MONUMENTS
 
-        #CREATING SQL LITE DATABASE FOR MONUMENTS
+        # con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
 
-        #con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
-
-        #CATEGORIES
+        # CATEGORIES
 
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_categories}")
-        cur.execute(f""" CREATE TABLE {table_name_categories} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
+        cur.execute(
+            f""" CREATE TABLE {table_name_categories} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
 
-
-        widgets = ["[INFO]: Saving database (Categories - " + lang + ") ... ", progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+        widgets = ["[INFO]: Saving database (Categories - " + lang + ") ... ",
+                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
 
         pbar = progressbar.ProgressBar(maxval=len(categoriesList), widgets=widgets).start()
 
@@ -167,16 +166,17 @@ def createDB():
 
         pbar.finish()
 
-        #ATTRIBUTES
+        # ATTRIBUTES
 
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_attributes}")
-        cur.execute(f""" CREATE TABLE {table_name_attributes} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
+        cur.execute(
+            f""" CREATE TABLE {table_name_attributes} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
 
+        widgets = ["[INFO]: Saving database (Attributes - " + lang + ") ... ",
+                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
 
-        widgets = ["[INFO]: Saving database (Attributes - " + lang + ") ... ", progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-        
         pbar = progressbar.ProgressBar(maxval=len(attributesList), widgets=widgets).start()
 
         for i, attr in enumerate(attributesList):
@@ -188,7 +188,7 @@ def createDB():
 
         pbar.finish()
 
-        #RELATIONS BETWEEN MONUMENTS AND CATEGORIES  monumentsList[i][2], str(monumentsList[i][3])
+        # RELATIONS BETWEEN MONUMENTS AND CATEGORIES  monumentsList[i][2], str(monumentsList[i][3])
 
         cur = con.cursor()
 
@@ -199,8 +199,8 @@ def createDB():
                     PRIMARY KEY (monumentID, categoryID),
                     FOREIGN KEY (monumentID) REFERENCES {table_name_monuments}(id),
                     FOREIGN KEY (categoryID) REFERENCES {table_name_categories}(id)) """)
-        
-        #RELATIONS BETWEEN MONUMENTS AND ATTRIBUTES
+
+        # RELATIONS BETWEEN MONUMENTS AND ATTRIBUTES
 
         cur = con.cursor()
 
@@ -212,14 +212,16 @@ def createDB():
                     FOREIGN KEY (monumentID) REFERENCES {table_name_monuments}(id),
                     FOREIGN KEY (attributeID) REFERENCES {table_name_attributes}(id)) """)
 
-        #MONUMENTS
-        
+        # MONUMENTS
+
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments}")
-        cur.execute(f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, path) """)
+        cur.execute(
+            f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, path) """)
 
-        widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ", progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+        widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ",
+                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
 
         pbar = progressbar.ProgressBar(maxval=len(desc_vectors), widgets=widgets).start()
 
@@ -231,8 +233,10 @@ def createDB():
 
             sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY, path)
                     VALUES(?,?,?,?,?) '''
-            
-            new = cur.execute(sql, (m,val, monumentsList[i][1][0], monumentsList[i][1][1], monumentsList[i][4]))
+
+            new = cur.execute(sql, (
+            m, val, monumentsList[i][1][0], monumentsList[i][1][1], monumentsList[i][4]))
+            # print(f"Monument: {m}, # cat.: {len(monumentsList[i][2])}, # attr.: {len(monumentsList[i][3])}")
 
             # Save (commit) the changes
             con.commit()
@@ -240,23 +244,28 @@ def createDB():
             lastID = new.lastrowid
 
             for cat in monumentsList[i][2]:
-                
-                sql = f''' INSERT INTO {table_name_monuments_categories} (monumentID, categoryID)
-                        VALUES(?,?) '''
-                cur.execute(sql, (lastID, categoriesList.index(cat)+1))
-                con.commit()
+                try:
+                    sql = f''' INSERT INTO {table_name_monuments_categories} (monumentID, categoryID)
+                            VALUES(?,?) '''
+                    cur.execute(sql, (lastID, categoriesList.index(cat) + 1))
+                    con.commit()
+                except sqlite3.IntegrityError as e:
+                    con.rollback()  # Rollback the transaction to avoid partially committed data
+                    print(f"IntegrityError: {e} - MonumentID: {lastID}, CategoryID: {categoriesList.index(cat) + 1} - Monument: {m}, Category: {cat}")
 
             for attr in monumentsList[i][3]:
-                    
+                try:
                     sql = f''' INSERT INTO {table_name_monuments_attributes} (monumentID, attributeID)
-                            VALUES(?,?) '''
-                    cur.execute(sql, (lastID, attributesList.index(attr)+1))
-                    con.commit()     
+                                VALUES(?,?) '''
+                    cur.execute(sql, (lastID, attributesList.index(attr) + 1))
+                    con.commit()
+                except sqlite3.IntegrityError as e:
+                    con.rollback()  # Rollback the transaction to avoid partially committed data
+                    print(f"IntegrityError: {e} - MonumentID: {lastID}, AttributeID: {attributesList.index(attr) + 1} - Monument: {m}, Attribute: {attr}")
 
             pbar.update(i)
 
         pbar.finish()
-
 
         # Close the connection
     con.close()
@@ -264,9 +273,6 @@ def createDB():
     print("\n\nDatabases saved in " + os.path.realpath('models/src/main/assets/databases'))
 
 
-
-
-
-#MAIN FUNCTION
+# MAIN FUNCTION
 if __name__ == "__main__":
     createDB()

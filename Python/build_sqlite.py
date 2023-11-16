@@ -45,7 +45,15 @@ if ap.parse_args().fast:
 args = vars(ap.parse_args())
 
 # LOAD IMAGE PATHS
-dataImages = glob.glob(args['images']+"*/*.jpg")
+image_directories = [d for d in os.listdir(args['images']) if os.path.isdir(os.path.join(args['images'], d))]
+
+dataImages = []
+for directory in image_directories:
+    print(f'Processing image directory: {directory}')
+    image_paths_jpg = glob.glob(os.path.join(args['images'], directory, '*.jpg'))
+    image_paths_jpeg = glob.glob(os.path.join(args['images'], directory, '*.jpeg'))
+    dataImages.extend(image_paths_jpg + image_paths_jpeg)
+
 dataset = list()
 
 # GENERATING SETS
