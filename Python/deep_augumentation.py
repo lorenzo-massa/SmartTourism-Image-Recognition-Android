@@ -6,17 +6,16 @@ from preprocessors import AspectAwarePreprocessor
 transform = A.Compose([
     A.RandomBrightnessContrast(p=0.3),
     A.Perspective(p=1, scale=(0.1, 0.2), interpolation=cv2.INTER_NEAREST, pad_mode=cv2.BORDER_WRAP)
-
 ])
 
-def augment(path, save = True):
+def augment(path, i, save=True):
     image = cv2.imread(path)
     transformed = transform(image=image)
 
     if save:
         pathSplitted = path.split(".")
         extension = pathSplitted[-1]
-        newpath = pathSplitted[0]+"_aug"+"."+extension
+        newpath = pathSplitted[0] + "_aug" + str(i) + "." + extension
         cv2.imwrite(newpath, transformed['image'])
         return newpath
     else:
