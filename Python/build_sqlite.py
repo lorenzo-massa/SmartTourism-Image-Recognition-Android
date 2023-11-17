@@ -19,28 +19,27 @@ from deep_augumentation import augment
 
 np.set_printoptions(threshold=np.inf)
 
-types = [ #neural networks
-    ('MobileNetV3_Large_100', 'models/src/main/assets/lite-model_imagenet_mobilenet_v3_large_100_224_classification_5_default_1.tflite'), 
+types = [  # neural networks
+    ('MobileNetV3_Large_100', 'models/src/main/assets/lite-model_imagenet_mobilenet_v3_large_100_224_classification_5_default_1.tflite'),
     ('MobileNetV3_Large_075', 'models/src/main/assets/lite-model_imagenet_mobilenet_v3_large_075_224_classification_5_default_1.tflite'),
     ('MobileNetV3_Small_100', 'models/src/main/assets/lite-model_imagenet_mobilenet_v3_small_100_224_classification_5_default_1.tflite')
 ]
 
-#Set ALL_DATASET True if you want to use all the images of the dataset to train the model, False if you want to split the datset in train_set and test_set
+# Set ALL_DATASET to True if you want to use all the images of the dataset to train the model,
+# set to False if you want to split the dataset in train_set and test_set
 ALL_DATASET = True
 
 ap = argparse.ArgumentParser()
 
 ap.add_argument('-i', '--images', help='path of dataset images')
 
-#add optional argument to skip the creation of the test_set (default False)
+# add optional argument to skip the creation of the test_set (default False)
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
 
 if ap.parse_args().fast:
     print("\n\n[INFO]: Skipping the creation of the features dataset")
     createDB()
     exit()
-
-
 
 args = vars(ap.parse_args())
 
@@ -52,7 +51,9 @@ for directory in image_directories:
     print(f'Processing image directory: {directory}')
     image_paths_jpg = glob.glob(os.path.join(args['images'], directory, '*.jpg'))
     image_paths_jpeg = glob.glob(os.path.join(args['images'], directory, '*.jpeg'))
-    dataImages.extend(image_paths_jpg + image_paths_jpeg)
+    image_paths_png = glob.glob(os.path.join(args['images'], directory, '*.png'))
+    dataImages.extend(image_paths_jpg + image_paths_jpeg + image_paths_png)
+
 
 dataset = list()
 
@@ -61,7 +62,7 @@ if not ALL_DATASET:
     train_set, test_set = train_test_split(
         dataImages, test_size=0.33, random_state=1331, shuffle=True
     )
-    dataImages=train_set
+    dataImages = train_set
 
 # progress bar
 widgets = [
@@ -83,8 +84,8 @@ for (i, path) in enumerate(dataImages):
         pathSplitted = path.split(os.path.sep)[-2].split('_')
     else:
         pathSplitted = path.split(os.path.sep)[-2].split(' ')
-    monument = pathSplitted[0]+" "+pathSplitted[1]
-    tupleImage = (monument,path)
+    monument = pathSplitted[0] + " " + pathSplitted[1]
+    tupleImage = (monument, path)
     dataset.append(tupleImage)
     if monument not in monuments.keys():
         monuments[monument] = 1
@@ -98,26 +99,26 @@ IMAGE_PER_MONUMENT = 20
 # for each monument with less than 20 images, augment the dataset with the images of the same monument calling de function augment_images
 for monument in monuments.keys():
     if monuments[monument] < IMAGE_PER_MONUMENT:
-        print("\n\n[INFO]: Augmenting "+ str(IMAGE_PER_MONUMENT-monuments[monument]) +" images of "+ monument + " ...")
-        #Get n random images of the monument
-        images = [path for (m,path) in dataset if m == monument]
-        images = np.random.choice(images, size=IMAGE_PER_MONUMENT-monuments[monument])
+        print("\n\n[INFO]: Augmenting " + str(IMAGE_PER_MONUMENT - monuments[monument]) + " images of " + monument + " ..." )
+        # Get n random images of the monument
+        images = [path for (m, path) in dataset if m == monument and "_aug" not in path]
+        images = np.random.choice(images, size=(IMAGE_PER_MONUMENT - monuments[monument]))
+        i = 1
         for image in images:
-            newpath = augment(image)
-            tupleImage = (monument,newpath)
-            dataset.append(tupleImage)  
+            newpath = augment(image, i)
+            tupleImage = (monument, newpath)
+            dataset.append(tupleImage)
+            i += 1
 
-
-#BUILD FEATURES
+# BUILD FEATURES
 
 iap = ImageToArrayPreprocessor()
 aap = AspectAwarePreprocessor(224, 224)
 
-
 # loop over images
-for dType,modelPath in types:
+for dType, modelPath in types:
     print('[INFO]: Working with {} ...'.format(dType))
-    extractor = Extractor(dType,path=modelPath)
+    extractor = Extractor(dType, path=modelPath)
     db = []
     widgets = [
         "Extracting features ... ", progressbar.Percentage(), " ",
@@ -127,10 +128,10 @@ for dType,modelPath in types:
 
     index = 0
 
-    for monument,path in dataset:
+    for monument, path in dataset:
         # preprocessing
         image = cv2.imread(path)
-        if np.shape(image) == (): # latest numpy / py3
+        if np.shape(image) == ():  # latest numpy / py3
             print("\n\n[ERROR]: Image not found: " + path)
             continue  # fail !!
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -138,66 +139,63 @@ for dType,modelPath in types:
         h = image.shape[0]
         w = image.shape[1]
 
-        #AUGUMENTATION 3X3
+        # AUGUMENTATION 3X3
 
-        imgheight=  h - (h%3)
-        imgwidth= w - (w%3)
+        imgheight = h - (h % 3)
+        imgwidth = w - (w % 3)
 
         y1 = 0
-        M = imgheight//3
-        N = imgwidth//3
+        M = imgheight // 3
+        N = imgwidth // 3
 
         tiles = list()
 
-        for y in range(0,imgheight,M):
+        for y in range(0, imgheight, M):
             for x in range(0, imgwidth, N):
                 y1 = y + M
                 x1 = x + N
-                tiles.append(image[y:y+M,x:x+N])
+                tiles.append(image[y:y + M, x:x + N])
 
+        # PREPROCESS IMG WITH AUGUMENTATION ZOOM
 
-        #PREPROCESS IMG WITH AUGUMENTATION ZOOM
-
-        image,image1,image2 = aap.preprocessAugumentation(image,0.5,0.3)
-        #toArray preprocess
+        image, image1, image2 = aap.preprocessAugumentation(image, 0.5, 0.3)
+        # toArray preprocess
         image = iap.preprocess(image)
         image1 = iap.preprocess(image1)
         image2 = iap.preprocess(image2)
 
-
         features = extractor.extract(image)
         features1 = extractor.extract(image1)
         features2 = extractor.extract(image2)
-    
-        #SAVING
+
+        # SAVING
         if isinstance(features, np.ndarray):
             db.append([features, monument])
         if isinstance(features1, np.ndarray):
             db.append([features1, monument])
         if isinstance(features2, np.ndarray):
             db.append([features2, monument])
-        
-        #PREPROCESS TILES FOR AUGUMENTATION 3x3
+
+        # PREPROCESS TILES FOR AUGUMENTATION 3x3
 
         for t in tiles:
             t = aap.preprocess(t)
 
-            #toArray preprocess
+            # toArray preprocess
             t = iap.preprocess(t)
             featuresTile = extractor.extract(t)
 
-            #SAVING
+            # SAVING
             if isinstance(featuresTile, np.ndarray):
                 db.append([featuresTile, monument])
-            
 
         index += 1
         pbar.update(index)
     pbar.finish()
-    
-    #CREATING SQL LITE DATABASE
 
-    con = sqlite3.connect("models/src/main/assets/databases/"+dType+"_db.sqlite")
+    # CREATING SQL LITE DATABASE
+
+    con = sqlite3.connect("models/src/main/assets/databases/" + dType + "_db.sqlite")
     cur = con.cursor()
 
     cur.execute("DROP TABLE IF EXISTS monuments")
@@ -210,13 +208,13 @@ for dType,modelPath in types:
     ]
     pbar = progressbar.ProgressBar(maxval=len(db), widgets=widgets).start()
 
-    for i, (matrix,m) in enumerate(db):
+    for i, (matrix, m) in enumerate(db):
         # Insert a row of data
         val = str(matrix)
 
         sql = ''' INSERT INTO monuments (monument,features)
                 VALUES(?,?) '''
-        new = cur.execute(sql, (m,val))
+        new = cur.execute(sql, (m, val))
 
         # Save (commit) the changes
         con.commit()
@@ -225,11 +223,8 @@ for dType,modelPath in types:
     con.close()
     pbar.finish()
 
-#print("\n\nDB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
+# print("\n\nDB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
 
 print("\n\n[INFO]: Processing monuments")
 createDB()
 print("\n\n[INFO]: Script terminated correctly")
-
-
-

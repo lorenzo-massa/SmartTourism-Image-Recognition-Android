@@ -4,6 +4,7 @@ import glob
 import sqlite3
 import progressbar
 import os
+import re
 from bs4 import BeautifulSoup
 
 
@@ -88,7 +89,8 @@ def createDB():
 
             # COORDINATES
             if lines[1] != '':
-                coordinates = lines[1].split()
+                # Split using spaces or commas
+                coordinates = re.split(r'\s|,\s*', lines[1])
             else:
                 coordinates = ("null", "null")
 
