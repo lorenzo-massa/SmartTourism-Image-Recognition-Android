@@ -57,13 +57,14 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
             View monumentView;
             if (holder.recycledMonumentViews.isEmpty()) {
                 monumentView = View.inflate(holder.itemView.getContext(), R.layout.linear_layout_monument, null);
-                monumentView.setTag(new MonumentViewHolder(monumentView.findViewById(R.id.tt)));
+                monumentView.setTag(new MonumentViewHolder(monumentView.findViewById(R.id.tt), monumentView.findViewById(R.id.subtitle)));
             } else {
                 monumentView = holder.recycledMonumentViews.pop();
             }
 
             MonumentViewHolder monumentViewHolder = (MonumentViewHolder) monumentView.getTag();
             monumentViewHolder.titleTextView.setText(monument);
+            monumentViewHolder.subtitleTextView.setText(DatabaseAccess.getInstance().getMonumentSubtitle(monument));
             holder.monumentLayout.addView(monumentView);
 
             // Set button click listener
@@ -94,9 +95,11 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
 
     public static class MonumentViewHolder {
         TextView titleTextView;
+        TextView subtitleTextView;
 
-        public MonumentViewHolder(@NonNull TextView titleTextView) {
+        public MonumentViewHolder(@NonNull TextView titleTextView, @NonNull TextView subtitleTextView) {
             this.titleTextView = titleTextView;
+            this.subtitleTextView = subtitleTextView;
         }
     }
 

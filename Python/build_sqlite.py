@@ -193,10 +193,16 @@ for dType, modelPath in types:
         pbar.update(index)
     pbar.finish()
 
-    # CREATING SQL LITE DATABASE
+    # CREATING NEW SQL LITE DATABASE
 
+    # Delete old database
+    if os.path.exists("models/src/main/assets/databases/" + dType + "_db.sqlite"):
+        os.remove("models/src/main/assets/databases/" + dType + "_db.sqlite")
+
+    # Create new database
     con = sqlite3.connect("models/src/main/assets/databases/" + dType + "_db.sqlite")
     cur = con.cursor()
+
 
     cur.execute("DROP TABLE IF EXISTS monuments")
 
