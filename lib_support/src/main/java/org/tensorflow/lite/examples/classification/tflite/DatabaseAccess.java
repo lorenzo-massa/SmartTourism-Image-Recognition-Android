@@ -205,6 +205,33 @@ public class DatabaseAccess {
         return monumentList;
     } //TODO optimize with query
 
+
+    public static String getMonumentSubtitle(String monument) {
+
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
+
+        String query = "SELECT subtitle FROM monuments_" + language + " WHERE monument = ?";
+        String[] selectionArgs = {monument};
+
+        Cursor cursor = databaseMonuments.rawQuery(query, selectionArgs);
+
+        String subtitle = ""; // Default value if monument subtitle is not found
+
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex("subtitle");
+            if (columnIndex != -1) {
+                subtitle = cursor.getString(columnIndex);
+            }
+        }
+
+        cursor.close();
+        databaseMonuments.close();
+
+        Log.d(TAG, "monument" + monument + "getMonumentSubtitle: " + subtitle);
+
+        return subtitle;
+    }
+
     public void setDatabaseUpdateListener(DatabaseUpdateListener listener) {
         this.updateListener = listener;
     }
@@ -603,12 +630,6 @@ public class DatabaseAccess {
     public static String getRandomMonument(){
         Collections.shuffle(listMonuments);
         return listMonuments.get(0).getMonument();
-    }
-
-    public static double calculateDistance(double x1, double y1, double x2, double y2) {
-        double deltaX = x2 - x1;
-        double deltaY = y2 - y1;
-        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
 }

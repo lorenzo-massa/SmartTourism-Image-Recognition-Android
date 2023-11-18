@@ -15,7 +15,13 @@ def augment(path, i, save=True):
     if save:
         pathSplitted = path.split(".")
         extension = pathSplitted[-1]
-        newpath = pathSplitted[0] + "_aug" + str(i) + "." + extension
+        if len(pathSplitted) == 2:
+            newpath = pathSplitted[0] + "_aug" + str(i) + "." + extension
+        elif len(pathSplitted) == 3:
+            newpath = "." + pathSplitted[1] + "_aug" + str(i) + "." + extension
+        else:
+            print("[ERROR]: Invalid path")
+            return
         cv2.imwrite(newpath, transformed['image'])
         return newpath
     else:
