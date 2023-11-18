@@ -27,7 +27,6 @@
                 android:id="@+id/media"
                 android:layout_width="match_parent"
                 android:layout_height="194dp"
-                android:scaleType="centerCrop"
                 android:contentDescription="string/content_description_media"
                 />
 

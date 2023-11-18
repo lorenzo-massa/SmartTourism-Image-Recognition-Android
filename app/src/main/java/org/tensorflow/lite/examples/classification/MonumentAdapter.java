@@ -43,8 +43,14 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
 
         // Load image using Glide
         String imagePath = "file:///android_asset/categories/" + category + ".jpg";
+
         Glide.with(holder.itemView.getContext())
                 .load(Uri.parse(imagePath))
+                .placeholder(R.drawable.logo_name)
+                .error(R.drawable.logo_name)
+                .fallback(R.drawable.logo_name)
+                .centerCrop()
+                //.fitCenter()
                 .into(holder.imageView);
 
         //Set title
