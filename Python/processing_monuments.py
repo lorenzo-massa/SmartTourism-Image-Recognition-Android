@@ -130,7 +130,7 @@ def createDB():
 
             # SUBTITLE (Fifth line of the file)
             subtitle = None
-            if lines[4] != '' or lines[4] != '-->': # --> added for compatibility with old guides
+            if lines[4] != '' and lines[4] != '-->': # --> added for compatibility with old guides
                 subtitle = lines[4]
 
 
