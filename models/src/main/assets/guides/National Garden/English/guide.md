@@ -2,6 +2,7 @@
 37.97294540597742 23.738615067260707 
 Nature and surroundings, Parks and monuments, Natural scenery
 green, accessibility, nature, sustainability, outdoor space, open-air
+A green oasis in the heart of Athens!
 -->
 
 <h1 align="center">The National Garden</h1>

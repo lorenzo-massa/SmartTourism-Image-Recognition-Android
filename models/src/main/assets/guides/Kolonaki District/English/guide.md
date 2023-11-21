@@ -2,6 +2,7 @@
 37.976995, 23.740850
 History, Nature and surroundings, District History, Urban scenery
 culture, everyday life, shopping, restaurants, cafes, history, entertainment, galleries, museums, art, fashion
+Iconic buildings and high end shops.
 -->
 
 <h1 align="center”>The Kolonaki District </h1>

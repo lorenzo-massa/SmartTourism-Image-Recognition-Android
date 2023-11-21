@@ -2,6 +2,7 @@
 37.97987419269023 23.752420164355428
 Nature and surroundings, Urban scenery, Natural scenery, Parks and monuments, Culture
 Creative activities, open air events, park, nature, green, accessibility
+In the heart of Athens !
 -->
 
 <h1 align="center">The City of Athens Arts Centre</h1>

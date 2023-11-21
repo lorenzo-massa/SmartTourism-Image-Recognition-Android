@@ -2,6 +2,7 @@
 37.9787032 23.7513826
 Culture, History, Museum
 museum, accessibility, archaeology, Cycladic art, contemporary art, history, Ancient Greek Art, Cypriot Art
+One of the most important collections of Cycladic art worldwide
 -->
 
 <h1 align="center”>The Museum of Cycladic Art</h1>

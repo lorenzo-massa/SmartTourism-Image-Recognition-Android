@@ -2,6 +2,7 @@
 37.97675622874944, 23.7500256981516 
 Nature and surroundings, Parks and monuments
 green, accessibility, nature, sustainability, outdoor space, open-air
+An iconic sculpture in the heart of Athens!
 -->
 
 <h1 align="center">The Runner</h1>

@@ -2,6 +2,7 @@
 37.97989 23.74336
 History, Nature and surroundings, District History, Urban scenery
 culture, cafes, history, entertainment, nature, archaeology, open-air cinema, square 
+A laid back square were to relax.
 -->
 
 <h1 align="center”>The Dexameni Square</h1>

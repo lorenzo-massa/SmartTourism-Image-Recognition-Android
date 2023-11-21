@@ -2,6 +2,7 @@
 37.975637131586396 23.74763047912078
 Nature and surroundings, Parks and monuments, Natural scenery
 green, accessibility, nature, sustainability, outdoor space, open-air
+A green oasis in the heart of Athens!
 -->
 
 <h1 align="center">Rizari Park</h1>
