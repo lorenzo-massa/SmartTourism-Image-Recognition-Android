@@ -63,10 +63,10 @@ public class GuideActivity extends AppCompatActivity {
 
         monumentId = getIntent().getStringExtra("monument_id");
         language = getIntent().getStringExtra("language");
-        if (language == null) {
-            // Set a default language
-            language = "English";
-        }
+//        if (language == null) {
+//            // Set a default language
+//            language = "English";
+//        }
         user_id = getIntent().getStringExtra("user_id");
 
 
@@ -76,8 +76,11 @@ public class GuideActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
-            if(!MainActivity.isRunning)
-                startActivity(new Intent(GuideActivity.this, MainActivity.class));
+            if(!MainActivity.isRunning) {
+                Intent intent = new Intent(GuideActivity.this, MainActivity.class);
+                intent.putExtra("language", language.toString());
+                startActivity(intent);
+            }
             finish();
         });
 
