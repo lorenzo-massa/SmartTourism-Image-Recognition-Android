@@ -32,5 +32,5 @@ Exhibitions, actions for the protection of the environment as well as initiative
 </p>
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
-More information is available here: <a href="https://www.cityofathens.gr/episkeptes/aksiotheata/diadromes-stin-istoria-tis-athinas/o-kipos-tis-athinas">Website</a>.
+More information is available here: <a href="https://www.cityofathens.gr/thema/ethnikos-kipos/">Website</a>.
 </p>

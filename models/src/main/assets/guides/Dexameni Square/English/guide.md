@@ -5,7 +5,7 @@ culture, cafes, history, entertainment, nature, archaeology, open-air cinema, sq
 A laid back square were to relax.
 -->
 
-<h1 align="center”>The Dexameni Square</h1>
+<h1 align="center">The Dexameni Square</h1>
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 Dexameni is another famous square in the Kolonaki area, quiet and laid back compared to the main Kolonaki square. 
