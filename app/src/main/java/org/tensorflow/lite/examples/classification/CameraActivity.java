@@ -160,6 +160,8 @@ public abstract class CameraActivity extends AppCompatActivity
         setContentView(R.layout.tfe_ic_activity_camera);
 
         language = getIntent().getStringExtra("language");
+//        if (language == null)
+//            language = "English";
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
