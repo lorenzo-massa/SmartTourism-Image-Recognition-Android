@@ -1,6 +1,7 @@
 import albumentations as A
 import cv2
 import matplotlib.pyplot as plt
+import os
 from preprocessors import AspectAwarePreprocessor
 
 transform = A.Compose([
@@ -13,15 +14,8 @@ def augment(path, i, save=True):
     transformed = transform(image=image)
 
     if save:
-        pathSplitted = path.split(".")
-        extension = pathSplitted[-1]
-        if len(pathSplitted) == 2:
-            newpath = pathSplitted[0] + "_aug" + str(i) + "." + extension
-        elif len(pathSplitted) == 3:
-            newpath = "." + pathSplitted[1] + "_aug" + str(i) + "." + extension
-        else:
-            print("[ERROR]: Invalid path")
-            return
+        pathSplitted, extension = os.path.splitext(path)
+        newpath = pathSplitted + "_aug" + str(i) + extension
         cv2.imwrite(newpath, transformed['image'])
         return newpath
     else:
