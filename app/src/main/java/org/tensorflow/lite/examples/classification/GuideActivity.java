@@ -63,6 +63,10 @@ public class GuideActivity extends AppCompatActivity {
 
         monumentId = getIntent().getStringExtra("monument_id");
         language = getIntent().getStringExtra("language");
+        if (language == null) {
+            // Set a default language
+            language = "English";
+        }
         user_id = getIntent().getStringExtra("user_id");
 
 

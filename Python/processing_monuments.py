@@ -136,6 +136,8 @@ def createDB():
 
             # Find image link from the markdown file 
             imgLink = getImageLink(content)
+            if (imgLink is None):
+                print(f"Image not found for {textPaths[i]}")
 
             # Create a tuple with the content, coordinates, categories, attributes and image link
             obj = (content, coordinates, capitalized_categories, capitalized_attributes, subtitle, imgLink)
