@@ -1,7 +1,8 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.76933219048999 11.256124077775087
-palazzo, arte
-palazzo ducale, museo, accessibilità carrozzina
+historical building, art
+museum, accessibility, guided tours, architecture
+The symbol of the city
  -->
 
 <h1 align="center">Palazzo Vecchio</h1>
@@ -11,7 +12,7 @@ palazzo ducale, museo, accessibilità carrozzina
 </center>
 
 
-<p align="center" style="margin-top:20px;margin-bottom:20px;">
+<p align="justify" style="margin-top:20px;margin-bottom:20px;">
     Palazzo Vecchio is located in Piazza della Signoria in Florence and is the seat of the City Council. It represents the best synthesis of the city's 14th-century civil architecture and is one of the best-known civic palaces in the world. Originally called Palazzo dei Priori, it was later identified in the 15th century as Palazzo della Signoria, after the name of the principal body of the Republic of Florence; in 1540 it became "Palazzo Ducale," when Duke Cosimo I de' Medici made it his residence; and finally the name Vecchio when, in 1565, Grand Duke Cosimo I elected Palazzo Pitti as his palace (although the court would be moved there, officially, in 1588 by Grand Duke Ferdinand). There are no doors or openings for the security of those who administered power. It could only be accessed from the courtyard.From 1865 to 1871 it was the seat of the Parliament of the Kingdom of Italy, while today it houses the Mayor of Florence and various municipal offices. There is also a museum there, which allows visitors to visit the magnificent rooms where Agnolo Bronzino, Ghirlandaio, Giorgio Vasari, among others, worked, and where works by Michelangelo Buonarroti, Donatello, and Verrocchio are displayed. The building gradually expanded eastward, coming to occupy an entire block and lengthening the initial 14th-century parallelepiped to four times its size, with a plan resembling a trapezoid of which the facade is only the shortest side. On the main ashlar facade, the Arnolfo Tower is one of the city's emblems.
 </p>
 
