@@ -27,7 +27,8 @@
         android:label="@string/tfe_ic_app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.ImageClassification">
+        android:theme="@style/AppTheme.ImageClassification"
+        android:enableOnBackInvokedCallback="true">
 
         <provider
             android:name="androidx.core.content.FileProvider"
