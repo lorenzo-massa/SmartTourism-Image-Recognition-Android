@@ -97,6 +97,11 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
     protected void onResume() {
         super.onResume();
 
+        if (language == null) {
+            // Set a default language
+            Log.e(TAG, "[ERROR] Language is null");
+        }
+
         isRunning = true;
 
         //Update attributes and categories if you edit preferences
