@@ -7,6 +7,10 @@ A green oasis in the heart of Athens!
 
 <h1 align="center">The National Garden</h1>
 
+<center>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/National_Gardens.jpg" alt=", photo: Wikipedia">
+</center>
+
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 The National Garden is a public park of 15.5 hectares (38 acres) in the center of the Greek capital, Athens and it is a lovely environment to relax but also take in some history. It is located between the districts of Kolonaki and Pangrati, directly behind the Greek Parliament building (The Old Palace) and continues to the South to the area where the Zappeion is located, across from the Panathenaiko or Kallimarmaro Olympic Stadium of the 1896 Olympic Games.
 </p>

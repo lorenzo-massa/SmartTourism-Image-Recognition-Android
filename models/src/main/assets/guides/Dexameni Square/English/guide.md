@@ -7,6 +7,11 @@ A laid back square were to relax.
 
 <h1 align="center">The Dexameni Square</h1>
 
+<center>
+  <img src="https://www.gtp.gr/showphoto.asp?FN=/MGfiles/location/image34015%5B2707%5D.jpg&W=1300&H=460" alt="Dexameni Square, photo: Maria Theofanopoulou">
+</center>
+
+
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 Dexameni is another famous square in the Kolonaki area, quiet and laid back compared to the main Kolonaki square. 
 Dexameni means reservoir as this square was built exactly on a reservoir, the first water supply system which was constructed by Hadrian. 

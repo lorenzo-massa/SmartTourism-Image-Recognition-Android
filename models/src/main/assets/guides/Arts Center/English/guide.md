@@ -7,6 +7,9 @@ In the heart of Athens !
 
 <h1 align="center">The City of Athens Arts Centre</h1>
 
+<center>
+  <img src="https://www.documenta14.de/images/d14_Athens_MunicipalityArtsCenter_ParkoEleftherias_©_Mathias_Voelzke-001.jpg,1440" alt="Parko Eleftherias, Athens Municipality Arts Center, photo: Mathias Völzke">
+</center>
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 The City of Athens Arts Centre at Parko Eleftherias stands as a pivotal institution in the heart of the capital city. Nestled within a complex comprising four military architecture edifices, this site is a former torture chamber for Greek military police (EAT-ESA) interrogations during the period of dictatorship (1967–1974). Today, these very buildings have been transformed into bastions of historical memory and culture, championing the cause of free speech and artistic expression.

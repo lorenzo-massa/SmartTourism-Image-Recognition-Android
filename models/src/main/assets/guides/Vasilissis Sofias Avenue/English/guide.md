@@ -7,6 +7,10 @@ One of the most important avenues of the city!
 
 <h1 align="center">The Vasilissis Sofias Avenue</h1>
 
+<center>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/20090802_athina38.jpg/1076px-20090802_athina38.jpg" alt="The Vasilissis Sofias Avenue, photo: Jean Housen">
+</center>
+
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 The Vasilissis Sofias avenue is one of the main and most important avenues in central Athens. It connects the city centre with the rest of the city. The first “European Avenue” of the Greek state, it was the face of Athens in the 19th century and first half of the 20th century when the area was full of farmlands and the only buildings that existed in Athens were the Royal Palace (now Greek Parliament), the Mansion of the Duchess of the Plaissance (today’s Christian and Byzantine Museum) and the Petraki Monastery. As the city started to grow and a city plan was set up, neoclassical buildings were built on both sides of the road.
 </p>

@@ -5,7 +5,11 @@ culture, everyday life, shopping, restaurants, cafes, history, entertainment, ga
 Iconic buildings and high end shops.
 -->
 
-<h1 align="center">The Kolonaki District </h1>
+<h1 align="center">The Kolonaki District</h1>
+
+<center>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Kolonaki%2C_Main_Avenue.jpg" alt="Kolonaki District, photo: Wikipedia">
+</center>
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 The Kolonaki district is a wealthy and upscale neighbourhood in central Athens. Kolonaki is known for its iconic neoclassical buildings, high end shops and of course its numerous entertainment options. From fine dining restaurants and cafes to over 20 galleries, big and small, scattered around the area and world-renowned museums including the Museum of Cycladic Art and Benaki museum, there is always a reason to visit the area which can be considered as the museum district of Athens.

@@ -5,7 +5,11 @@ museum, accessibility, archaeology, Cycladic art, contemporary art, history, Anc
 One of the most important collections of Cycladic art worldwide
 -->
 
-<h1 align="center”>The Museum of Cycladic Art</h1>
+<h1 align="center">The Museum of Cycladic Art</h1>
+
+<center>
+  <img src="https://cycladic.gr/wp-content/uploads/2023/04/MKT-04.jpg" alt="MCA, photo: MCA website">
+</center>
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 The Museum of Cycladic Art was founded in 1986 with the aim to host the archeological collection of Nikolaos and Aikaterini (Dolly) Goulandris with works of Cycladic and Ancient Greek Art. The museum features four permanent exhibitions, namely Cycladic Culture, Ancient Greek Art, Cypriot Art and Scenes from Everyday Life in Antiquity. The Museum of Cycladic Art is housed at the Stathatos Mansion which was designed by the Bavarian architect Ernst Ziller. The mansion is one of the most important examples of Neoclassical architecture in nineteenth-century Athens. 

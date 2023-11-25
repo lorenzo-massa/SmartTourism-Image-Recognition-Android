@@ -7,6 +7,10 @@ A green oasis in the heart of Athens!
 
 <h1 align="center">Rizari Park</h1>
 
+<center>
+  <img src="https://www.documenta14.de/images/d14_Rizari_Park_©_Mathias_Voelzke-002.jpg,1440" alt="Rizari Park, photo: Matias Völzke">
+</center>
+
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 Rizari park is another green oasis in the center of Athens. Nearby the National Gallery and the War Museum while it also hosts the entrance to the Evangelismos metro station. Rizari park is a 15 hectares park opened for the public in 2010 following a donation of the Nikolas D. Pateras Foundation. In the park, there are 98 trees, 406 bushes, 9.000 sq. of turf, paths of 3.000 sq. and at the same time, 130 lamps were placed.
 </p>
