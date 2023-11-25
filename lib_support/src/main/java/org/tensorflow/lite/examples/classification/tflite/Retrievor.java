@@ -24,6 +24,7 @@ public class Retrievor {
 
         ArrayList<Element> DbList = DatabaseAccess.getListRetrieval();
 
+        // XXX each element has two splitted components (monument ID and distance). We have k nearest monuments
         for (int z = 0; z < k * 2; z = z + 2) {
             int index = Integer.parseInt(splitted[z]);
             double squaredDistance = Double.parseDouble(splitted[z + 1]);
