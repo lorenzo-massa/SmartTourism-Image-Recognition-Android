@@ -86,7 +86,8 @@ public abstract class CameraActivity extends AppCompatActivity
         AdapterView.OnItemSelectedListener {
     private static final Logger LOGGER = new Logger();
 
-    private static final int PERMISSIONS_REQUEST = 1;
+    //Remember to change this value according to the metric/score you use in Classifier.java
+    private static final float RECOGNITION_THRESHOLD = 1.6f; //Threshold to show the popup
 
 
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
@@ -627,7 +628,14 @@ public abstract class CameraActivity extends AppCompatActivity
             //Title of the winner monument
             String firstPosition = recognition.getTitle();
 
-            if (recognition.getConfidence() < 7){
+            // Add check on the relative difference between the first and the second position
+            // If the difference is too small, you do not show the popup
+
+            if (recognition.getConfidence() >= RECOGNITION_THRESHOLD
+                && ( recognition1 == null ||
+                    ((recognition.getConfidence() - recognition1.getConfidence())/recognition.getConfidence() >= 0.3)
+                )
+            ){
                 if (recognitionList.isEmpty())
                     recognitionList.add(firstPosition);
                 else if (recognitionList.get(recognitionList.size() - 1).equals(firstPosition)) {
@@ -658,31 +666,43 @@ public abstract class CameraActivity extends AppCompatActivity
 
             //Printing results with confidences
             if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
-            if (recognition.getConfidence() != null)
+            if (recognition.getConfidence() != null){
                 recognitionValueTextView.setText(
                         //String.format("%.2f", (100 * recognition.getConfidence())) + "%"
-                        recognition.getConfidence().toString()
+                        String.format("%.2f", recognition.getConfidence())
+
                 );
+            }
+            else{
+                recognitionValueTextView.setText(null);
+            }
 
 
             if (recognition1 != null) {
                 if (recognition1.getTitle() != null)
                     recognition1TextView.setText(recognition1.getTitle());
-                if (recognition1.getConfidence() != null)
+                if (recognition1.getConfidence() != null) {
                     recognition1ValueTextView.setText(
                             //String.format("%.2f", (100 * recognition1.getConfidence())) + "%"
-                            recognition1.getConfidence().toString()
+                            String.format("%.2f", recognition1.getConfidence())
+
                     );
+                }else{
+                        recognitionValueTextView.setText(null);
+                    }
             }
 
             if (recognition2 != null) {
                 if (recognition2.getTitle() != null)
                     recognition2TextView.setText(recognition2.getTitle());
-                if (recognition2.getConfidence() != null)
+                if (recognition2.getConfidence() != null){
                     recognition2ValueTextView.setText(
                             //String.format("%.2f", (100 * recognition2.getConfidence())) + "%"
-                            recognition2.getConfidence().toString()
+                            String.format("%.2f", recognition2.getConfidence())
                     );
+                }else{
+                    recognitionValueTextView.setText(null);
+                }
             }
 
 

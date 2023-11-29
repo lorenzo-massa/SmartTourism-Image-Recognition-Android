@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * A classifier specialized to label images using TensorFlow Lite.
@@ -63,6 +64,8 @@ public abstract class Classifier {
      * Number of results to show in the UI.
      */
     private static final int MAX_RESULTS = 3;
+    private static final double INITIAL_SCORE = 1; // Adjust as needed
+
     private static Retrievor retrievor;
     /**
      * Image size along the x axis.
@@ -213,68 +216,121 @@ public abstract class Classifier {
 
     }
 
-    private static Map<String, Double> createMap(List<Element> results, List<Element> resultsZoom1, List<Element> resultsZoom2) {
+    private static Map<String, Double> createScores(List<Element> results, List<Element> resultsZoom1, List<Element> resultsZoom2) {
+        /*
+                Create a map with the monument name as key and the score as value
+
+                // Scoring logic: Weighted average with higher weights for the first positions
+                double weight = 1.0 / (i + 1); // Higher weight for earlier positions
+                double newScore = (currentScore + distance * weight) / (1 + weight);
+
+                // Scoring logic: Exponential decay with higher decay for earlier positions
+                double decayFactor = Math.pow(0.9, i); // Higher decay for earlier positions
+                double newScore = currentScore - distance * decayFactor;
+
+                //Combined Weighted average + Exponential decay
+                double newScore = currentScore - distance * decayFactor;
+                newScore = (newScore * weight) / (1 + weight);
+
+                //Scoring logic: Standardize scores based on mean and standard deviation
+                double standardizedScore = (distance - mean) / stdDev;
+                double newScore = currentScore + standardizedScore;
+
+                !! REMEMBER TO CHANGE RECOGNITION_THRESHOLD IN CameraActivity.java !!
+
+        */
 
         Map<String, Double> labeledProbability = new TreeMap<String, Double>();
-
 
         //Result
         int size = min(K_TOP_RESULT, results.size());
 
+        // Calculate the mean and standard deviation (needed just for standardization)
+        List<Double> distances = results.subList(0, size).stream()
+                .map(Element::getDistance)
+                .collect(Collectors.toList());
+
+        double mean = distances.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        double finalMean = mean;
+        double stdDev = Math.sqrt(distances.stream().mapToDouble(d -> Math.pow(d - finalMean, 2)).average().orElse(0.0));
+
+
         for (int i = 0; i < size; i++) {
-            Element e = results.get(i);
-            double distance = e.getDistance();
+            Element element = results.get(i);
+            double distance = element.getDistance();
+            String monument = element.getMonument();
 
-            String newKey = e.getMonument();
+            if (labeledProbability.containsKey(monument)) {
+                double currentScore = labeledProbability.get(monument); // get actual score
 
-            if (labeledProbability.containsKey(newKey)) {
-                double value = labeledProbability.get(newKey);
-                //double newValue = (value*2+distance)/3; //average with more importance on first positions
-                //labeledProbability.put(newKey,newValue);
-                labeledProbability.put(newKey, value - 1);
+                //Scoring logic: Standardize scores based on mean and standard deviation
+                double standardizedScore = (distance - mean) / stdDev;
+                double newScore = currentScore + standardizedScore;
+
+                labeledProbability.put(monument, newScore);
             } else {
-                //labeledProbability.put(newKey, distance);
-                labeledProbability.put(newKey, K_TOP_RESULT * 3d);
+                // Initialize with a value
+                labeledProbability.put(monument, INITIAL_SCORE);
             }
         }
 
         //Result Zoom 1
         size = min(K_TOP_RESULT, resultsZoom1.size());
 
+        // Calculate the mean and standard deviation (needed just for standardization)
+        distances = resultsZoom1.subList(0, size).stream()
+                .map(Element::getDistance)
+                .collect(Collectors.toList());
+
+        mean = distances.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        double finalMean1 = mean;
+        stdDev = Math.sqrt(distances.stream().mapToDouble(d -> Math.pow(d - finalMean1, 2)).average().orElse(0.0));
+
         for (int i = 0; i < size; i++) {
-            Element e = resultsZoom1.get(i);
-            double distance = e.getDistance();
+            Element element = resultsZoom1.get(i);
+            double distance = element.getDistance();
+            String monument = element.getMonument();
 
-            String newKey = e.getMonument();
+            if (labeledProbability.containsKey(monument)) {
+                double currentScore = labeledProbability.get(monument);
 
-            if (labeledProbability.containsKey(newKey)) {
-                double value = labeledProbability.get(newKey);
-                //double newValue = (value*2+distance)/3; //average with more importance on first positions
-                //labeledProbability.put(newKey,newValue);
-                labeledProbability.put(newKey, value - 1);
+                //Scoring logic: Standardize scores based on mean and standard deviation
+                double standardizedScore = (distance - mean) / stdDev;
+                double newScore = currentScore + standardizedScore;
+
+                labeledProbability.put(monument, newScore);
             } else {
-                //labeledProbability.put(newKey, distance);
-                labeledProbability.put(newKey, K_TOP_RESULT * 3d);
+                labeledProbability.put(monument, INITIAL_SCORE);
             }
         }
 
-        //Result Zoom 1
+        //Result Zoom 2
         size = min(K_TOP_RESULT, resultsZoom2.size());
 
+        // Calculate the mean and standard deviation (needed just for standardization)
+        distances = resultsZoom2.subList(0, size).stream()
+                .map(Element::getDistance)
+                .collect(Collectors.toList());
+
+        mean = distances.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        double finalMean2 = mean;
+        stdDev = Math.sqrt(distances.stream().mapToDouble(d -> Math.pow(d - finalMean2, 2)).average().orElse(0.0));
+
         for (int i = 0; i < size; i++) {
-            Element e = resultsZoom2.get(i);
-            double distance = e.getDistance();
+            Element element = resultsZoom2.get(i);
+            double distance = element.getDistance();
+            String monument = element.getMonument();
 
-            String newKey = e.getMonument();
+            if (labeledProbability.containsKey(monument)) {
+                double currentScore = labeledProbability.get(monument);
 
-            if (labeledProbability.containsKey(newKey)) {
-                double value = labeledProbability.get(newKey);
-                //double newValue = (value*2+distance)/3; //average with more importance on first positions
-                //labeledProbability.put(newKey,newValue);
-                labeledProbability.put(newKey, value - 1);
+                //Scoring logic: Standardize scores based on mean and standard deviation
+                double standardizedScore = (distance - mean) / stdDev;
+                double newScore = currentScore + standardizedScore;
+
+                labeledProbability.put(monument, newScore);
             } else {
-                //labeledProbability.put(newKey, distance);
-                labeledProbability.put(newKey, K_TOP_RESULT * 3d);
+                labeledProbability.put(monument, INITIAL_SCORE);
             }
         }
 
@@ -284,31 +340,24 @@ public abstract class Classifier {
     /**
      * Gets the top-k results.
      */
-    private static List<Recognition> getTopKProbability(Map<String, Double> labelProb) {
-        // Find the best classifications.
-        PriorityQueue<Recognition> pq =
-                new PriorityQueue<>(
-                        MAX_RESULTS,
-                        new Comparator<Recognition>() {
-                            @Override
-                            public int compare(Recognition lhs, Recognition rhs) {
-                                // Intentionally re-(from me)reversed to put high confidence at the head of the queue.
-                                return Double.compare(lhs.getConfidence(), rhs.getConfidence());
-                            }
-                        });
+    private static List<Recognition> getTopResults2(Map<String, Double> labelProb) {
+        PriorityQueue<Recognition> pq = new PriorityQueue<>(MAX_RESULTS,
+                Comparator.comparingDouble(Recognition::getConfidence).reversed());
 
         for (Map.Entry<String, Double> entry : labelProb.entrySet()) {
-            pq.add(new Recognition("" + entry.getKey(), entry.getKey(), entry.getValue(), null));
+            pq.add(new Recognition(entry.getKey(), entry.getKey(), entry.getValue(), null));
         }
 
-        final ArrayList<Recognition> recognitions = new ArrayList<>();
-        int recognitionsSize = min(pq.size(), MAX_RESULTS);
+        int recognitionsSize = Math.min(pq.size(), MAX_RESULTS);
+        ArrayList<Recognition> recognitions = new ArrayList<>(recognitionsSize);
+
         for (int i = 0; i < recognitionsSize; ++i) {
             recognitions.add(pq.poll());
         }
 
         return recognitions;
     }
+
 
     /**
      * Runs inference and returns the classification results.
@@ -360,8 +409,8 @@ public abstract class Classifier {
         // Gets top-k results.
         Trace.beginSection("runPostProcess");
         long startTimeForPostProcess = SystemClock.uptimeMillis();
-        Map<String, Double> labeledDistance = createMap(result, resultZoom1, resultZoom2);
-        List<Recognition> finalResult = getTopKProbability(labeledDistance);
+        Map<String, Double> scores = createScores(result, resultZoom1, resultZoom2);
+        List<Recognition> finalResult = getTopResults2(scores);
         long endTimeForPostProcess = SystemClock.uptimeMillis();
         Log.v(TAG, "Timecost to run Post Process: " + (endTimeForPostProcess - startTimeForPostProcess));
         Trace.endSection();
