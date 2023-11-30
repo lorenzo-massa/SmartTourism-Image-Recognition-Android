@@ -88,8 +88,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
     //Remember to change this value according to the metric/score you use in Classifier.java
     private static final float RECOGNITION_THRESHOLD = 1.6f; //Threshold to show the popup
-
-
+    private static final long SUGGESTION_INTERVAL = 1000 * 10; //Interval between 2 suggestions (in milliseconds) (10 seconds)
+    private long lastSuggestedPopup = System.currentTimeMillis();
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     protected int previewWidth = 0;
     protected int previewHeight = 0;
@@ -394,6 +394,7 @@ public abstract class CameraActivity extends AppCompatActivity
         super.onResume();
 
         loadingIndicator.setVisibility(View.VISIBLE);
+        lastSuggestedPopup = System.currentTimeMillis(); // Reset the last suggestion time
 
 
         //I added this if to continue using camera after having closed app
@@ -771,8 +772,11 @@ public abstract class CameraActivity extends AppCompatActivity
             if(nFarMonuments >= 3){ //If the monument recognized is too far 3 times in a row, you show the popup
                 nFarMonuments = 0;
                 recognitionList.clear();
-                String[] nearestMonuments = find3SuggestedMonuments(); //TODO check if it works
-                if (nearestMonuments != null){
+                String[] nearestMonuments = find3SuggestedMonuments();
+                if (nearestMonuments != null
+                        && System.currentTimeMillis() - lastSuggestedPopup >= SUGGESTION_INTERVAL
+                        // Check if enough time has passed since the last suggestion
+                ){
                     dialogIsOpen = true;
                     loadingIndicator.setVisibility(View.GONE);
 
@@ -829,16 +833,9 @@ public abstract class CameraActivity extends AppCompatActivity
                             dialog.dismiss();
                             dialogIsOpen = false;
                             loadingIndicator.setVisibility(View.VISIBLE);
-
+                            lastSuggestedPopup = System.currentTimeMillis(); // Update the last suggestion time
                         }
                     });
-
-
-                    //find 1 more monument from the preferred categories
-
-
-
-
                 }
 
             }
