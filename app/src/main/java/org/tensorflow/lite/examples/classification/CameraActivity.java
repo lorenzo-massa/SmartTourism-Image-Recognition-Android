@@ -25,6 +25,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -83,7 +86,8 @@ public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
         Camera.PreviewCallback,
         View.OnClickListener,
-        AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener,
+        SensorEventListener {
     private static final Logger LOGGER = new Logger();
 
     //Remember to change this value according to the metric/score you use in Classifier.java
@@ -152,6 +156,17 @@ public abstract class CameraActivity extends AppCompatActivity
 
     protected SharedPreferences sharedPreferences;
 
+    // Sensor variables to calculate the orientation
+
+    private boolean activateRecognition = false;
+
+    protected SensorManager sensorManager;
+    protected final float[] accelerometerReading = new float[3];
+    protected final float[] magnetometerReading = new float[3];
+
+    protected final float[] rotationMatrix = new float[9];
+    protected final float[] orientationAngles = new float[3];
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         LOGGER.d("onCreate " + this);
@@ -159,6 +174,9 @@ public abstract class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.tfe_ic_activity_camera);
+
+        // Set up the sensor manager to get the orientation
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         language = getIntent().getStringExtra("language");
 //        if (language == null)
@@ -396,40 +414,29 @@ public abstract class CameraActivity extends AppCompatActivity
         loadingIndicator.setVisibility(View.VISIBLE);
         lastSuggestedPopup = System.currentTimeMillis(); // Reset the last suggestion time
 
-
-        //I added this if to continue using camera after having closed app
-        /*
-        if (hasPermission() && hasPermissionGPS()) {
-            if (checkIfLocationOpened()) {
-                // Get the location manager
-                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-                // Create the location listener
-                locationListener = new MyLocationListener(CameraActivity.this);
-
-                // Request location updates
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            0, 0, locationListener);
-
-                    // Request location updates from NETWORK_PROVIDER
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                            0, 0, locationListener);
-                }
-
-            }else{
-                Toast.makeText(this, "GPS is disabled", Toast.LENGTH_LONG).show();
-            }
-            setFragment(); //first creation of classifier
-        }
-         */
-
         setFragment(); //first creation of classifier
 
         handlerThread = new HandlerThread("inference");
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
+
+        // Get updates from the accelerometer and magnetometer at a constant rate.
+        // To make batch operations more efficient and reduce power consumption,
+        // provide support for delaying updates to the application.
+        //
+        // In this example, the sensor reporting delay is small enough such that
+        // the application receives an update before the system checks the sensor
+        // readings again.
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
+        Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (magneticField != null) {
+            sensorManager.registerListener(this, magneticField,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
 
     }
 
@@ -452,6 +459,7 @@ public abstract class CameraActivity extends AppCompatActivity
     @Override
     public synchronized void onPause() {
         LOGGER.d("onPause " + this);
+        super.onPause();
 
         handlerThread.quitSafely();
         try {
@@ -462,7 +470,9 @@ public abstract class CameraActivity extends AppCompatActivity
             LOGGER.e(e, "Exception!");
         }
 
-        super.onPause();
+
+        // Don't receive any more updates from either sensor.
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -611,6 +621,29 @@ public abstract class CameraActivity extends AppCompatActivity
         }
     }
 
+    // Compute the three orientation angles based on the most recent readings from
+    // the device's accelerometer and magnetometer.
+    public void updateOrientationAngles() {
+
+
+        // Update rotation matrix, which is needed to update orientation angles.
+        SensorManager.getRotationMatrix(rotationMatrix, null,
+                accelerometerReading, magnetometerReading);
+
+        // "rotationMatrix" now has up-to-date information.
+
+        //SensorManager.getOrientation(rotationMatrix, orientationAngles);
+
+        // Remap coordinate system
+        float[] outGravity = new float[9];
+        SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X,SensorManager.AXIS_Z, outGravity);
+        SensorManager.getOrientation(outGravity, orientationAngles);
+
+        // "orientationAngles" now has up-to-date information.
+
+
+    }
+
     @UiThread
     protected void showResultsInBottomSheet(List<Recognition> results, final Bitmap bitmap, int sensorOrientation) {
         Recognition recognition = null;
@@ -618,8 +651,20 @@ public abstract class CameraActivity extends AppCompatActivity
         Recognition recognition2 = null;
         Boolean helped = false;
 
+
+        // Activate recognition if orientation is almost vertical
+        updateOrientationAngles();
+        float pitch = (float) Math.toDegrees(orientationAngles[1]);
+
+        if (pitch >= -60 && pitch <= 30) {
+            activateRecognition = true;
+        }else{
+            activateRecognition = false;
+        }
+
+
         //Getting results
-        if (results != null && results.size() >= 1 && !dialogIsOpen && !sheetIsOpen) {
+        if (results != null && results.size() >= 1 && !dialogIsOpen && !sheetIsOpen && activateRecognition) {
             recognition = results.get(0);
             if (results.size() >= 2)
                 recognition1 = results.get(1);
@@ -675,6 +720,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 );
             }
             else{
+                recognitionTextView.setText(null);
                 recognitionValueTextView.setText(null);
             }
 
@@ -689,7 +735,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
                     );
                 }else{
-                        recognitionValueTextView.setText(null);
+                        recognition1TextView.setText(null);
+                        recognition1ValueTextView.setText(null);
                     }
             }
 
@@ -702,7 +749,8 @@ public abstract class CameraActivity extends AppCompatActivity
                             String.format("%.2f", recognition2.getConfidence())
                     );
                 }else{
-                    recognitionValueTextView.setText(null);
+                    recognition2TextView.setText(null);
+                    recognition2ValueTextView.setText(null);
                 }
             }
 
@@ -839,6 +887,19 @@ public abstract class CameraActivity extends AppCompatActivity
                 }
 
             }
+        }else{
+
+            // If you do not recognize anything, clear the output
+
+            recognitionTextView.setText(null);
+            recognitionValueTextView.setText(null);
+
+            recognition1TextView.setText(null);
+            recognition1ValueTextView.setText(null);
+
+            recognition2TextView.setText(null);
+            recognition2ValueTextView.setText(null);
+
         }
 
 

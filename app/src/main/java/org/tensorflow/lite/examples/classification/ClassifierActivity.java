@@ -22,6 +22,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.util.Log;
@@ -209,4 +211,25 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+    // Get readings from accelerometer and magnetometer. To simplify calculations,
+    // consider storing these readings as unit vectors.
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, accelerometerReading,
+                    0, accelerometerReading.length);
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, magnetometerReading,
+                    0, magnetometerReading.length);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        // Do something here if sensor accuracy changes.
+        // You must implement this callback in your code.
+        Log.d(TAG, "onAccuracyChanged: " + i);
+    }
+
 }
