@@ -29,7 +29,9 @@ public class MyLocationListener implements LocationListener {
     double latitude;
     double longitude;
 
-    public long lastNotificationTime = System.currentTimeMillis();
+    private long lastNotificationTime = System.currentTimeMillis();
+    private String lastMonument = null;
+
 
     private Context contex;
 
@@ -53,15 +55,20 @@ public class MyLocationListener implements LocationListener {
 
     private void sendNotification() {
         if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", false) //Check if notifications are enabled
-                && System.currentTimeMillis() - lastNotificationTime >= MainActivity.NOTIFICATION_TIME){ //At least 1 minute between notifications
+                && System.currentTimeMillis() - lastNotificationTime >= MainActivity.NOTIFICATION_TIME
+        ){
             // Define the target location
             String nearestMonument = DatabaseAccess.getNearestMonument(latitude, longitude, MainActivity.MAX_DISTANCE);
-            Log.d(TAG, "onLocationChanged: " + nearestMonument);
+            Log.d(TAG, "nearestMonument: " + nearestMonument);
 
             // Check proximity and send notification if within range and enough time has passed
-            if (nearestMonument != null) {
+            // Check if the user has already been notified about this monument
+            if (nearestMonument != null && (!nearestMonument.equals(lastMonument) || // Check if the user has already been notified about this monument
+                    System.currentTimeMillis() - lastNotificationTime >= 3 * MainActivity.NOTIFICATION_TIME) // or if enough time has passed since the last notification
+            ) {
                 // Update the last notification time
                 lastNotificationTime = System.currentTimeMillis();
+                lastMonument = nearestMonument;
 
                 // Create an explicit intent for the app's main activity
                 Intent intent = new Intent(contex, GuideActivity.class);
@@ -89,6 +96,7 @@ public class MyLocationListener implements LocationListener {
                 if (ActivityCompat.checkSelfPermission(contex, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                     int notificationId = new Random().nextInt();
                     notificationManager.notify(notificationId, builder.build());
+                    Log.d(TAG, "Notification sent: " + notificationId);
                 }
             }
         }
