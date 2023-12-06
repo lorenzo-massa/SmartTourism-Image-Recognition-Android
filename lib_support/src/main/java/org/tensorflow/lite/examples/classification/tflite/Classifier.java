@@ -217,6 +217,7 @@ public abstract class Classifier {
 
         Map<String, Double> labeledProbability = new TreeMap<String, Double>();
 
+        // TODO better filtering based on distance
 
         //Result
         int size = min(K_TOP_RESULT, results.size());
