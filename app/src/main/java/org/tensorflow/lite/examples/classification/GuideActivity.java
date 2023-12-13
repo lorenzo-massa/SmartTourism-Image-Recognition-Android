@@ -43,13 +43,9 @@ public class GuideActivity extends AppCompatActivity {
 
     private final String TAG = "GuideActivity";
 
-    private TextView textView;
     private String user_id;
     private String monumentId;
     private String language;
-    private String user_id_db;
-    private String monument_id_db;
-    private String monumentDescription;
 
     private boolean recommendationsReceived = false;
     private ArrayList<Element> hints = new ArrayList<>();
@@ -92,133 +88,13 @@ public class GuideActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // Instantiate an intent
-                Intent intent = new Intent(Intent.ACTION_SEND);
-
-                intent.setType("image/*");
-
-                String link = DatabaseAccess.getImageLink(monumentId);
-
-                // Get bitmap from assets
-/*
-                InputStream is = null;
-                try {
-                    is = getAssets().open("categories/Arte.jpg");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                Uri uri = getmageToShare(bitmap);
-*/
-                //Save image from url
-                Glide.with(GuideActivity.this)
-                        .load(link)
-                        .into(new CustomTarget<Drawable>() {
-                            @Override
-                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-
-                                Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
-                                bitmap = addWatermark(bitmap);
-
-                                //Toast.makeText(GuideActivity.this, "Saving Image...", Toast.LENGTH_SHORT).show();
-                                Uri uri = getmageToShare(bitmap);
-
-                                // Add the URI to the Intent.
-                                intent.putExtra(Intent.EXTRA_STREAM, uri);
-
-                                // Add extra text to the Intent (optional)
-                                intent.putExtra(Intent.EXTRA_TEXT, "I'm visiting " + monumentId + " with SmartTourism app!");
-                                intent.putExtra(Intent.EXTRA_TITLE, "SmartTourism");
-                                intent.putExtra(Intent.EXTRA_SUBJECT, "SmartTourism");
-
-                                // Broadcast the Intent.
-                                startActivity(Intent.createChooser(intent, "Share to"));
-
-                            }
-
-                            @Override
-                            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                            }
-
-                            @Override
-                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                                super.onLoadFailed(errorDrawable);
-
-                                Toast.makeText(GuideActivity.this, "Failed to Download Image! Please try again later.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
-
-
+                Intent intent = new Intent(GuideActivity.this, ShareActivity.class);
+                intent.putExtra("monument_id", monumentId);
+                startActivity(intent);
 
             }
 
-            // Retrieving the url to share
-            private Uri getmageToShare(Bitmap bitmap) {
-                File imagefolder = new File(getCacheDir(), "images");
-                Uri uri = null;
-                try {
-                    imagefolder.mkdirs();
-                    File file = new File(imagefolder, "shared_image.jpeg");
-                    FileOutputStream outputStream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                    outputStream.flush();
-                    outputStream.close();
-                    uri = FileProvider.getUriForFile(GuideActivity.this, "org.tensorflow.lite.examples.classification.fileprovider", file);
-                } catch (Exception e) {
-                    Toast.makeText(GuideActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                return uri;
-            }
 
-            // Add watermark to image
-            private Bitmap addWatermark(Bitmap src) {
-                int w = src.getWidth();
-                int h = src.getHeight();
-                Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
-                Canvas canvas = new Canvas(result);
-                canvas.drawBitmap(src, 0, 0, null);
-
-                //Draw Text
-                /*
-                Paint paint = new Paint();
-                paint.setColor(Color.RED);
-                paint.setTextSize(15);
-                paint.setAntiAlias(true);
-                paint.setUnderlineText(false);
-                canvas.drawText(watermark, 10, h-10, paint);
-                 */
-
-                //Draw drawable
-                Drawable drawable = getResources().getDrawable(R.drawable.logo_name);
-                Bitmap bitmapLogo = ((BitmapDrawable)drawable).getBitmap();
-                //Resize bitmap
-                bitmapLogo = BITMAP_RESIZER(bitmapLogo, 50, 50);
-                canvas.drawBitmap(bitmapLogo, w-60, h-60, new Paint(Paint.FILTER_BITMAP_FLAG));
-
-                return result;
-            }
-
-            private Bitmap BITMAP_RESIZER(Bitmap bitmap,int newWidth,int newHeight) {
-                Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
-
-                float ratioX = newWidth / (float) bitmap.getWidth();
-                float ratioY = newHeight / (float) bitmap.getHeight();
-                float middleX = newWidth / 2.0f;
-                float middleY = newHeight / 2.0f;
-
-                Matrix scaleMatrix = new Matrix();
-                scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
-
-                Canvas canvas = new Canvas(scaledBitmap);
-                canvas.setMatrix(scaleMatrix);
-                canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
-
-                return scaledBitmap;
-
-            }
         });
 
         MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdown_view);
@@ -258,7 +134,7 @@ public class GuideActivity extends AppCompatActivity {
 
 
         //Send request to API server
-        textView = findViewById(R.id.textView);
+        TextView textView = findViewById(R.id.textView);
         if (internetIsConnected()){
             //volley_request();
             //For the moment we use the local DocToVec

@@ -94,7 +94,8 @@ public class LoadingActivity extends AppCompatActivity {
 
         // Check permissions
 
-        if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()) {
+        if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()
+        && hasPermissionWrite() && hasPermissionRead()) {
             //setFragment(); //first creation of classifier (maybe never called)
             new LoadingActivityTask().execute();         // Start the database upload process
         } else {
@@ -123,6 +124,14 @@ public class LoadingActivity extends AppCompatActivity {
         }
     }
 
+    private boolean hasPermissionWrite() {
+        return (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private boolean hasPermissionRead() {
+        return (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
     private void requestPermission() {
         if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA)) {
             Toast.makeText(
@@ -145,10 +154,24 @@ public class LoadingActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG)
                     .show();
         }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(
+                            LoadingActivity.this,
+                            "Write permission is required for this demo",
+                            Toast.LENGTH_LONG)
+                    .show();
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            Toast.makeText(
+                            LoadingActivity.this,
+                            "Read permission is required for this demo",
+                            Toast.LENGTH_LONG)
+                    .show();
+        }
 
 
         requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST);
+                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
 
     }
 
@@ -157,7 +180,8 @@ public class LoadingActivity extends AppCompatActivity {
             final int requestCode, final String[] permissions, final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST) {
-            if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()) {
+            if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()
+                    && hasPermissionWrite() && hasPermissionRead()) {
                 new LoadingActivityTask().execute();
             } else {
                 requestPermission();

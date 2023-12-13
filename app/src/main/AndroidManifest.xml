@@ -80,6 +80,10 @@
             android:name=".AttributesPreferencesActivity"
             android:label="Preferences">
         </activity>
+        <activity
+            android:name=".ShareActivity"
+            android:label="Share">
+        </activity>
 
 
     </application>

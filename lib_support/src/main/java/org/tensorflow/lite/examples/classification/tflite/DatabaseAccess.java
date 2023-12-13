@@ -552,16 +552,7 @@ public class DatabaseAccess {
         return null;
     }
 
-    public static String getImageLink(String monument) {
-        for (Element e : listMonuments) {
-            if (Objects.equals(e.getMonument(), monument)) {
-                Log.d(TAG, "Image link: " + e.getPath());
-                return e.getPath();
-            }
-        }
 
-        return null;
-    }
 
     public static float distance2Positions(double[] m1, double[] m2) {
         Location location1 = new Location("");
@@ -630,6 +621,17 @@ public class DatabaseAccess {
     public static String getRandomMonument(){
         Collections.shuffle(listMonuments);
         return listMonuments.get(0).getMonument();
+    }
+
+    public static String getImageLink(String monument) {
+        for (Element e : listMonuments) {
+            if (Objects.equals(e.getMonument(), monument)) {
+                Log.d(TAG, "Image link: " + e.getPath());
+                return e.getPath();
+            }
+        }
+
+        return null;
     }
 
 }
