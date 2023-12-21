@@ -1,20 +1,12 @@
 package org.tensorflow.lite.examples.classification;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.ListPreference;
@@ -28,7 +20,7 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 public class PreferencesActivity extends AppCompatActivity {
 
     private static final Logger LOGGER = new Logger();
-    private static String TAG = "PreferencesActivity";
+    private static final String TAG = "PreferencesActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +32,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 .commit();
 
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
 
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
@@ -50,7 +42,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
     }
 
-    public static class MySettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
+    public static class MySettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.activity_preferences, rootKey);
@@ -67,7 +59,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
             //Set language entries programmatically
             ListPreference languagePreference = findPreference("pref_key_language");
-            if (languagePreference != null){
+            if (languagePreference != null) {
                 languagePreference.setEntries(DatabaseAccess.getListLanguages().toArray(new String[0]));
                 languagePreference.setEntryValues(DatabaseAccess.getListLanguages().toArray(new String[0]));
             }
@@ -92,8 +84,8 @@ public class PreferencesActivity extends AppCompatActivity {
                 showRestartConfirmationDialog();
             }
 
-            if(key.equals("pref_key_language")){
-                DatabaseAccess.setLanguage(sharedPreferences.getString(key,"English"));
+            if (key.equals("pref_key_language")) {
+                DatabaseAccess.setLanguage(sharedPreferences.getString(key, "English"));
             }
 
         }
@@ -107,7 +99,7 @@ public class PreferencesActivity extends AppCompatActivity {
             }
 
             if ("key_attributes_settings".equals(key)) {
-                startActivity(new Intent(getActivity(),AttributesPreferencesActivity.class));
+                startActivity(new Intent(getActivity(), AttributesPreferencesActivity.class));
                 return true;
             }
 
@@ -138,7 +130,6 @@ public class PreferencesActivity extends AppCompatActivity {
 
 
     }
-
 
 
 }

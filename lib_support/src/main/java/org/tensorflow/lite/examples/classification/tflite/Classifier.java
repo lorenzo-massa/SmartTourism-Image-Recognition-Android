@@ -91,13 +91,14 @@ public abstract class Classifier {
      * Processer to apply post processing of the output probability.
      */
     private final TensorProcessor probabilityProcessor;
+    private final Context context;
+
+    /** Labels corresponding to the output of the vision model. */
+    //private final List<String> labels;
     /**
      * An instance of the driver class to run model inference with Tensorflow Lite.
      */
     protected Interpreter tflite;
-
-    /** Labels corresponding to the output of the vision model. */
-    //private final List<String> labels;
     /**
      * Optional GPU delegate for accleration.
      */
@@ -115,9 +116,7 @@ public abstract class Classifier {
      */
     private TensorImage inputImageBufferZoom1;
     private TensorImage inputImageBufferZoom2;
-    private final Context context;
-
-    private Mode mode;
+    private final Mode mode;
 
     /**
      * Initializes a {@code Classifier}.

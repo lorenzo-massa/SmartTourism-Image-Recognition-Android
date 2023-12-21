@@ -2,9 +2,7 @@ package org.tensorflow.lite.examples.classification;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -12,9 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,21 +27,19 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
-import org.tensorflow.lite.examples.classification.tflite.Element;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Objects;
 
 public class ShareActivity extends AppCompatActivity {
 
     private static final String TAG = "ShareActivity";
-    private String monumentId;
-    private Bitmap bitmap;
+    private static final int pic_id = 123;
     ImageView imageView;
     Uri imageUri;
-    private static final int pic_id = 123;
     ConstraintLayout constraintLayout_id;
+    private String monumentId;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +66,7 @@ public class ShareActivity extends AppCompatActivity {
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
 
                         // Convert drawable to bitmap
-                        bitmap = ((BitmapDrawable)resource).getBitmap();
+                        bitmap = ((BitmapDrawable) resource).getBitmap();
 
                         // Adjust the aspect ratio of the image (for instagram
                         if (bitmap.getWidth() < bitmap.getHeight())
@@ -159,7 +153,7 @@ public class ShareActivity extends AppCompatActivity {
         });
 
         // Back button
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(view -> {
 
             // Go back to the previous activity
@@ -258,7 +252,7 @@ public class ShareActivity extends AppCompatActivity {
 
         //Get logo drawable
         Drawable drawable = getResources().getDrawable(R.drawable.logo_name);
-        Bitmap bitmapLogo = ((BitmapDrawable)drawable).getBitmap();
+        Bitmap bitmapLogo = ((BitmapDrawable) drawable).getBitmap();
 
         //Resize bitmap logo with a size relative to the image
         int new_size;
@@ -270,13 +264,13 @@ public class ShareActivity extends AppCompatActivity {
         bitmapLogo = BITMAP_RESIZER(bitmapLogo, new_size, new_size);
 
         //Draw Logo
-        canvas.drawBitmap(bitmapLogo, w-new_size-30, h-new_size-30, new Paint(Paint.FILTER_BITMAP_FLAG));
+        canvas.drawBitmap(bitmapLogo, w - new_size - 30, h - new_size - 30, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return result;
     }
 
     // Resize the image
-    private Bitmap BITMAP_RESIZER(Bitmap bitmap,int newWidth,int newHeight) {
+    private Bitmap BITMAP_RESIZER(Bitmap bitmap, int newWidth, int newHeight) {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
         // Calculate the scale
@@ -294,7 +288,7 @@ public class ShareActivity extends AppCompatActivity {
         canvas.setMatrix(scaleMatrix);
 
         // Draw the bitmap
-        canvas.drawBitmap(bitmap, middleX - (int)(bitmap.getWidth() / 2), middleY - (int)(bitmap.getHeight() / 2), new Paint(Paint.FILTER_BITMAP_FLAG));
+        canvas.drawBitmap(bitmap, middleX - (bitmap.getWidth() / 2), middleY - (bitmap.getHeight() / 2), new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return scaledBitmap;
 

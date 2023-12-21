@@ -24,19 +24,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DetectionHelper {
-    private Classifier.Mode mode;
-    private Context context;
-    private Bitmap bitmap;
-    private String exampleString;
-
+    private final String TAG = "DetectionHelper";
+    private final Classifier.Mode mode;
+    private final Context context;
+    private final Bitmap bitmap;
+    private final String exampleString;
     private Bitmap bitmapExample;
-
-    private Mat descriptors;
-    private Mat descriptorsExample;
+    private final Mat descriptors;
+    private final Mat descriptorsExample;
     private MatOfKeyPoint keyPointsExample;
     private Mat input_rgba_example;
-
-    private final String TAG = "DetectionHelper";
 
     public DetectionHelper(Context context, Classifier.Mode mode, Bitmap bitmap, String exampleString) {
         this.context = context;
@@ -46,13 +43,13 @@ public class DetectionHelper {
 
 
         //if (mode == Classifier.Mode.ORB) {
-            descriptors = new Mat();
-            descriptorsExample = new Mat();
-            try {
-                createDescriptorsExample(exampleString);
-            } catch (Exception e) {
+        descriptors = new Mat();
+        descriptorsExample = new Mat();
+        try {
+            createDescriptorsExample(exampleString);
+        } catch (Exception e) {
 
-            }
+        }
         //}
 
     }
@@ -117,7 +114,7 @@ public class DetectionHelper {
         // ratio test
         LinkedList<DMatch> good_matches = new LinkedList<DMatch>();
         for (Iterator<MatOfDMatch> iterator = matches.iterator(); iterator.hasNext(); ) {
-            MatOfDMatch matOfDMatch = (MatOfDMatch) iterator.next();
+            MatOfDMatch matOfDMatch = iterator.next();
             if (matOfDMatch.toArray()[0].distance / matOfDMatch.toArray()[1].distance < 0.9) {
                 good_matches.add(matOfDMatch.toArray()[0]);
             }

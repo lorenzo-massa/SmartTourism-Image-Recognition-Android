@@ -1,12 +1,10 @@
 package org.tensorflow.lite.examples.classification;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.CheckBoxPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -18,7 +16,7 @@ import java.util.List;
 public class CategoriesPreferencesActivity extends AppCompatActivity {
 
     private static final Logger LOGGER = new Logger();
-    private String TAG = "PreferencesActivity";
+    private final String TAG = "PreferencesActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +29,7 @@ public class CategoriesPreferencesActivity extends AppCompatActivity {
                 .commit();
 
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
 
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
@@ -65,7 +63,6 @@ public class CategoriesPreferencesActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
 }

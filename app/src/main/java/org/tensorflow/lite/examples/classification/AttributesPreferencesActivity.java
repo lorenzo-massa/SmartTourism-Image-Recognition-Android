@@ -16,7 +16,7 @@ import java.util.List;
 public class AttributesPreferencesActivity extends AppCompatActivity {
 
     private static final Logger LOGGER = new Logger();
-    private String TAG = "PreferencesActivity";
+    private final String TAG = "PreferencesActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class AttributesPreferencesActivity extends AppCompatActivity {
                 .commit();
 
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
 
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
@@ -63,7 +63,6 @@ public class AttributesPreferencesActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
 }

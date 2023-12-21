@@ -1,13 +1,6 @@
 package org.tensorflow.lite.examples.classification;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,28 +9,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
+
+import com.mukesh.MarkdownView;
 
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.Element;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.mukesh.MarkdownView;
 
 public class GuideActivity extends AppCompatActivity {
 
@@ -47,8 +31,22 @@ public class GuideActivity extends AppCompatActivity {
     private String monumentId;
     private String language;
 
-    private boolean recommendationsReceived = false;
+    private final boolean recommendationsReceived = false;
     private ArrayList<Element> hints = new ArrayList<>();
+
+    public static double euclideanDistance(float[] vector1, float[] vector2) {
+        if (vector1.length != vector2.length) {
+            throw new IllegalArgumentException("Vector dimensions must be equal");
+        }
+
+        double sumOfSquares = 0.0;
+        for (int i = 0; i < vector1.length; i++) {
+            double diff = vector1[i] - vector2[i];
+            sumOfSquares += diff * diff;
+        }
+
+        return Math.sqrt(sumOfSquares);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +64,7 @@ public class GuideActivity extends AppCompatActivity {
         user_id = getIntent().getStringExtra("user_id");
 
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setTitle(monumentId);
 
         toolbar.setNavigationOnClickListener(view -> {
@@ -97,7 +94,7 @@ public class GuideActivity extends AppCompatActivity {
 
         });
 
-        MarkdownView markdownView = (MarkdownView) findViewById(R.id.markdown_view);
+        MarkdownView markdownView = findViewById(R.id.markdown_view);
         markdownView.loadMarkdownFromAssets("guides/" + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
 
 
@@ -107,11 +104,11 @@ public class GuideActivity extends AppCompatActivity {
         DatabaseAccess.getInstance().log(monumentId);
 
 
-        if (coordinates != null){
-            Log.d(TAG, "Map coordinates: " + coordinates[0] + ", "+coordinates[1]);
+        if (coordinates != null) {
+            Log.d(TAG, "Map coordinates: " + coordinates[0] + ", " + coordinates[1]);
 
             //Show button to open intent
-            Uri gmmIntentUri = Uri.parse("geo:+ "+ coordinates[0] + ","+ coordinates[1] + "?q=" + Uri.encode(monumentId));
+            Uri gmmIntentUri = Uri.parse("geo:+ " + coordinates[0] + "," + coordinates[1] + "?q=" + Uri.encode(monumentId));
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
 
@@ -128,14 +125,14 @@ public class GuideActivity extends AppCompatActivity {
                 Log.w(TAG, "No maps app found.");
             }
 
-        }else{
+        } else {
             Log.d(TAG, "No coordinates found.");
         }
 
 
         //Send request to API server
         TextView textView = findViewById(R.id.textView);
-        if (internetIsConnected()){
+        if (internetIsConnected()) {
             //volley_request();
             //For the moment we use the local DocToVec
         }
@@ -148,10 +145,10 @@ public class GuideActivity extends AppCompatActivity {
 
     }
 
-    private void showHInts(){
+    private void showHInts() {
         View hintsView = findViewById(R.id.hintsView);
 
-        if(!recommendationsReceived){
+        if (!recommendationsReceived) {
             hints = getHints(monumentId); //local DocToVec
         }
 
@@ -192,7 +189,6 @@ public class GuideActivity extends AppCompatActivity {
         hintsView.setVisibility(View.VISIBLE);
 
     }
-
 
     /*
     private void volley_request(){
@@ -621,46 +617,32 @@ public class GuideActivity extends AppCompatActivity {
         ArrayList<Element> listDocToVec = DatabaseAccess.getListMonuments();
 
         //find the vec of the recognized monument
-        for (Element x:listDocToVec) {
-            if(x.getMonument().equals(monumendId)){
-                recognizedVec=x.getMatrix();
+        for (Element x : listDocToVec) {
+            if (x.getMonument().equals(monumendId)) {
+                recognizedVec = x.getMatrix();
             }
         }
 
         //compute all distances
-        for (Element x:listDocToVec) {
-            x.setDistance(euclideanDistance(x.getMatrix(),recognizedVec));
+        for (Element x : listDocToVec) {
+            x.setDistance(euclideanDistance(x.getMatrix(), recognizedVec));
         }
 
         //sort by distances
-        Collections.sort(listDocToVec, new Comparator<Element>(){
+        Collections.sort(listDocToVec, new Comparator<Element>() {
             public int compare(Element obj1, Element obj2) {
                 // ## Ascending order
-                 return Double.compare(obj1.getDistance(), obj2.getDistance()); // To compare integer values
+                return Double.compare(obj1.getDistance(), obj2.getDistance()); // To compare integer values
             }
         });
-        Log.i(TAG, "listDocToVec: "+listDocToVec);
+        Log.i(TAG, "listDocToVec: " + listDocToVec);
 
         ArrayList<Element> results = new ArrayList<>();
         results.add(listDocToVec.get(1));
         results.add(listDocToVec.get(2));
-        results.add(listDocToVec.get(listDocToVec.size()-1));
+        results.add(listDocToVec.get(listDocToVec.size() - 1));
 
         return results;
-    }
-
-    public static double euclideanDistance(float[] vector1, float[] vector2) {
-        if (vector1.length != vector2.length) {
-            throw new IllegalArgumentException("Vector dimensions must be equal");
-        }
-
-        double sumOfSquares = 0.0;
-        for (int i = 0; i < vector1.length; i++) {
-            double diff = vector1[i] - vector2[i];
-            sumOfSquares += diff * diff;
-        }
-
-        return Math.sqrt(sumOfSquares);
     }
 
     private boolean internetIsConnected() {

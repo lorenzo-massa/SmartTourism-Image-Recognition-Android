@@ -20,8 +20,8 @@ import java.util.Stack;
 
 public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHolder> {
 
-    private List<String> categories;
-    private OnButtonClickListener buttonClickListener;
+    private final List<String> categories;
+    private final OnButtonClickListener buttonClickListener;
 
     public MonumentAdapter(List<String> categories, OnButtonClickListener buttonClickListener) {
         this.categories = categories;
@@ -84,6 +84,10 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
         return categories.size();
     }
 
+    public interface OnButtonClickListener {
+        void onButtonClick(String monument);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView title;
@@ -107,9 +111,5 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
             this.titleTextView = titleTextView;
             this.subtitleTextView = subtitleTextView;
         }
-    }
-
-    public interface OnButtonClickListener {
-        void onButtonClick(String monument);
     }
 }

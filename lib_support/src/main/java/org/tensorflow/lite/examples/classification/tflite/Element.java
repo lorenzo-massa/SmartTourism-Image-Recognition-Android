@@ -6,16 +6,14 @@ import java.util.ArrayList;
 
 public class Element {
     private final String monument;
-    private double distance;
     private final float[] matrix;
-
+    private double distance;
     private double coordX;
     private double coordY;
     private ArrayList<String> categories = new ArrayList<>();
     private ArrayList<String> attributes = new ArrayList<>();
 
     private String path;
-
 
 
     public Element(String monument, float[] matrix, double distance) {
@@ -28,6 +26,10 @@ public class Element {
         return distance;
     }
 
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
     public String getMonument() {
         return monument;
     }
@@ -36,31 +38,16 @@ public class Element {
         return matrix;
     }
 
-    public void setDistance(double distance){
-        this.distance=distance;
+    public void setCoordinates(double coordX, double coordY) {
+        this.coordX = coordX;
+        this.coordY = coordY;
     }
 
-    public void setPath(String path){
-        this.path=path;
-    }
-
-    public void setCategories(ArrayList<String> categories){
-        this.categories=categories;
-    }
-
-    public void setAttributes(ArrayList<String> attributes){
-        this.attributes=attributes;
-    }
-
-    public void setCoordinates(double coordX, double coordY){
-        this.coordX=coordX;
-        this.coordY=coordY;
-    }
-
-    public double getCoordX(){
+    public double getCoordX() {
         return coordX;
     }
-    public double getCoordY(){
+
+    public double getCoordY() {
         return coordY;
     }
 
@@ -89,11 +76,23 @@ public class Element {
         return path;
     }
 
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public ArrayList<String> getCategories() {
         return categories;
     }
 
+    public void setCategories(ArrayList<String> categories) {
+        this.categories = categories;
+    }
+
     public ArrayList<String> getAttributes() {
         return attributes;
+    }
+
+    public void setAttributes(ArrayList<String> attributes) {
+        this.attributes = attributes;
     }
 }

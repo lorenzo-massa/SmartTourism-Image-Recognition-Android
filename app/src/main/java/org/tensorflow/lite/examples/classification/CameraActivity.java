@@ -93,8 +93,15 @@ public abstract class CameraActivity extends AppCompatActivity
     //Remember to change this value according to the metric/score you use in Classifier.java
     private static final float RECOGNITION_THRESHOLD = 1.6f; //Threshold to show the popup
     private static final long SUGGESTION_INTERVAL = 1000 * 10; //Interval between 2 suggestions (in milliseconds) (10 seconds)
-    private long lastSuggestedPopup = System.currentTimeMillis();
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
+    protected final float[] accelerometerReading = new float[3];
+    protected final float[] magnetometerReading = new float[3];
+    protected final float[] rotationMatrix = new float[9];
+    protected final float[] orientationAngles = new float[3];
+    private final byte[][] yuvBytes = new byte[3][];
+    //Popup Recognized
+    private final ArrayList<String> recognitionList = new ArrayList<String>();
+    private final String TAG = "Camera Activity";
     protected int previewWidth = 0;
     protected int previewHeight = 0;
     protected TextView recognitionTextView,
@@ -109,11 +116,19 @@ public abstract class CameraActivity extends AppCompatActivity
             rotationTextView,
             inferenceTimeTextView;
     protected ImageView bottomSheetArrowImageView;
+    protected boolean dialogIsOpen = false;
+    protected boolean sheetIsOpen = false;
+    //Language
+    //private Spinner languageSpinner;
+    protected String language;
+    protected String uniqueID;
+    protected SharedPreferences sharedPreferences;
+    protected SensorManager sensorManager;
+    private long lastSuggestedPopup = System.currentTimeMillis();
     private Handler handler;
     private HandlerThread handlerThread;
     private boolean useCamera2API;
     private boolean isProcessingFrame = false;
-    private final byte[][] yuvBytes = new byte[3][];
     private int[] rgbBytes = null;
     private int yRowStride;
     private Runnable postInferenceCallback;
@@ -121,51 +136,31 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
     private BottomSheetBehavior<LinearLayout> sheetBehavior;
-
-    //Popup Recognized
-    private final ArrayList<String> recognitionList = new ArrayList<String>();
     private AlertDialog.Builder dialogBuilder;
-
     private AlertDialog dialog;
-    protected boolean dialogIsOpen = false;
-
-    protected boolean sheetIsOpen = false;
-
-    //Language
-    //private Spinner languageSpinner;
-    protected String language;
-
     //Mode
     private Spinner modeSpinner;
-    private Mode mode = Classifier.Mode.Standard;
 
+    // Sensor variables to calculate the orientation
+    private final Mode mode = Classifier.Mode.Standard;
     //Loading
     private CircularProgressIndicator loadingIndicator;
     private ImageView imageViewBG;
-
     //To check if help (ORB or OBJ_DET) is needed
     private int nClearedList = 0;
-
     //To check if we are too far from the monument
     private int nFarMonuments = 0;
-
-
-    protected String uniqueID;
-
-    private final String TAG = "Camera Activity";
-
-    protected SharedPreferences sharedPreferences;
-
-    // Sensor variables to calculate the orientation
-
     private boolean activateRecognition = false;
-
-    protected SensorManager sensorManager;
-    protected final float[] accelerometerReading = new float[3];
-    protected final float[] magnetometerReading = new float[3];
-
-    protected final float[] rotationMatrix = new float[9];
-    protected final float[] orientationAngles = new float[3];
+    private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            if (status == LoaderCallbackInterface.SUCCESS) {
+                Log.i(TAG, "OpenCV loaded successfully");
+            } else {
+                super.onManagerConnected(status);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -189,7 +184,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
 
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
 
         toolbar.setNavigationOnClickListener(view -> {
             onBackPressed();
@@ -440,22 +435,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
     }
 
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS: {
-                    Log.i(TAG, "OpenCV loaded successfully");
-                }
-                break;
-                default: {
-                    super.onManagerConnected(status);
-                }
-                break;
-            }
-        }
-    };
-
     @Override
     public synchronized void onPause() {
         LOGGER.d("onPause " + this);
@@ -508,7 +487,6 @@ public abstract class CameraActivity extends AppCompatActivity
             return true;
         }
     }
-
 
 
     // Returns true if the device supports the required hardware level, or better.
@@ -636,7 +614,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
         // Remap coordinate system
         float[] outGravity = new float[9];
-        SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X,SensorManager.AXIS_Z, outGravity);
+        SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Z, outGravity);
         SensorManager.getOrientation(outGravity, orientationAngles);
 
         // "orientationAngles" now has up-to-date information.
@@ -656,11 +634,7 @@ public abstract class CameraActivity extends AppCompatActivity
         updateOrientationAngles();
         float pitch = (float) Math.toDegrees(orientationAngles[1]);
 
-        if (pitch >= -60 && pitch <= 30) {
-            activateRecognition = true;
-        }else{
-            activateRecognition = false;
-        }
+        activateRecognition = pitch >= -60 && pitch <= 30;
 
 
         //Getting results
@@ -678,18 +652,17 @@ public abstract class CameraActivity extends AppCompatActivity
             // If the difference is too small, you do not show the popup
 
             if (recognition.getConfidence() >= RECOGNITION_THRESHOLD
-                && ( recognition1 == null ||
-                    ((recognition.getConfidence() - recognition1.getConfidence())/recognition.getConfidence() >= 0.3)
-                )
-            ){
+                    && (recognition1 == null ||
+                    ((recognition.getConfidence() - recognition1.getConfidence()) / recognition.getConfidence() >= 0.3)
+            )
+            ) {
                 if (recognitionList.isEmpty())
                     recognitionList.add(firstPosition);
                 else if (recognitionList.get(recognitionList.size() - 1).equals(firstPosition)) {
                     recognitionList.add(firstPosition);
                     nFarMonuments = 0;
                     Log.d(TAG, "nFarMonuments (=0): " + nFarMonuments);
-                }
-                else { // If you do not recognize the same monument in a row, you clear the list
+                } else { // If you do not recognize the same monument in a row, you clear the list
                     recognitionList.clear();
                     recognitionList.add(firstPosition);
 
@@ -702,24 +675,21 @@ public abstract class CameraActivity extends AppCompatActivity
                     helped = checkIfHelpIsNeeded(bitmap, sensorOrientation, firstPosition);
 
                 }
-            }else{
+            } else {
                 nFarMonuments += 1;
                 Log.d(TAG, "nFarMonuments (+1): " + nFarMonuments);
             }
 
 
-
-
             //Printing results with confidences
             if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
-            if (recognition.getConfidence() != null){
+            if (recognition.getConfidence() != null) {
                 recognitionValueTextView.setText(
                         //String.format("%.2f", (100 * recognition.getConfidence())) + "%"
                         String.format("%.2f", recognition.getConfidence())
 
                 );
-            }
-            else{
+            } else {
                 recognitionTextView.setText(null);
                 recognitionValueTextView.setText(null);
             }
@@ -734,21 +704,21 @@ public abstract class CameraActivity extends AppCompatActivity
                             String.format("%.2f", recognition1.getConfidence())
 
                     );
-                }else{
-                        recognition1TextView.setText(null);
-                        recognition1ValueTextView.setText(null);
-                    }
+                } else {
+                    recognition1TextView.setText(null);
+                    recognition1ValueTextView.setText(null);
+                }
             }
 
             if (recognition2 != null) {
                 if (recognition2.getTitle() != null)
                     recognition2TextView.setText(recognition2.getTitle());
-                if (recognition2.getConfidence() != null){
+                if (recognition2.getConfidence() != null) {
                     recognition2ValueTextView.setText(
                             //String.format("%.2f", (100 * recognition2.getConfidence())) + "%"
                             String.format("%.2f", recognition2.getConfidence())
                     );
-                }else{
+                } else {
                     recognition2TextView.setText(null);
                     recognition2ValueTextView.setText(null);
                 }
@@ -758,7 +728,7 @@ public abstract class CameraActivity extends AppCompatActivity
             //If you recognize the same monument 3 times in a row, you show the popup
             if (recognitionList.size() >= 3 || helped) {
                 boolean openPopup = true;
-                if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_gps_classifier", true)){
+                if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_gps_classifier", true)) {
                     // If you want to use the GPS
                     // Check if the recognized monument is in the range of the nearest monument
                     openPopup = monumentIsNearMyLocation(firstPosition);
@@ -769,7 +739,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 nFarMonuments = 0;
 
                 //Show popup to advice to visit the monument
-                if(openPopup){
+                if (openPopup) {
                     loadingIndicator.setVisibility(View.GONE);
 
                     Recognition finalRecognition = recognition;
@@ -791,7 +761,7 @@ public abstract class CameraActivity extends AppCompatActivity
                             //define button function
                             Intent intent = new Intent(CameraActivity.this, GuideActivity.class);
                             intent.putExtra("monument_id", finalRecognition.getId());
-                            intent.putExtra("language", language.toString());
+                            intent.putExtra("language", language);
                             intent.putExtra("user_id", uniqueID);
 
                             startActivity(intent);
@@ -817,14 +787,14 @@ public abstract class CameraActivity extends AppCompatActivity
                 }
             }
 
-            if(nFarMonuments >= 3){ //If the monument recognized is too far 3 times in a row, you show the popup
+            if (nFarMonuments >= 3) { //If the monument recognized is too far 3 times in a row, you show the popup
                 nFarMonuments = 0;
                 recognitionList.clear();
                 String[] nearestMonuments = find3SuggestedMonuments();
                 if (nearestMonuments != null
                         && System.currentTimeMillis() - lastSuggestedPopup >= SUGGESTION_INTERVAL
-                        // Check if enough time has passed since the last suggestion
-                ){
+                    // Check if enough time has passed since the last suggestion
+                ) {
                     dialogIsOpen = true;
                     loadingIndicator.setVisibility(View.GONE);
 
@@ -887,7 +857,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 }
 
             }
-        }else{
+        } else {
 
             // If you do not recognize anything, clear the output
 
@@ -907,21 +877,18 @@ public abstract class CameraActivity extends AppCompatActivity
 
     private boolean checkIfLocationOpened() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            return true;
-        }
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         // otherwise return false
-        return false;
     }
 
     private String[] find3SuggestedMonuments() {
         //Using the GPS, you find 2 nearest monument
 
-        String array[] = new String[3];
+        String[] array = new String[3];
 
         //Check if the GPS is enabled
-        if (checkIfLocationOpened() && MainActivity.locationListener != null){
+        if (checkIfLocationOpened() && MainActivity.locationListener != null) {
 
             //If the GPS is enabled, you get the last known location
             double[] location = MainActivity.locationListener.getCurrentLocation();
@@ -931,12 +898,12 @@ public abstract class CameraActivity extends AppCompatActivity
                 // The first one is the nearest monument
                 array[0] = DatabaseAccess.getNearestMonument(location[0], location[1], MainActivity.MAX_DISTANCE);
                 int i = 0;
-                do{
+                do {
                     // The second one is randomly chosen from the preferred categories
                     array[1] = DatabaseAccess.getRandomMonumentFromPreferredCategories();
                     i++;
-                }while(Objects.equals(array[1], array[0]) && i < 3);
-                while(Objects.equals(array[1], array[0]))
+                } while (Objects.equals(array[1], array[0]) && i < 3);
+                while (Objects.equals(array[1], array[0]))
                     array[1] = DatabaseAccess.getRandomMonument();
                 // if the second one is the same as the first one, you choose another one
                 i = 0;
@@ -944,10 +911,10 @@ public abstract class CameraActivity extends AppCompatActivity
                     // The third one is randomly chosen
                     array[2] = DatabaseAccess.getRandomMonument();
                     i++;
-                }while (Objects.equals(array[2], array[0]) || Objects.equals(array[2], array[1]));
-                    // if the third one is the same as the first or the second one, you choose another one
+                } while (Objects.equals(array[2], array[0]) || Objects.equals(array[2], array[1]));
+                // if the third one is the same as the first or the second one, you choose another one
 
-                if(array[0] == null || array[1] == null || array[2] == null)
+                if (array[0] == null || array[1] == null || array[2] == null)
                     return null;
 
                 return array;
@@ -979,14 +946,14 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
                 double distance = DatabaseAccess.distance2Positions(location, coord);
-                Log.d(TAG, "Distance between Me and "+monumentName+": " + distance + " meters");
+                Log.d(TAG, "Distance between Me and " + monumentName + ": " + distance + " meters");
 
 
                 if (distance > MainActivity.MAX_DISTANCE_RECOGNIZED)
                     return false; // monument too far (return false to avoid showing the popup)
             }
         }
-        Log.d(TAG, "Location is enabled: " + checkIfLocationOpened() );
+        Log.d(TAG, "Location is enabled: " + checkIfLocationOpened());
         return true; // location is not enabled
     }
 

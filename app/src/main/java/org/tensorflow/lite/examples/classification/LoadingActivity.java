@@ -2,20 +2,15 @@ package org.tensorflow.lite.examples.classification;
 
 
 import android.Manifest;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
 import android.widget.ProgressBar;
-        import android.widget.Toast;
+import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -25,28 +20,21 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseUpdateListener
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.Set;
 import java.util.UUID;
 
 public class LoadingActivity extends AppCompatActivity {
 
-    private ProgressBar progressBar;
-    private final String TAG = "LoadingActivity";
-
-    private String language;
-    private String uniqueID;
-
-    private Classifier.Model model;
-
-    private boolean firstStart;
-
-    //Shared Preferences
-    public SharedPreferences sharedPreferences;
-
-    public SharedPreferences.OnSharedPreferenceChangeListener shared_listener;
-
     private static final int PERMISSIONS_REQUEST = 1;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
+    private final String TAG = "LoadingActivity";
+    //Shared Preferences
+    public SharedPreferences sharedPreferences;
+    public SharedPreferences.OnSharedPreferenceChangeListener shared_listener;
+    private ProgressBar progressBar;
+    private String language;
+    private String uniqueID;
+    private Classifier.Model model;
+    private boolean firstStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +57,13 @@ public class LoadingActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         uniqueID = sharedPreferences.getString("pref_key_user_id", "");
 
-        if(uniqueID.equals("")){
+        if (uniqueID.equals("")) {
             firstStart = true;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String date = sdf.format(System.currentTimeMillis());
-            uniqueID = date + "-" + UUID.randomUUID().toString() ;
+            uniqueID = date + "-" + UUID.randomUUID().toString();
             sharedPreferences.edit().putString("pref_key_user_id", uniqueID).apply();
-        }else{
+        } else {
             firstStart = false;
         }
 
@@ -84,7 +72,7 @@ public class LoadingActivity extends AppCompatActivity {
 
 
         shared_listener = (prefs, key) -> {
-            if(key.equals("pref_key_language")){
+            if (key.equals("pref_key_language")) {
                 language = prefs.getString("pref_key_language", "English");
             }
         };
@@ -95,15 +83,12 @@ public class LoadingActivity extends AppCompatActivity {
         // Check permissions
 
         if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()
-        && hasPermissionWrite() && hasPermissionRead()) {
+                && hasPermissionWrite() && hasPermissionRead()) {
             //setFragment(); //first creation of classifier (maybe never called)
             new LoadingActivityTask().execute();         // Start the database upload process
         } else {
             requestPermission();
         }
-
-
-
 
 
     }
@@ -142,9 +127,9 @@ public class LoadingActivity extends AppCompatActivity {
         }
         if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
             Toast.makeText(
-                    LoadingActivity.this,
-                    "Location permission is required for this demo",
-                    Toast.LENGTH_LONG)
+                            LoadingActivity.this,
+                            "Location permission is required for this demo",
+                            Toast.LENGTH_LONG)
                     .show();
         }
         if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
@@ -170,7 +155,7 @@ public class LoadingActivity extends AppCompatActivity {
         }
 
 
-        requestPermissions(new String[]{PERMISSION_CAMERA,Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION,
+        requestPermissions(new String[]{PERMISSION_CAMERA, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
 
     }
@@ -188,7 +173,6 @@ public class LoadingActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     private class LoadingActivityTask extends AsyncTask<Void, Integer, Void> implements DatabaseUpdateListener {
@@ -238,14 +222,14 @@ public class LoadingActivity extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), "Database upload completed", Toast.LENGTH_SHORT).show();
             // You can start the next activity or finish the current activity here
 
-            if (firstStart){
+            if (firstStart) {
                 Intent intent = new Intent(LoadingActivity.this, ColdStartActivity.class);
-                intent.putExtra("language", language.toString());
+                intent.putExtra("language", language);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
-            }else {
+            } else {
                 Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-                intent.putExtra("language", language.toString());
+                intent.putExtra("language", language);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out);
             }

@@ -21,44 +21,33 @@ import java.util.Objects;
 public class DatabaseAccess {
 
     private static final String TAG = "DatabaseAccess";
+    public static Thread thread;
     private static DatabaseAccess instance;
     private static ArrayList<Element> listRetrieval = new ArrayList<>();
-    private static ArrayList<Element> listMonuments = new ArrayList<>(); //All possible monuments
-
-    private static ArrayList<String> listCategories = new ArrayList<>(); //All possible categories
-
-    private static ArrayList<String> listAttributes = new ArrayList<>(); //All possible attributes
-
-    private static ArrayList<String> listLanguages = new ArrayList<>(); //All possible languages
-
-    private final SQLiteOpenHelper openHelperRetrieval;
+    private static final ArrayList<Element> listMonuments = new ArrayList<>(); //All possible monuments
+    private static final ArrayList<String> listCategories = new ArrayList<>(); //All possible categories
+    private static final ArrayList<String> listAttributes = new ArrayList<>(); //All possible attributes
+    private static final ArrayList<String> listLanguages = new ArrayList<>(); //All possible languages
     private static SQLiteOpenHelper openHelperMonuments = null;
-
-    private SQLiteDatabase databaseRetrieval;
     private static SQLiteDatabase databaseMonuments;
-
-
-    public static Thread thread;
-
-    private String dbName;
-    private final String dbName2 = "monuments_db.sqlite";
-
-    public static SharedPreferences getSharedPreferences() {
-        return sharedPreferences;
-    }
-
     private static SharedPreferences sharedPreferences;
-
-    private DatabaseUpdateListener updateListener;
-
     private static String language;
+    private final SQLiteOpenHelper openHelperRetrieval;
+    private final String dbName2 = "monuments_db.sqlite";
+    private SQLiteDatabase databaseRetrieval;
+    private String dbName;
+    private DatabaseUpdateListener updateListener;
 
     private DatabaseAccess(Activity activity, String dbName) {
         this.openHelperRetrieval = new DatabaseOpenHelper(activity, dbName);
-        this.openHelperMonuments = new DatabaseOpenHelper(activity, dbName2);
+        openHelperMonuments = new DatabaseOpenHelper(activity, dbName2);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
         language = sharedPreferences.getString("pref_key_language", "English");
+    }
+
+    public static SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
     }
 
     public static void setLanguage(String language) {
@@ -82,66 +71,6 @@ public class DatabaseAccess {
         }
 
         return instance;
-    }
-
-    public List<String> getListCategoriesOrdered() {
-        List<String> selectedCategories = new ArrayList<>();
-        List<String> listCategoriesOrdered = new ArrayList<>();
-
-        for (String category : listCategories) {
-            boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
-            Log.d(TAG, "getListCategoriesOrdered: category_checkbox: " + category + " b: " + b);
-            if (b) {
-                selectedCategories.add(category);
-            }
-        }
-
-        databaseMonuments = openHelperMonuments.getWritableDatabase();
-
-        // Create the "logs" table if it doesn't exist
-        databaseMonuments.execSQL("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, monumentId INTEGER, " +
-                "FOREIGN KEY (monumentId) REFERENCES monuments_English(id))");
-
-        //create a list with the selected categories ordered by the number of interactions
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT c.name, COUNT(l.id) AS interaction_count ")
-                .append("FROM categories_" + language + " c ")
-                .append("JOIN monuments_categories_" + language + " mc ON c.id = mc.categoryID ")
-                .append("JOIN monuments_" + language + " m ON mc.monumentID = m.id ")
-                .append("LEFT JOIN logs l ON m.id = l.monumentId ")
-                .append("WHERE c.name IN (");
-
-        // Add placeholders for category names
-        for (int i = 0; i < selectedCategories.size(); i++) {
-            queryBuilder.append("?");
-            if (i < selectedCategories.size() - 1) {
-                queryBuilder.append(",");
-            }
-        }
-
-        queryBuilder.append(") GROUP BY c.name ORDER BY interaction_count DESC");
-
-        String[] selectionArgs = selectedCategories.toArray(new String[0]);
-
-        Cursor cursor = databaseMonuments.rawQuery(queryBuilder.toString(), selectionArgs);
-
-        while (cursor.moveToNext()) {
-            String categoryName = cursor.getString(0);
-            listCategoriesOrdered.add(categoryName);
-        }
-
-        cursor.close();
-        databaseMonuments.close();
-
-        //add the categories that are not selected
-
-        for (String category : listCategories) {
-            if (!listCategoriesOrdered.contains(category)) {
-                listCategoriesOrdered.add(category);
-            }
-        }
-
-        return listCategoriesOrdered;
     }
 
     public static List<String> getMonumentsByCategoryOrdered(String category) {
@@ -205,7 +134,6 @@ public class DatabaseAccess {
         return monumentList;
     } //TODO optimize with query
 
-
     public static String getMonumentSubtitle(String monument) {
 
         databaseMonuments = openHelperMonuments.getWritableDatabase();
@@ -230,10 +158,6 @@ public class DatabaseAccess {
         Log.d(TAG, "monument" + monument + "getMonumentSubtitle: " + subtitle);
 
         return subtitle;
-    }
-
-    public void setDatabaseUpdateListener(DatabaseUpdateListener listener) {
-        this.updateListener = listener;
     }
 
     public static DatabaseAccess getInstance() {
@@ -288,7 +212,6 @@ public class DatabaseAccess {
         return monumentList;
     }
 
-
     public static float[][] getMatrixDB() {
         int n = listRetrieval.size();
         float[][] a = new float[n][];
@@ -299,6 +222,161 @@ public class DatabaseAccess {
         return a;
     }
 
+    public static double[] getCoordinates(String monument) {
+
+        for (Element e : listMonuments) {
+            if (Objects.equals(e.getMonument(), monument)) {
+                Log.d(TAG, "Coordinates: " + e.getCoordX() + " " + e.getCoordY());
+                return e.getCoordinates();
+            }
+        }
+
+        return null;
+    }
+
+    public static float distance2Positions(double[] m1, double[] m2) {
+        Location location1 = new Location("");
+        location1.setLatitude(m1[0]);
+        location1.setLongitude(m1[1]);
+
+        Location location2 = new Location("");
+        location2.setLatitude(m2[0]);
+        location2.setLongitude(m2[1]);
+
+        return location1.distanceTo(location2);
+    }
+
+    public static String getNearestMonument(double latitude, double longitude, double maxDistance) {
+
+        Location currentLocation = new Location("");
+        currentLocation.setLatitude(latitude);
+        currentLocation.setLongitude(longitude);
+
+        Element nearestElement = listMonuments.get(0);
+        double minDistance = maxDistance;
+
+        for (Element element : listMonuments) {
+            // Calculate the distance between current and target locations
+            Location targetLocation = new Location("");
+            targetLocation.setLatitude(element.getCoordX());
+            targetLocation.setLongitude(element.getCoordY());
+            float distance = currentLocation.distanceTo(targetLocation);
+            Log.d(TAG, "Distance to " + element.getMonument() + ": " + distance + " meters");
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestElement = element;
+            }
+        }
+
+        if (minDistance >= maxDistance) {
+            Log.d(TAG, "No monument found within " + maxDistance + " meters");
+            Log.d(TAG, "Nearest monument: " + nearestElement.getMonument() + " at " + minDistance + " meters");
+            return null;
+        }
+
+        Log.d(TAG, "Nearest monument: " + nearestElement.getMonument() + " at " + minDistance + " meters");
+
+        return nearestElement.getMonument();
+    }
+
+    public static String getRandomMonumentFromPreferredCategories() {
+        List<String> selectedCategories = new ArrayList<>();
+
+        for (String category : listCategories) {
+            boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
+            if (b) {
+                selectedCategories.add(category);
+            }
+        }
+
+        if (selectedCategories.isEmpty()) {
+            return getRandomMonument();
+        }
+
+        List<String> monuments = getMonumentsByCategoryOrdered(selectedCategories.get(0));
+        Collections.shuffle(monuments);
+        return monuments.get(0);
+    }
+
+    public static String getRandomMonument() {
+        Collections.shuffle(listMonuments);
+        return listMonuments.get(0).getMonument();
+    }
+
+    public static String getImageLink(String monument) {
+        for (Element e : listMonuments) {
+            if (Objects.equals(e.getMonument(), monument)) {
+                Log.d(TAG, "Image link: " + e.getPath());
+                return e.getPath();
+            }
+        }
+
+        return null;
+    }
+
+    public List<String> getListCategoriesOrdered() {
+        List<String> selectedCategories = new ArrayList<>();
+        List<String> listCategoriesOrdered = new ArrayList<>();
+
+        for (String category : listCategories) {
+            boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
+            Log.d(TAG, "getListCategoriesOrdered: category_checkbox: " + category + " b: " + b);
+            if (b) {
+                selectedCategories.add(category);
+            }
+        }
+
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
+
+        // Create the "logs" table if it doesn't exist
+        databaseMonuments.execSQL("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, monumentId INTEGER, " +
+                "FOREIGN KEY (monumentId) REFERENCES monuments_English(id))");
+
+        //create a list with the selected categories ordered by the number of interactions
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT c.name, COUNT(l.id) AS interaction_count ")
+                .append("FROM categories_" + language + " c ")
+                .append("JOIN monuments_categories_" + language + " mc ON c.id = mc.categoryID ")
+                .append("JOIN monuments_" + language + " m ON mc.monumentID = m.id ")
+                .append("LEFT JOIN logs l ON m.id = l.monumentId ")
+                .append("WHERE c.name IN (");
+
+        // Add placeholders for category names
+        for (int i = 0; i < selectedCategories.size(); i++) {
+            queryBuilder.append("?");
+            if (i < selectedCategories.size() - 1) {
+                queryBuilder.append(",");
+            }
+        }
+
+        queryBuilder.append(") GROUP BY c.name ORDER BY interaction_count DESC");
+
+        String[] selectionArgs = selectedCategories.toArray(new String[0]);
+
+        Cursor cursor = databaseMonuments.rawQuery(queryBuilder.toString(), selectionArgs);
+
+        while (cursor.moveToNext()) {
+            String categoryName = cursor.getString(0);
+            listCategoriesOrdered.add(categoryName);
+        }
+
+        cursor.close();
+        databaseMonuments.close();
+
+        //add the categories that are not selected
+
+        for (String category : listCategories) {
+            if (!listCategoriesOrdered.contains(category)) {
+                listCategoriesOrdered.add(category);
+            }
+        }
+
+        return listCategoriesOrdered;
+    }
+
+    public void setDatabaseUpdateListener(DatabaseUpdateListener listener) {
+        this.updateListener = listener;
+    }
 
     /**
      * Open the database connection.
@@ -307,11 +385,9 @@ public class DatabaseAccess {
         // check SQLLite DB file really exists in app filesystem
 
 
-
         this.databaseRetrieval = openHelperRetrieval.getWritableDatabase();
-        this.databaseMonuments = openHelperMonuments.getWritableDatabase();
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
     }
-
 
     /**
      * Close the database connection.
@@ -319,7 +395,7 @@ public class DatabaseAccess {
 
     public void updateDatabaseColdStart() {
 
-        this.databaseMonuments = openHelperMonuments.getWritableDatabase();
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
 
         if (listCategories.isEmpty()) {
             Log.d(TAG, "[INFO] updateDatabaseColdStart: updating categories...");
@@ -423,7 +499,7 @@ public class DatabaseAccess {
 
         //Update database monuments
 
-        this.databaseMonuments = openHelperMonuments.getWritableDatabase();
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
 
         Log.d(TAG, "[INFO] updateDatabase: updating monuments...");
 
@@ -461,7 +537,7 @@ public class DatabaseAccess {
         cursorMonuments.close();
 
         if (databaseMonuments != null) {
-            this.databaseMonuments.close();
+            databaseMonuments.close();
         }
     }
 
@@ -485,7 +561,7 @@ public class DatabaseAccess {
     }
 
     private int getMonumentId(String monumentName) {
-        this.databaseMonuments = openHelperMonuments.getWritableDatabase();
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
 
         String query = "SELECT id FROM monuments_English WHERE monument = ?";
         String[] selectionArgs = {monumentName};
@@ -502,7 +578,7 @@ public class DatabaseAccess {
         }
 
         cursor.close();
-        this.databaseMonuments.close();
+        databaseMonuments.close();
 
         return monumentId;
     }
@@ -516,7 +592,7 @@ public class DatabaseAccess {
             return;
         }
 
-        this.databaseMonuments = openHelperMonuments.getWritableDatabase();
+        databaseMonuments = openHelperMonuments.getWritableDatabase();
 
         // Get the current date and time
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -534,104 +610,9 @@ public class DatabaseAccess {
 
         Log.d(TAG, "[LOG] log: monument " + id + " logged with id " + newRowId);
 
-        if (this.databaseMonuments != null) {
-            this.databaseMonuments.close();
+        if (databaseMonuments != null) {
+            databaseMonuments.close();
         }
-    }
-
-
-    public static double[] getCoordinates(String monument) {
-
-        for (Element e : listMonuments) {
-            if (Objects.equals(e.getMonument(), monument)) {
-                Log.d(TAG, "Coordinates: " + e.getCoordX() + " " + e.getCoordY());
-                return e.getCoordinates();
-            }
-        }
-
-        return null;
-    }
-
-
-
-    public static float distance2Positions(double[] m1, double[] m2) {
-        Location location1 = new Location("");
-        location1.setLatitude(m1[0]);
-        location1.setLongitude(m1[1]);
-
-        Location location2 = new Location("");
-        location2.setLatitude(m2[0]);
-        location2.setLongitude(m2[1]);
-
-        return location1.distanceTo(location2);
-    }
-
-    public static String getNearestMonument(double latitude, double longitude, double maxDistance) {
-
-        Location currentLocation = new Location("");
-        currentLocation.setLatitude(latitude);
-        currentLocation.setLongitude(longitude);
-
-        Element nearestElement = listMonuments.get(0);
-        double minDistance = maxDistance;
-
-        for (Element element : listMonuments) {
-            // Calculate the distance between current and target locations
-            Location targetLocation = new Location("");
-            targetLocation.setLatitude(element.getCoordX());
-            targetLocation.setLongitude(element.getCoordY());
-            float distance = currentLocation.distanceTo(targetLocation);
-            Log.d(TAG, "Distance to " + element.getMonument() + ": " + distance + " meters");
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestElement = element;
-            }
-        }
-
-        if (minDistance >= maxDistance) {
-            Log.d(TAG, "No monument found within " + maxDistance + " meters");
-            Log.d(TAG, "Nearest monument: " + nearestElement.getMonument() + " at " + minDistance + " meters");
-            return null;
-        }
-
-        Log.d(TAG, "Nearest monument: " + nearestElement.getMonument() + " at " + minDistance + " meters");
-
-        return nearestElement.getMonument();
-    }
-
-    public static String getRandomMonumentFromPreferredCategories(){
-        List<String> selectedCategories = new ArrayList<>();
-
-        for (String category : listCategories) {
-            boolean b = sharedPreferences.getBoolean("category_checkbox_" + category.toLowerCase(), false);
-            if (b) {
-                selectedCategories.add(category);
-            }
-        }
-
-        if (selectedCategories.isEmpty()) {
-            return getRandomMonument();
-        }
-
-        List<String> monuments = getMonumentsByCategoryOrdered(selectedCategories.get(0));
-        Collections.shuffle(monuments);
-        return monuments.get(0);
-    }
-
-    public static String getRandomMonument(){
-        Collections.shuffle(listMonuments);
-        return listMonuments.get(0).getMonument();
-    }
-
-    public static String getImageLink(String monument) {
-        for (Element e : listMonuments) {
-            if (Objects.equals(e.getMonument(), monument)) {
-                Log.d(TAG, "Image link: " + e.getPath());
-                return e.getPath();
-            }
-        }
-
-        return null;
     }
 
 }

@@ -20,16 +20,13 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
 public class MainActivity extends AppCompatActivity implements MonumentAdapter.OnButtonClickListener {
 
+    public static final double MAX_DISTANCE = 500;  //TODO test range
+    public static final double MAX_DISTANCE_RECOGNIZED = 150; //TODO test range
+    static final long NOTIFICATION_TIME = 5 * 60000; //60000 = 1 minute
+    private static final String TAG = "MainActivity";
     public static boolean isRunning = false;
-    public static final double MAX_DISTANCE = 500 ;  //TODO test range
-    public static final double MAX_DISTANCE_RECOGNIZED = 150 ; //TODO test range
-
-    static final long NOTIFICATION_TIME = 5*60000; //60000 = 1 minute
     public static String language;
     public static String uniqueID;
-
-    private static final String TAG = "MainActivity";
-
     public static MyLocationListener locationListener;
     private LocationManager locationManager;
 
@@ -87,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
             Log.e(TAG, "ERROR: checkSelfPermission(ACCESS_FINE_LOCATION or ACCESS_COARSE_LOCATION)");
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60*1000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60*1000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
 
 
     }
@@ -117,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
             locationManager.removeUpdates(locationListener);
         } else {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60*1000, 0, locationListener);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60*1000, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
             }
         }
     }

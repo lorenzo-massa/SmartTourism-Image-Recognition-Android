@@ -16,9 +16,6 @@
 
 package org.tensorflow.lite.examples.classification;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
@@ -38,13 +35,8 @@ import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
-import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class ClassifierActivity extends CameraActivity implements OnImageAvailableListener {
     private static final String TAG = "ClassifierActivity";
@@ -114,7 +106,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
                         if (classifier != null) {
                             List<Classifier.Recognition> results = null;
-                            if(!dialogIsOpen && !sheetIsOpen){
+                            if (!dialogIsOpen && !sheetIsOpen) {
                                 final long startTime = SystemClock.uptimeMillis();
 
                                 results = classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
@@ -127,7 +119,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                                     new Runnable() {
                                         @Override
                                         public void run() {
-                                            if(finalResults != null)
+                                            if (finalResults != null)
                                                 showResultsInBottomSheet(finalResults, rgbFrameBitmap, sensorOrientation);
                                             /*
                                             showFrameInfo(previewWidth + "x" + previewHeight);
@@ -149,7 +141,6 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     protected void onInferenceConfigurationChanged() {
         if (rgbFrameBitmap == null) {
             // Defer creation until we're getting camera frames.
-            return;
         }
         /*
         final Device device = getDevice();
@@ -181,7 +172,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
             classifier = Classifier.create(this, model, device, numThreads, mode, language);
 
-            Toast.makeText(this, "Classifier (model= "+model+", device= "+device+", numThreads= "+numThreads+", mode=" + mode, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Classifier (model= " + model + ", device= " + device + ", numThreads= " + numThreads + ", mode=" + mode, Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
             LOGGER.e(e, "Failed to create classifier.");

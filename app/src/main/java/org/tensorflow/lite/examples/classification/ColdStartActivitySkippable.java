@@ -2,7 +2,6 @@ package org.tensorflow.lite.examples.classification;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,17 +16,14 @@ import androidx.appcompat.widget.Toolbar;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ColdStartActivitySkippable extends AppCompatActivity {
 
     private ListView listView;
-    private String TAG = "ColdStartActivitySkippable";
+    private final String TAG = "ColdStartActivitySkippable";
 
     private String language;
-    private ArrayList<String> listSelectedAttributes = new ArrayList<>();
-
+    private final ArrayList<String> listSelectedAttributes = new ArrayList<>();
 
 
     @Override
@@ -41,7 +36,7 @@ public class ColdStartActivitySkippable extends AppCompatActivity {
 
         language = getIntent().getStringExtra("language");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setTitle("Attributes");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
@@ -71,11 +66,8 @@ public class ColdStartActivitySkippable extends AppCompatActivity {
                 // Get the editor to make changes
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                for ( String attribute : DatabaseAccess.getListAttributes() ) {
-                    if(listSelectedAttributes.contains(attribute))
-                        editor.putBoolean("attribute_checkbox_" + attribute.toLowerCase(), true);
-                    else
-                        editor.putBoolean("attribute_checkbox_" + attribute.toLowerCase(), false);
+                for (String attribute : DatabaseAccess.getListAttributes()) {
+                    editor.putBoolean("attribute_checkbox_" + attribute.toLowerCase(), listSelectedAttributes.contains(attribute));
                 }
 
                 // Commit the changes

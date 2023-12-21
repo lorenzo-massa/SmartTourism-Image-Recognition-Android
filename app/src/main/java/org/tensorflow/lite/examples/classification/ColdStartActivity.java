@@ -2,7 +2,6 @@ package org.tensorflow.lite.examples.classification;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,17 +17,14 @@ import androidx.appcompat.widget.Toolbar;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ColdStartActivity extends AppCompatActivity {
 
     private ListView listView;
-    private String TAG = "ColdStartActivity";
+    private final String TAG = "ColdStartActivity";
 
     private String language;
-    private ArrayList<String> listSelectedCategories = new ArrayList<>();
-
+    private final ArrayList<String> listSelectedCategories = new ArrayList<>();
 
 
     @Override
@@ -40,7 +36,7 @@ public class ColdStartActivity extends AppCompatActivity {
 
         language = getIntent().getStringExtra("language");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setTitle("Categories");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
@@ -70,11 +66,8 @@ public class ColdStartActivity extends AppCompatActivity {
                 // Get the editor to make changes
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                for ( String category : DatabaseAccess.getListCategories() ) {
-                    if(listSelectedCategories.contains(category))
-                        editor.putBoolean("category_checkbox_" + category.toLowerCase(), true);
-                    else
-                        editor.putBoolean("category_checkbox_" + category.toLowerCase(), false);
+                for (String category : DatabaseAccess.getListCategories()) {
+                    editor.putBoolean("category_checkbox_" + category.toLowerCase(), listSelectedCategories.contains(category));
                 }
 
                 // Commit the changes
@@ -90,10 +83,6 @@ public class ColdStartActivity extends AppCompatActivity {
             } else
                 Toast.makeText(this, "Choose at least one category", Toast.LENGTH_SHORT).show();
         });
-
-
-
-
 
 
     }

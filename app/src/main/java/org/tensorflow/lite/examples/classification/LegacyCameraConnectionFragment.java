@@ -53,13 +53,13 @@ public class LegacyCameraConnectionFragment extends Fragment {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
-    private Camera camera;
     private final Camera.PreviewCallback imageListener;
     private final Size desiredSize;
     /**
      * The layout identifier to inflate for this Fragment.
      */
     private final int layout;
+    private Camera camera;
     /**
      * An {@link AutoFitTextureView} for camera preview.
      */
@@ -145,7 +145,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        textureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        textureView = view.findViewById(R.id.texture);
     }
 
     @Override

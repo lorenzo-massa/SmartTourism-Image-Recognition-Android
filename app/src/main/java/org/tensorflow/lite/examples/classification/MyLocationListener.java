@@ -1,7 +1,5 @@
 package org.tensorflow.lite.examples.classification;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,23 +15,20 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import org.opencv.android.CameraActivity;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
 import java.util.Random;
 
 public class MyLocationListener implements LocationListener {
 
-    private String TAG = "MyLocationListener";
-
     double latitude;
     double longitude;
-
+    private final String TAG = "MyLocationListener";
     private long lastNotificationTime = System.currentTimeMillis();
     private String lastMonument = null;
 
 
-    private Context contex;
+    private final Context contex;
 
     public MyLocationListener(Context context) {
         this.contex = context;
@@ -56,7 +51,7 @@ public class MyLocationListener implements LocationListener {
     private void sendNotification() {
         if (DatabaseAccess.getSharedPreferences().getBoolean("pref_key_notifications", false) //Check if notifications are enabled
                 && System.currentTimeMillis() - lastNotificationTime >= MainActivity.NOTIFICATION_TIME
-        ){
+        ) {
             // Define the target location
             String nearestMonument = DatabaseAccess.getNearestMonument(latitude, longitude, MainActivity.MAX_DISTANCE);
             Log.d(TAG, "nearestMonument: " + nearestMonument);
