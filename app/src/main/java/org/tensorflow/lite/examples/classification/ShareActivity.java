@@ -39,14 +39,13 @@ import java.util.Objects;
 
 public class ShareActivity extends AppCompatActivity {
 
-    private String monumentId;
-    private Bitmap bitmap = null;
-    ImageView imageView;
-    private static final int pic_id = 123;
     private static final String TAG = "ShareActivity";
-
-    ConstraintLayout constraintLayout_id;
+    private String monumentId;
+    private Bitmap bitmap;
+    ImageView imageView;
     Uri imageUri;
+    private static final int pic_id = 123;
+    ConstraintLayout constraintLayout_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +59,21 @@ public class ShareActivity extends AppCompatActivity {
 
         String link = DatabaseAccess.getImageLink(monumentId);
 
-        //Save image from url
+        // Load image from link using Glide
         Glide.with(ShareActivity.this)
                 .load(link)
                 .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
 
+                        // Convert drawable to bitmap
                         bitmap = ((BitmapDrawable)resource).getBitmap();
+                        // Add watermark (logo) to image
                         bitmap = addWatermark(bitmap);
-
                         //Show the image
                         imageView.setImageBitmap(bitmap);
 
+                        // Resize the image to fit the screen
                         if (bitmap.getWidth() < bitmap.getHeight()) {
                             //Vertical
                             imageView.setImageBitmap(
@@ -80,6 +81,7 @@ public class ShareActivity extends AppCompatActivity {
                                             constraintLayout_id.getWidth(), constraintLayout_id.getHeight()));
                         }
 
+                        // Reload the image
                         imageView.requestLayout();
 
                     }
@@ -100,6 +102,7 @@ public class ShareActivity extends AppCompatActivity {
         Button button_share = findViewById(R.id.share_button);
         button_share.setOnClickListener(v -> {
 
+            // Check if the image is loaded
             if (bitmap == null) {
                 Toast.makeText(ShareActivity.this, "Please wait for the image to load!", Toast.LENGTH_SHORT).show();
                 return;
@@ -125,25 +128,30 @@ public class ShareActivity extends AppCompatActivity {
         Button button_take_photo = findViewById(R.id.take_photo_button);
         button_take_photo.setOnClickListener(v -> {
 
-            /* Low quality image
-            Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(camera_intent, pic_id);
-             */
-
-
+            // Create parameters for Intent
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.TITLE, "New Picture");
             values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+
+            // Where to store the resulting picture
             imageUri = getContentResolver().insert(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            // Create the camera_intent ACTION_IMAGE_CAPTURE
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            // Choose the path where the image will be saved
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(intent, pic_id);
         });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(view -> {
+
+            // Go back to the previous activity
             onBackPressed();
+
+            // Close this activity
             finish();
         });
 
@@ -152,15 +160,21 @@ public class ShareActivity extends AppCompatActivity {
     // This method will help to retrieve the image
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         // Match the request 'pic id with requestCode
         if (requestCode == pic_id && resultCode == RESULT_OK) {
 
             try {
+                // Get the image from data
                 bitmap = MediaStore.Images.Media.getBitmap(
                         getContentResolver(), imageUri);
+
+                // Add watermark (logo) to image
                 bitmap = addWatermark(bitmap);
+
+                //Show the image
                 imageView.setImageBitmap(bitmap);
-                //String imageurl = getRealPathFromURI(imageUri);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -177,15 +191,6 @@ public class ShareActivity extends AppCompatActivity {
         }
     }
 
-
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
 
     // Retrieving the url to share
     private Uri getmageToShare(Bitmap bitmap) {
@@ -206,7 +211,9 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     // Add watermark to image
-    private Bitmap addWatermark(Bitmap src) { //TODO: Check because some times the logo is added wrongly
+    private Bitmap addWatermark(Bitmap src) {
+        //TODO: Size of logo should be relative to the size of the image
+
         int w = src.getWidth();
         int h = src.getHeight();
         Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
@@ -223,6 +230,7 @@ public class ShareActivity extends AppCompatActivity {
         return result;
     }
 
+    // Resize the image
     private Bitmap BITMAP_RESIZER(Bitmap bitmap,int newWidth,int newHeight) {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
@@ -236,7 +244,7 @@ public class ShareActivity extends AppCompatActivity {
 
         Canvas canvas = new Canvas(scaledBitmap);
         canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+        canvas.drawBitmap(bitmap, middleX - (int)(bitmap.getWidth() / 2), middleY - (int)(bitmap.getHeight() / 2), new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return scaledBitmap;
 
