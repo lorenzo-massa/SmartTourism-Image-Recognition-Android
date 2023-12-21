@@ -50,13 +50,18 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set the layout
         setContentView(R.layout.activity_share);
 
+        // Get the monument id from the previous activity
         monumentId = getIntent().getStringExtra("monument_id");
+
+        // Get the image view and the constraint layout
         imageView = findViewById(R.id.actual_photo);
         constraintLayout_id = findViewById(R.id.constraintLayout);
 
-
+        // Get the image link from the database
         String link = DatabaseAccess.getImageLink(monumentId);
 
         // Load image from link using Glide
@@ -68,8 +73,14 @@ public class ShareActivity extends AppCompatActivity {
 
                         // Convert drawable to bitmap
                         bitmap = ((BitmapDrawable)resource).getBitmap();
+
+                        // Adjust the aspect ratio of the image (for instagram
+                        if (bitmap.getWidth() < bitmap.getHeight())
+                            bitmap = adjustAspectRatio(bitmap, 0.5625f);
+
                         // Add watermark (logo) to image
                         bitmap = addWatermark(bitmap);
+
                         //Show the image
                         imageView.setImageBitmap(bitmap);
 
@@ -99,6 +110,7 @@ public class ShareActivity extends AppCompatActivity {
                     }
                 });
 
+        // Share button
         Button button_share = findViewById(R.id.share_button);
         button_share.setOnClickListener(v -> {
 
@@ -125,6 +137,7 @@ public class ShareActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(intent, "Share to"));
         });
 
+        // Take photo button
         Button button_take_photo = findViewById(R.id.take_photo_button);
         button_take_photo.setOnClickListener(v -> {
 
@@ -145,6 +158,7 @@ public class ShareActivity extends AppCompatActivity {
             startActivityForResult(intent, pic_id);
         });
 
+        // Back button
         Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(view -> {
 
@@ -157,7 +171,7 @@ public class ShareActivity extends AppCompatActivity {
 
     }
 
-    // This method will help to retrieve the image
+    // This method retrieves the image
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -168,6 +182,10 @@ public class ShareActivity extends AppCompatActivity {
                 // Get the image from data
                 bitmap = MediaStore.Images.Media.getBitmap(
                         getContentResolver(), imageUri);
+
+                // Adjust the aspect ratio of the image (for instagram
+                if (bitmap.getWidth() < bitmap.getHeight())
+                    bitmap = adjustAspectRatio(bitmap, 0.5625f);
 
                 // Add watermark (logo) to image
                 bitmap = addWatermark(bitmap);
@@ -187,6 +205,7 @@ public class ShareActivity extends AppCompatActivity {
                                 constraintLayout_id.getWidth(), constraintLayout_id.getHeight()));
             }
 
+            // Reload the image
             imageView.requestLayout();
         }
     }
@@ -194,38 +213,64 @@ public class ShareActivity extends AppCompatActivity {
 
     // Retrieving the url to share
     private Uri getmageToShare(Bitmap bitmap) {
+        // Get the image folder
         File imagefolder = new File(getCacheDir(), "images");
         Uri uri = null;
         try {
+            // Create the folder if it doesn't exist
             imagefolder.mkdirs();
+
+            // Create the file
             File file = new File(imagefolder, "shared_image.jpeg");
             FileOutputStream outputStream = new FileOutputStream(file);
+
+            // Compress the image
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+            // Flush and close the output stream
             outputStream.flush();
             outputStream.close();
+
+            // Get the new URI
             uri = FileProvider.getUriForFile(ShareActivity.this, "org.tensorflow.lite.examples.classification.fileprovider", file);
+
         } catch (Exception e) {
             Toast.makeText(ShareActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
         return uri;
     }
 
     // Add watermark to image
     private Bitmap addWatermark(Bitmap src) {
-        //TODO: Size of logo should be relative to the size of the image
+        float scaleFactor = 0.2f;
 
+        //Get the image dimensions
         int w = src.getWidth();
         int h = src.getHeight();
+
+        //Create result bitmap
         Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
         Canvas canvas = new Canvas(result);
+
+        //Draw background
         canvas.drawBitmap(src, 0, 0, null);
 
-        //Draw drawable
+        //Get logo drawable
         Drawable drawable = getResources().getDrawable(R.drawable.logo_name);
         Bitmap bitmapLogo = ((BitmapDrawable)drawable).getBitmap();
-        //Resize bitmap
-        bitmapLogo = BITMAP_RESIZER(bitmapLogo, 50, 50);
-        canvas.drawBitmap(bitmapLogo, w-60, h-60, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        //Resize bitmap logo with a size relative to the image
+        int new_size;
+        if (w < h) // Vertical
+            new_size = (int) (w * scaleFactor);
+        else // Horizontal
+            new_size = (int) (h * scaleFactor);
+
+        bitmapLogo = BITMAP_RESIZER(bitmapLogo, new_size, new_size);
+
+        //Draw Logo
+        canvas.drawBitmap(bitmapLogo, w-new_size-30, h-new_size-30, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return result;
     }
@@ -234,20 +279,30 @@ public class ShareActivity extends AppCompatActivity {
     private Bitmap BITMAP_RESIZER(Bitmap bitmap,int newWidth,int newHeight) {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
+        // Calculate the scale
         float ratioX = newWidth / (float) bitmap.getWidth();
         float ratioY = newHeight / (float) bitmap.getHeight();
         float middleX = newWidth / 2.0f;
         float middleY = newHeight / 2.0f;
 
+        // Create the matrix
         Matrix scaleMatrix = new Matrix();
         scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
 
+        // Create the canvas
         Canvas canvas = new Canvas(scaledBitmap);
         canvas.setMatrix(scaleMatrix);
+
+        // Draw the bitmap
         canvas.drawBitmap(bitmap, middleX - (int)(bitmap.getWidth() / 2), middleY - (int)(bitmap.getHeight() / 2), new Paint(Paint.FILTER_BITMAP_FLAG));
 
         return scaledBitmap;
 
+    }
+
+    private Bitmap adjustAspectRatio(Bitmap bitmap, float ratio) {
+        int height = bitmap.getHeight();
+        return BITMAP_RESIZER(bitmap, (int) (height * ratio), height);
     }
 
 }
