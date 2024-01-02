@@ -95,7 +95,7 @@ public class GuideActivity extends AppCompatActivity {
         });
 
         MarkdownView markdownView = findViewById(R.id.markdown_view);
-        markdownView.loadMarkdownFromAssets("guides/" + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
+        markdownView.loadMarkdownFromAssets("currentGuides/" + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
 
 
         double[] coordinates = DatabaseAccess.getCoordinates(monumentId);

@@ -9,6 +9,7 @@ from preprocessors import AspectAwarePreprocessor
 from preprocessors import ImageToArrayPreprocessor
 import cv2
 import os
+import shutil
 import sqlite3
 import pickle
 from sklearn.model_selection import train_test_split
@@ -33,13 +34,41 @@ ap = argparse.ArgumentParser()
 
 ap.add_argument('-i', '--images', help='path of dataset images')
 
+# add optional argument to select the path for the guides
+ap.add_argument('-g', '--guides', help='path of guides')
+
 # add optional argument to skip the creation of the test_set (default False)
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
+
+if not ap.parse_args().images:
+    print("\n\n[ERROR]: You must specify the path of the images")
+    exit()
+
+if ap.parse_args().guides:
+    print("\n\n[INFO]: Using the guides in " + ap.parse_args().guides)
+    
+    # Delete old guides
+    if os.path.exists("models/src/main/assets/currentGuides"):
+        shutil.rmtree("models/src/main/assets/currentGuides")
+
+    # Create new guides folder
+    os.makedirs("models/src/main/assets/currentGuides")
+
+    # Copy all the files from the provided path in models/src/main/assets/currentGuides
+    dirs = os.listdir(ap.parse_args().guides)
+    for d in dirs:
+        shutil.copytree(ap.parse_args().guides + "/" + d, "models/src/main/assets/currentGuides/" + d)
+        
+    print("\n\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuides'))
+
+
 
 if ap.parse_args().fast:
     print("\n\n[INFO]: Skipping the creation of the features dataset")
     createDB()
     exit()
+
+
 
 args = vars(ap.parse_args())
 

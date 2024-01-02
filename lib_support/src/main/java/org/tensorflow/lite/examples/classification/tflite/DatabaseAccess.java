@@ -132,7 +132,7 @@ public class DatabaseAccess {
         Log.d(TAG, "getMonumentsByCategoryOrdered: list: " + monumentList);
 
         return monumentList;
-    } //TODO optimize with query
+    }
 
     public static String getMonumentSubtitle(String monument) {
 

@@ -28,9 +28,9 @@ def createDB():
     if os.path.exists("models/src/main/assets/databases/monuments_db.sqlite"):
         os.remove("models/src/main/assets/databases/monuments_db.sqlite")
 
-    # Get languages from names of folders in guides folder
-    languages = [name for name in os.listdir('models/src/main/assets/guides/Template Monument') if
-                 os.path.isdir(os.path.join('models/src/main/assets/guides/Template Monument', name))]
+    # Get languages from names of folders in currentGuides folder
+    languages = [name for name in os.listdir('models/src/main/assets/currentGuides/Template Monument') if
+                 os.path.isdir(os.path.join('models/src/main/assets/currentGuides/Template Monument', name))]
     print("Language found: ", languages)
 
     # Create a new database
@@ -57,10 +57,10 @@ def createDB():
         table_name_monuments_attributes = f"monuments_attributes_{lang}"
 
         # GETTING PATHS OF GUIDE FILES
-        path = f"models/src/main/assets/guides/*/{lang}/guide.md"
+        path = f"models/src/main/assets/currentGuides/*/{lang}/guide.md"
         textPaths = glob.glob(path)
 
-        print("Path used for guides: " + path + '\n' + "Number of files found: " + str(
+        print("Path used for currentGuides: " + path + '\n' + "Number of files found: " + str(
             len(textPaths)))
         if (len(textPaths) == 0):
             print("No files found in " + path + '\n' + "Please check the path and try again")
@@ -137,10 +137,15 @@ def createDB():
             # Find image link from the markdown file 
             imgLink = getImageLink(content)
             if (imgLink is None):
-                print(f"Image not found for {textPaths[i]}")
+                print(f"[ERROR]: Image not found for {textPaths[i]}")
 
             # Create a tuple with the content, coordinates, categories, attributes and image link
             obj = (content, coordinates, capitalized_categories, capitalized_attributes, subtitle, imgLink)
+
+            # Check if the categories have the corrisponding image
+            for cat in capitalized_categories:
+                if (not os.path.exists(f"models/src/main/assets/categories/{cat}.jpg")):
+                    print(f"Image not found for category {cat} in guide {textPaths[i]}")
 
             monumentsList.append(obj)
 
