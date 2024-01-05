@@ -2,6 +2,7 @@ package org.tensorflow.lite.examples.classification;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -198,7 +199,7 @@ public class LoadingActivity extends AppCompatActivity {
                     throw new UnsupportedOperationException();
             }
 
-            DatabaseAccess databaseAccess = DatabaseAccess.getInstance(LoadingActivity.this, dbName);
+            DatabaseAccess databaseAccess = DatabaseAccess.getInstance( LoadingActivity.this, dbName);
             databaseAccess.setDatabaseUpdateListener(this);
 
             databaseAccess.updateDatabase(5);
@@ -242,5 +243,6 @@ public class LoadingActivity extends AppCompatActivity {
             publishProgress(progress);
         }
     }
+
 }
 

@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.classification.tflite;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -45,6 +46,7 @@ public class DatabaseAccess {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
         language = sharedPreferences.getString("pref_key_language", "English");
     }
+
 
     public static SharedPreferences getSharedPreferences() {
         return sharedPreferences;
@@ -160,9 +162,12 @@ public class DatabaseAccess {
         return subtitle;
     }
 
-    public static DatabaseAccess getInstance() {
+    public static DatabaseAccess getInstance(Activity activity) {
         if (instance == null) {
             Log.d(TAG, "[ERROR] DatabaseAccess instance is null");
+
+            Log.d(TAG, "[INFO] Creating new DatabaseAccess instance");
+            instance = new DatabaseAccess(activity, "");
         }
         return instance;
     }

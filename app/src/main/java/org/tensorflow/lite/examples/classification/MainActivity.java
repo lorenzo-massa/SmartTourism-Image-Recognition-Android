@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
         language = getIntent().getStringExtra("language");
         uniqueID = getIntent().getStringExtra("user_id");
 
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance();
-        databaseAccess.updateDatabaseColdStart();
-
-
         //Preferences button
         ActionMenuItemView btnPreferences = findViewById(R.id.settings);
         btnPreferences.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +98,12 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
         isRunning = true;
 
         //Update attributes and categories if you edit preferences
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(this);
+        databaseAccess.updateDatabaseColdStart();
+
         RecyclerView recyclerView = findViewById(R.id.listCardView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MonumentAdapter monumentAdapter = new MonumentAdapter(DatabaseAccess.getInstance().getListCategoriesOrdered(), this);
+        MonumentAdapter monumentAdapter = new MonumentAdapter(DatabaseAccess.getInstance(this).getListCategoriesOrdered(), this);
         recyclerView.setAdapter(monumentAdapter);
 
 

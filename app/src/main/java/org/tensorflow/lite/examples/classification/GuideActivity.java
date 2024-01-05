@@ -101,7 +101,7 @@ public class GuideActivity extends AppCompatActivity {
         double[] coordinates = DatabaseAccess.getCoordinates(monumentId);
 
         //Log monument interaction
-        DatabaseAccess.getInstance().log(monumentId);
+        DatabaseAccess.getInstance(this).log(monumentId);
 
 
         if (coordinates != null) {

@@ -57,7 +57,7 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
         holder.title.setText(category);
 
         // Set monument list
-        List<String> monuments = DatabaseAccess.getInstance().getMonumentsByCategoryOrdered(category);
+        List<String> monuments = DatabaseAccess.getMonumentsByCategoryOrdered(category);
         holder.monumentLayout.removeAllViews();
         for (String monument : monuments) {
             View monumentView;
@@ -70,7 +70,7 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
 
             MonumentViewHolder monumentViewHolder = (MonumentViewHolder) monumentView.getTag();
             monumentViewHolder.titleTextView.setText(monument);
-            monumentViewHolder.subtitleTextView.setText(DatabaseAccess.getInstance().getMonumentSubtitle(monument));
+            monumentViewHolder.subtitleTextView.setText(DatabaseAccess.getMonumentSubtitle(monument));
             holder.monumentLayout.addView(monumentView);
 
             // Set button click listener
