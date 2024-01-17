@@ -42,7 +42,7 @@ public class MonumentAdapter extends RecyclerView.Adapter<MonumentAdapter.ViewHo
         String category = categories.get(position);
 
         // Load image using Glide
-        String imagePath = "file:///android_asset/categories/" + category + ".jpg";
+        String imagePath = MainActivity.categoryPath + category + ".jpg";
 
         Glide.with(holder.itemView.getContext())
                 .load(Uri.parse(imagePath))

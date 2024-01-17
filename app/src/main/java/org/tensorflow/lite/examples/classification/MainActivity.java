@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
     public static final double MAX_DISTANCE = 500;  //TODO test range
     public static final double MAX_DISTANCE_RECOGNIZED = 150; //TODO test range
     static final long NOTIFICATION_TIME = 5 * 60000; //60000 = 1 minute
+
+    public static String categoryPath = "file:///android_asset/categories/";
     private static final String TAG = "MainActivity";
     public static boolean isRunning = false;
     public static String language;
