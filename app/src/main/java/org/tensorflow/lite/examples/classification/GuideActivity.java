@@ -35,12 +35,12 @@ public class GuideActivity extends AppCompatActivity {
     private ArrayList<Element> hints = new ArrayList<>();
 
     public static double euclideanDistance(float[] vector1, float[] vector2) {
-        if (vector1.length != vector2.length) {
-            throw new IllegalArgumentException("Vector dimensions must be equal");
+        int minLenght = Math.min(vector1.length, vector2.length);
+        if (minLenght == 0) {
+            throw new IllegalArgumentException("Vectors must not be empty");
         }
-
         double sumOfSquares = 0.0;
-        for (int i = 0; i < vector1.length; i++) {
+        for (int i = 0; i < minLenght; i++) {
             double diff = vector1[i] - vector2[i];
             sumOfSquares += diff * diff;
         }
