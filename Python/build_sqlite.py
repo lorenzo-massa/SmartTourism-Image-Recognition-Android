@@ -32,34 +32,46 @@ ALL_DATASET = True
 
 ap = argparse.ArgumentParser()
 
-ap.add_argument('-i', '--images', help='path of dataset images')
-
 # add optional argument to select the path for the guides
 ap.add_argument('-g', '--guides', help='path of guides')
 
 # add optional argument to skip the creation of the test_set (default False)
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
 
-if not ap.parse_args().images:
-    print("\n\n[ERROR]: You must specify the path of the images")
-    exit()
-
 if ap.parse_args().guides:
-    print("\n\n[INFO]: Using the guides in " + ap.parse_args().guides)
+    pathGuides = "models/src/main/assets/guides/" + ap.parse_args().guides
+    pathCategories = "models/src/main/assets/categories/" + ap.parse_args().guides
+    pathImages = "Python/imageDatasets/" + ap.parse_args().guides
+    print("\n\n[INFO]: Using the guides in " + pathGuides)
     
     # Delete old guides
-    if os.path.exists("models/src/main/assets/currentGuides"):
-        shutil.rmtree("models/src/main/assets/currentGuides")
+    if os.path.exists("models/src/main/assets/currentGuide"):
+        shutil.rmtree("models/src/main/assets/currentGuide")
 
     # Create new guides folder
-    os.makedirs("models/src/main/assets/currentGuides")
+    os.makedirs("models/src/main/assets/currentGuide")
 
-    # Copy all the files from the provided path in models/src/main/assets/currentGuides
-    dirs = os.listdir(ap.parse_args().guides)
+    # Copy all the files from the provided path in models/src/main/assets/currentGuide
+    dirs = os.listdir(pathGuides)
     for d in dirs:
-        shutil.copytree(ap.parse_args().guides + "/" + d, "models/src/main/assets/currentGuides/" + d)
+        shutil.copytree(pathGuides + "/" + d, "models/src/main/assets/currentGuide/" + d)
+
+    # Delete old categories
+    if os.path.exists("models/src/main/assets/currentCategories"):
+        shutil.rmtree("models/src/main/assets/currentCategories")
+
+    # Create new categories folder
+    #os.makedirs("models/src/main/assets/currentCategories")
+
+    # Copy all the files from pathCategories in models/src/main/assets/currentCategories
+    shutil.copytree(pathCategories + "/", "models/src/main/assets/currentCategories/")
+
+
         
-    print("\n\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuides'))
+    print("\n\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
+else:
+    print("\n\n[ERROR]: You must specify the path of the guides with the argument -g")
+    exit()
 
 
 
@@ -68,19 +80,15 @@ if ap.parse_args().fast:
     createDB()
     exit()
 
-
-
-args = vars(ap.parse_args())
-
 # LOAD IMAGE PATHS
-image_directories = [d for d in os.listdir(args['images']) if os.path.isdir(os.path.join(args['images'], d))]
+image_directories = [d for d in os.listdir(pathImages) if os.path.isdir(os.path.join(pathImages, d))]
 
 dataImages = []
 for directory in image_directories:
     print(f'Processing image directory: {directory}')
-    image_paths_jpg = glob.glob(os.path.join(args['images'], directory, '*.jpg'))
-    image_paths_jpeg = glob.glob(os.path.join(args['images'], directory, '*.jpeg'))
-    image_paths_png = glob.glob(os.path.join(args['images'], directory, '*.png'))
+    image_paths_jpg = glob.glob(os.path.join(pathImages, directory, '*.jpg'))
+    image_paths_jpeg = glob.glob(os.path.join(pathImages, directory, '*.jpeg'))
+    image_paths_png = glob.glob(os.path.join(pathImages, directory, '*.png'))
     dataImages.extend(image_paths_jpg + image_paths_jpeg + image_paths_png)
 
 
@@ -103,7 +111,7 @@ pbar = progressbar.ProgressBar(
 ).start()
 
 if len(dataImages) == 0:
-    print("\n\n[ERROR]: No images found in the specified path: " + args['images'] + "\n\n")
+    print("\n\n[ERROR]: No images found in the specified path: " + pathImages + "\n\n")
     exit()
 
 monuments = dict()
