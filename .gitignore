@@ -49,7 +49,6 @@ google-services.json
 
 # Datasets
 Python/datasetLeuven/
-Python/datasetImages/
 
 # Python cache
 Python/__pycache__/
