@@ -91,7 +91,6 @@ public class LoadingActivity extends AppCompatActivity {
             requestPermission();
         }
 
-
     }
 
     private boolean hasPermission() {
