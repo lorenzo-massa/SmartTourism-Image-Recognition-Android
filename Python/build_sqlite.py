@@ -85,7 +85,6 @@ image_directories = [d for d in os.listdir(pathImages) if os.path.isdir(os.path.
 
 dataImages = []
 for directory in image_directories:
-    print(f'Processing image directory: {directory}')
     image_paths_jpg = glob.glob(os.path.join(pathImages, directory, '*.jpg'))
     image_paths_jpeg = glob.glob(os.path.join(pathImages, directory, '*.jpeg'))
     image_paths_png = glob.glob(os.path.join(pathImages, directory, '*.png'))
