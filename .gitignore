@@ -51,4 +51,4 @@ google-services.json
 Python/datasetLeuven/
 
 # Python cache
-Python/__pycache__/
+*.pyc
