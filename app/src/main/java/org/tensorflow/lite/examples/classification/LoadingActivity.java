@@ -91,6 +91,8 @@ public class LoadingActivity extends AppCompatActivity {
             requestPermission();
         }
 
+        //Throw an exception to test ACRA
+        throw new RuntimeException("This is a crash");
 
     }
 

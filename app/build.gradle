@@ -78,4 +78,9 @@ dependencies {
 
     // debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
+
+    // ACRA to report crashes via email
+    implementation 'ch.acra:acra-mail:5.11.3'
+
+
 }
