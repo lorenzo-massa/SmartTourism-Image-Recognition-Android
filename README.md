@@ -8,7 +8,7 @@
   </a>
 
   <p align="center">
-    Image Recognition for Android Devices
+    Smart Tourism app for Android Devices
     <br />
     <a href="https://github.com/lorenzo-massa/SmartTourism"><strong>Explore the docs »</strong></a>
     <br />
@@ -30,9 +30,9 @@
 The repository consists of two parts:
 
 * Python (Docker supported)
-* Android
+* Android project
 
-The Python part is used to generate sqlite files from an image dataset and a guides folder.
+The Python part is used to generate SQLite files from an image dataset and a guides folder.
 The android application is ready to use and you should generate a new APK every time you compile the
 python code.
 
@@ -51,14 +51,15 @@ using [Markdown format](https://www.markdownguide.org/basic-syntax/).
 
 ### Markdown
 
-Each guide has to be given as a Markdown file. The first 4 rows of each `.md` have to be completed
+Each guide has to be given as a Markdown file. The first 6 rows of each `.md` have to be completed
 as the following:
 
  ```
 <!-- Use the following commented lines to include monument coordinates, categories and attributes (leave empty lines if the monument has no additional info)
 Coordinate of the monument spaced by a blank space
 Categories of the monument spaced by commas
-Attributes of the monument spaced by commas
+Attributes of the monument spaced by commas (may be blank)
+Short description of the monument
  -->
 ```
 
@@ -192,6 +193,7 @@ to the app's support documentation or contact me. Enjoy your journey!
 ## Contact
 
 Lorenzo Massa - lorenzo.massa@unifi.it
+Marco Bertini - marco.bertini@unifi.it
 
 Project
 Link: [https://github.com/lorenzo-massa/SmartTourism](https://github.com/lorenzo-massa/SmartTourism)
