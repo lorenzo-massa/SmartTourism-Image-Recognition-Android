@@ -22,7 +22,7 @@ def augment(path, i, save=True):
         return transformed['image']
 
 def test():
-    image = cv2.imread("Python\datasetImages\Battistero_SanGiovanni\Battistero_SanGiovanni_002.jpg")
+    image = cv2.imread("Python/imageDatasets/Florence/Battistero_SanGiovanni/Battistero_SanGiovanni_002.jpg")
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     transformed1 = transform(image=image)

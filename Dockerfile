@@ -21,5 +21,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # The code to run when the container is started:
-ENTRYPOINT ["python", "Python/build_sqlite.py", "-i", "Python/datasetImages"]
+ENTRYPOINT ["python", "Python/build_sqlite.py", "-g"]
+CMD ["Florence"]  # default argument
 

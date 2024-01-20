@@ -40,7 +40,7 @@ You will find all the instructions you need just below.
 
 ## Monument guides creation
 
-Go to the `models\src\main\assets\guides` folder. Inside it there is the folder `Template Monument`
+Go to the `models/src/main/assets/guides/CITYNAME` folder. Inside it there is the folder `Template Monument`
 which is to be used as a template,
 so without altering its structure. It is only possible to change the name of the folder with the
 name of the monument which, however,
@@ -79,7 +79,7 @@ Template Monument included)
 
 ### Categories
 
-Go to the `models\src\main\assets\categories` folder and move inside it one image for each category
+Go to the `models/src/main/assets/categories/CITYNAME` folder and move inside it one image for each category
 present in at least one monument guide.
 
 IMPORTANT: Images must have the same name as the categories written in the monument guides. No
@@ -90,11 +90,11 @@ images are needed for the attributes.
 Complete the previous step before creating the database. The guides have to be completed and if you
 make any modification in any guide you have to create again the database.
 
-The repository contains the folder `Python/datasetImages` which must contains one folder per
+The repository contains the folder `Python/imageDatasets/CITYNAME` which must contains one folder per
 monument and each of which contains the images, as in the following example:
 
 ```
-datasetImages
+imageDatasets/CITYNAME
 ├───Battistero SanGiovanni
 │       img1.jpg
 │       img2.jpg
@@ -121,11 +121,13 @@ Go to the folder containing the Dockerfile (i.e. the project folder) and run the
 
 ```sh
 1. docker build -t tfimage .
-2. docker run -it tfimage
+2. docker run -it tfimage CITYNAME
 3. docker container ls -all
 4. docker cp containerID:/app/models/src/main/assets/databases ./models/src/main/assets/
 ```
 
+NOTE: 'CITYNAME' is the name of the city of the guide you are building and that you created in previous steps.
+If the CITYNAME is not provided the guide for Florence will be buit as default.
 NOTE: You can find containerID in the list of the containers in the third instruction.
 
 ### APK

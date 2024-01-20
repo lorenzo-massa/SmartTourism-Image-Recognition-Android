@@ -30,6 +30,8 @@ types = [  # neural networks
 # set to False if you want to split the dataset in train_set and test_set
 ALL_DATASET = True
 
+print("\n\n[INFO]: Build guide DB started")
+
 ap = argparse.ArgumentParser()
 
 # add optional argument to select the path for the guides
@@ -39,40 +41,39 @@ ap.add_argument('-g', '--guides', help='path of guides')
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
 
 if ap.parse_args().guides:
+    print('\n\n[INFO]: Using the guides for ' + ap.parse_args().guides)
     pathGuides = "models/src/main/assets/guides/" + ap.parse_args().guides
     pathCategories = "models/src/main/assets/categories/" + ap.parse_args().guides
     pathImages = "Python/imageDatasets/" + ap.parse_args().guides
-    print("\n\n[INFO]: Using the guides in " + pathGuides)
-    
+
+    print("[INFO]: Using the guides in " + pathGuides)
     # Delete old guides
     if os.path.exists("models/src/main/assets/currentGuide"):
+        print("[INFO]: Deleting old guides")
         shutil.rmtree("models/src/main/assets/currentGuide")
-
     # Create new guides folder
     os.makedirs("models/src/main/assets/currentGuide")
-
     # Copy all the files from the provided path in models/src/main/assets/currentGuide
+    print("[INFO]: Copying guides from " + pathGuides + " in " + os.path.realpath('models/src/main/assets/currentGuide'))
     dirs = os.listdir(pathGuides)
     for d in dirs:
         shutil.copytree(pathGuides + "/" + d, "models/src/main/assets/currentGuide/" + d)
 
+    print("\n[INFO]: Using the categories in " + pathCategories)
     # Delete old categories
     if os.path.exists("models/src/main/assets/currentCategories"):
+        print("[INFO]: Deleting old categories")
         shutil.rmtree("models/src/main/assets/currentCategories")
-
     # Create new categories folder
-    #os.makedirs("models/src/main/assets/currentCategories")
-
+    #os.makedirs("models/src/main/assets/currentCategories")  # XXX seems there's no need to create it as the copy will do it
     # Copy all the files from pathCategories in models/src/main/assets/currentCategories
+    print("[INFO]: Copying categories from " + pathCategories + " in " + os.path.realpath('models/src/main/assets/currentCategories'))
     shutil.copytree(pathCategories + "/", "models/src/main/assets/currentCategories/")
 
-
-        
-    print("\n\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
+    print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
 else:
-    print("\n\n[ERROR]: You must specify the path of the guides with the argument -g")
+    print("\n[ERROR]: You must specify the path of the guides with the argument -g")
     exit()
-
 
 
 if ap.parse_args().fast:
@@ -80,6 +81,7 @@ if ap.parse_args().fast:
     createDB()
     exit()
 
+print("\n\n[INFO]: Using the images in " + pathImages)
 # LOAD IMAGE PATHS
 image_directories = [d for d in os.listdir(pathImages) if os.path.isdir(os.path.join(pathImages, d))]
 
@@ -269,4 +271,5 @@ for dType, modelPath in types:
 
 print("\n\n[INFO]: Processing monuments")
 createDB()
-print("\n\n[INFO]: Script terminated correctly")
+
+print("\n\n[INFO]: Build DB script terminated correctly")
