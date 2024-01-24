@@ -22,5 +22,6 @@ COPY . .
 
 # The code to run when the container is started:
 ENTRYPOINT ["python", "Python/build_sqlite.py", "-g"]
-CMD ["Florence"]  # default argument
+# default argument
+CMD ["Florence"]
 

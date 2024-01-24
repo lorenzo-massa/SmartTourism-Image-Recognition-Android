@@ -125,10 +125,35 @@ Go to the folder containing the Dockerfile (i.e. the project folder) and run the
 3. docker container ls -all
 4. docker cp containerID:/app/models/src/main/assets/databases ./models/src/main/assets/
 ```
+NOTE: You can find containerID in the list of the containers in the third instruction.
+
+The following command runs the Docker to process tha visual features of the images and create the database.
+The copy parameter copies also the guides and categories folders in the assets folder of the Android project.
+
+```sh
+1. ./run_docker.sh CITYNAME copy
+```
+
+otherwise run:
+
+```sh
+1. ./run_docker.sh CITYNAME
+2. ./copy_assets.sh CITYNAME
+```
+
+to run first the Docker and then copy the assets.
+
+If you want to update the guide without updating the visual features of the images, run:
+
+```sh
+1. ./copy_assets.sh CITYNAME
+```
+
+after updating the guides of interest, to reduce the time needed to create the database.
 
 NOTE: 'CITYNAME' is the name of the city of the guide you are building and that you created in previous steps.
-If the CITYNAME is not provided the guide for Florence will be buit as default.
-NOTE: You can find containerID in the list of the containers in the third instruction.
+If the CITYNAME is not provided the guide for Florence will be built as default.
+
 
 ### APK
 

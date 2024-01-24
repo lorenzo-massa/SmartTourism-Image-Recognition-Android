@@ -16,7 +16,28 @@ from sklearn.model_selection import train_test_split
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import glob
 from processing_monuments import createDB
+from utils.files_dirs_utils import has_trailing_spaces, remove_and_rename_trailing_spaces_dir
 from deep_augumentation import augment
+
+landmark_names = set()  # used to check if all guides have corresponding images
+
+def check_guides_and_images(guides_list: set[str], monuments_images_list: set[str]) -> None:
+    # Find elements in set1 but not in set2
+    elements_only_in_guides_list = guides_list - monuments_images_list
+
+    # Find elements in set2 but not in set1
+    elements_only_in_monuments_images = monuments_images_list - guides_list
+
+    # Print differences
+    if elements_only_in_guides_list:
+        print(f"[INFO] Elements of the guide without corresponding images: {elements_only_in_guides_list}")
+
+    if elements_only_in_monuments_images:
+        print(f"[WARN] Elements only in monuments' images without corresponding guides: {elements_only_in_monuments_images}")
+
+    if not elements_only_in_guides_list and not elements_only_in_monuments_images:
+        print("[INFO] Guides and monuments' images lists are consistent")
+
 
 np.set_printoptions(threshold=np.inf)
 
@@ -33,20 +54,19 @@ ALL_DATASET = True
 print("\n\n[INFO]: Build guide DB started")
 
 ap = argparse.ArgumentParser()
-
 # add optional argument to select the path for the guides
 ap.add_argument('-g', '--guides', help='path of guides')
-
 # add optional argument to skip the creation of the test_set (default False)
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
+# parse args
+guide_name = ap.parse_args().guides
 
-if ap.parse_args().guides:
-    print('\n\n[INFO]: Using the guides for ' + ap.parse_args().guides)
-    pathGuides = "models/src/main/assets/guides/" + ap.parse_args().guides
-    pathCategories = "models/src/main/assets/categories/" + ap.parse_args().guides
-    pathImages = "Python/imageDatasets/" + ap.parse_args().guides
-
-    print("[INFO]: Using the guides in " + pathGuides)
+if guide_name:
+    print('[INFO]: Using the guides for ' + guide_name)
+    pathGuides = "models/src/main/assets/guides/" + guide_name
+    pathCategories = "models/src/main/assets/categories/" + guide_name
+    pathImages = "Python/imageDatasets/" + guide_name
+    print("\n[INFO]: Using the guides in " + pathGuides)
     # Delete old guides
     if os.path.exists("models/src/main/assets/currentGuide"):
         print("[INFO]: Deleting old guides")
@@ -56,25 +76,30 @@ if ap.parse_args().guides:
     # Copy all the files from the provided path in models/src/main/assets/currentGuide
     print("[INFO]: Copying guides from " + pathGuides + " in " + os.path.realpath('models/src/main/assets/currentGuide'))
     dirs = os.listdir(pathGuides)
+    print("[INFO]: Found " + str(len(dirs)) + " guides")
     for d in dirs:
+        if has_trailing_spaces(d):
+            print("[WARN]: Removing trailing spaces from '" + d + "'")
+            source_dir = pathGuides + "/" + d
+            os.rename(source_dir, source_dir.rstrip())
+            d = d.rstrip()
         shutil.copytree(pathGuides + "/" + d, "models/src/main/assets/currentGuide/" + d)
-
+        landmark_names.add(d)
     print("\n[INFO]: Using the categories in " + pathCategories)
     # Delete old categories
     if os.path.exists("models/src/main/assets/currentCategories"):
         print("[INFO]: Deleting old categories")
         shutil.rmtree("models/src/main/assets/currentCategories")
     # Create new categories folder
-    #os.makedirs("models/src/main/assets/currentCategories")  # XXX seems there's no need to create it as the copy will do it
+    # os.makedirs("models/src/main/assets/currentCategories")  # XXX seems there's no need to create it as the copy will do it
     # Copy all the files from pathCategories in models/src/main/assets/currentCategories
     print("[INFO]: Copying categories from " + pathCategories + " in " + os.path.realpath('models/src/main/assets/currentCategories'))
     shutil.copytree(pathCategories + "/", "models/src/main/assets/currentCategories/")
-
     print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
+    print("[INFO]: Categories copied in " + os.path.realpath('models/src/main/assets/currentCategories'))
 else:
     print("\n[ERROR]: You must specify the path of the guides with the argument -g")
     exit()
-
 
 if ap.parse_args().fast:
     print("\n\n[INFO]: Skipping the creation of the features dataset")
@@ -82,6 +107,9 @@ if ap.parse_args().fast:
     exit()
 
 print("\n\n[INFO]: Using the images in " + pathImages)
+# eliminate trailing spaces in image directories to match the names fo the guide directories
+[remove_and_rename_trailing_spaces_dir(path) for path in os.listdir(pathImages)]
+
 # LOAD IMAGE PATHS
 image_directories = [d for d in os.listdir(pathImages) if os.path.isdir(os.path.join(pathImages, d))]
 
@@ -91,7 +119,6 @@ for directory in image_directories:
     image_paths_jpeg = glob.glob(os.path.join(pathImages, directory, '*.jpeg'))
     image_paths_png = glob.glob(os.path.join(pathImages, directory, '*.png'))
     dataImages.extend(image_paths_jpg + image_paths_jpeg + image_paths_png)
-
 
 dataset = list()
 
@@ -122,7 +149,7 @@ for (i, path) in enumerate(dataImages):
         pathSplitted = path.split(os.path.sep)[-2].split('_')
     else:
         pathSplitted = path.split(os.path.sep)[-2].split(' ')
-    monument = pathSplitted[0] + " " + pathSplitted[1]
+    monument = ' '.join(pathSplitted)
     tupleImage = (monument, path)
     dataset.append(tupleImage)
     if monument not in monuments.keys():
@@ -131,6 +158,8 @@ for (i, path) in enumerate(dataImages):
         monuments[monument] += 1
     pbar.update(i)
 pbar.finish()
+
+check_guides_and_images(landmark_names, set(monuments.keys()))
 
 IMAGE_PER_MONUMENT = 20
 
@@ -170,7 +199,7 @@ for dType, modelPath in types:
         # preprocessing
         image = cv2.imread(path)
         if np.shape(image) == ():  # latest numpy / py3
-            print("\n\n[ERROR]: Image not found: " + str(path) + " for lanmdark: " + str(monument))
+            print("\n\n[ERROR]: Image not found: " + str(path) + " for landmark: " + str(monument))
             continue  # fail !!
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -231,7 +260,7 @@ for dType, modelPath in types:
         pbar.update(index)
     pbar.finish()
 
-    # CREATING NEW SQL LITE DATABASE
+    # CREATING NEW SQL LITE DATABASE FOR VISUAL FEATURES
 
     # Delete old database
     if os.path.exists("models/src/main/assets/databases/" + dType + "_db.sqlite"):
@@ -241,9 +270,7 @@ for dType, modelPath in types:
     con = sqlite3.connect("models/src/main/assets/databases/" + dType + "_db.sqlite")
     cur = con.cursor()
 
-
     cur.execute("DROP TABLE IF EXISTS monuments")
-
     cur.execute(""" CREATE TABLE monuments (monument, features) """)
 
     widgets = [
