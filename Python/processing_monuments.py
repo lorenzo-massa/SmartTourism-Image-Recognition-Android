@@ -32,6 +32,9 @@ def createDB():
     languages = [name for name in os.listdir('models/src/main/assets/currentGuide/Template Monument') if
                  os.path.isdir(os.path.join('models/src/main/assets/currentGuide/Template Monument', name))]
     print("Language found: ", languages)
+    if len(languages) == 0:
+        print("[ERROR] No languages found in currentGuide folder")
+        exit()
 
     # Create a new database
     con = sqlite3.connect("models/src/main/assets/databases/monuments_db.sqlite")
@@ -45,7 +48,6 @@ def createDB():
         con.commit()
 
     for lang in languages:
-
         print("\n\nCreating DB for " + lang + " language...")
 
         # GETTING DB NAMES
@@ -79,7 +81,7 @@ def createDB():
                 textPaths.pop(i)
                 break
 
-        # READING GUIDE FILES
+        # PARSING GUIDE FILES
         for i, path in enumerate(textPaths):
 
             # Open text file in read mode
@@ -133,7 +135,6 @@ def createDB():
             if lines[4] != '' and lines[4] != '-->': # --> added for compatibility with old guides
                 subtitle = lines[4]
 
-
             # Find image link from the markdown file 
             imgLink = getImageLink(content)
             if (imgLink is None):
@@ -142,7 +143,7 @@ def createDB():
             # Create a tuple with the content, coordinates, categories, attributes and image link
             obj = (content, coordinates, capitalized_categories, capitalized_attributes, subtitle, imgLink)
 
-            # Check if the categories have the corrisponding image
+            # Check if the categories have the corresponding image
             for cat in capitalized_categories:
                 if (not os.path.exists(f"models/src/main/assets/currentCategories/{cat}.jpg")):
                     print(f"[WARNING] Image not found for category {cat} in guide {textPaths[i]}")
@@ -160,11 +161,9 @@ def createDB():
             desc_vectors[i] = model.dv[i]
 
         # CREATING SQL LITE DATABASE FOR MONUMENTS
-
         # con = sqlite3.connect("../models/src/main/assets/databases/monuments_db.sqlite")
 
         # CATEGORIES
-
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_categories}")
@@ -173,7 +172,6 @@ def createDB():
 
         widgets = ["[INFO]: Saving database (Categories - " + lang + ") ... ",
                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-
         pbar = progressbar.ProgressBar(maxval=len(categoriesList), widgets=widgets).start()
 
         for i, attr in enumerate(categoriesList):
@@ -186,7 +184,6 @@ def createDB():
         pbar.finish()
 
         # ATTRIBUTES
-
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_attributes}")
@@ -195,7 +192,6 @@ def createDB():
 
         widgets = ["[INFO]: Saving database (Attributes - " + lang + ") ... ",
                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-
         pbar = progressbar.ProgressBar(maxval=len(attributesList), widgets=widgets).start()
 
         for i, attr in enumerate(attributesList):
@@ -208,7 +204,6 @@ def createDB():
         pbar.finish()
 
         # RELATIONS BETWEEN MONUMENTS AND CATEGORIES  monumentsList[i][2], str(monumentsList[i][3])
-
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments_categories}")
@@ -220,7 +215,6 @@ def createDB():
                     FOREIGN KEY (categoryID) REFERENCES {table_name_categories}(id)) """)
 
         # RELATIONS BETWEEN MONUMENTS AND ATTRIBUTES
-
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments_attributes}")
@@ -232,7 +226,6 @@ def createDB():
                     FOREIGN KEY (attributeID) REFERENCES {table_name_attributes}(id)) """)
 
         # MONUMENTS
-
         cur = con.cursor()
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments}")
@@ -241,7 +234,6 @@ def createDB():
 
         widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ",
                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-
         pbar = progressbar.ProgressBar(maxval=len(desc_vectors), widgets=widgets).start()
 
         for i, v in enumerate(desc_vectors):
