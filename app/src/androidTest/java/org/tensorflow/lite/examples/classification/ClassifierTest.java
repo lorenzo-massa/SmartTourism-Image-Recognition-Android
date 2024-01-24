@@ -60,7 +60,7 @@ public class ClassifierTest {
     @Test
     public void classificationResultsShouldNotChange() throws IOException {
         ClassifierActivity activity = rule.getActivity();
-        Classifier classifier = Classifier.create(activity, Model.MOBILENET_V3_LARGE_100, Device.CPU, 1);
+        Classifier classifier = Classifier.create(activity, Model.Precise, Device.CPU, 1, Classifier.Mode.Standard, "English");
         for (int i = 0; i < INPUTS.length; i++) {
             String imageFileName = INPUTS[i];
             String goldenOutputFileName;
