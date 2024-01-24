@@ -45,7 +45,11 @@ google-services.json
 # Android Profiling
 *.hprof
 
-/models/src/main/assets/databases/
+# databases files created to build the guide using the Docker container
+/models/src/main/assets/databases/*
+# guides and catoegories of the current guide
+/models/src/main/assets/currentGuide/*
+/models/src/main/assets/currentCategories/*
 
 # Datasets
 Python/datasetLeuven/
