@@ -2,13 +2,13 @@ package org.tensorflow.lite.examples.classification;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -71,7 +71,6 @@ public class LoadingActivity extends AppCompatActivity {
         language = sharedPreferences.getString("pref_key_language", "English");
         model = Classifier.Model.valueOf(sharedPreferences.getString("pref_key_model", "Precise"));
 
-
         shared_listener = (prefs, key) -> {
             if (key.equals("pref_key_language")) {
                 language = prefs.getString("pref_key_language", "English");
@@ -80,10 +79,8 @@ public class LoadingActivity extends AppCompatActivity {
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(shared_listener);
 
-
         // Check permissions
-
-        if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()
+        if (hasPermissionCamera() && hasPermissionGPS() && hasPermissionNotification()
                 && hasPermissionWrite() && hasPermissionRead()) {
             //setFragment(); //first creation of classifier (maybe never called)
             new LoadingActivityTask().execute();         // Start the database upload process
@@ -93,7 +90,7 @@ public class LoadingActivity extends AppCompatActivity {
 
     }
 
-    private boolean hasPermission() {
+    private boolean hasPermissionCamera() {
         return (checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -110,11 +107,41 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private boolean hasPermissionWrite() {
-        return (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            boolean result = (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+            if (!result) {
+                Toast.makeText(
+                                LoadingActivity.this,
+                                "Write permission is required for this demo",
+                                Toast.LENGTH_LONG)
+                        .show();
+                Log.e(TAG, "Write permission is required for this demo");
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
+            }
+            return result;
+        } else {
+            return true;
+        }
     }
 
     private boolean hasPermissionRead() {
-        return (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+
+            boolean result = (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+            if (!result) {
+                Toast.makeText(
+                                LoadingActivity.this,
+                                "Read permission is required for this demo",
+                                Toast.LENGTH_LONG)
+                        .show();
+                Log.e(TAG, "Read permission is required for this demo");
+                // Request the permission
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
+            }
+            return result;
+        } else {
+            return true;
+        }
     }
 
     private void requestPermission() {
@@ -165,7 +192,7 @@ public class LoadingActivity extends AppCompatActivity {
             final int requestCode, final String[] permissions, final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST) {
-            if (hasPermission() && hasPermissionGPS() && hasPermissionNotification()
+            if (hasPermissionCamera() && hasPermissionGPS() && hasPermissionNotification()
                     && hasPermissionWrite() && hasPermissionRead()) {
                 new LoadingActivityTask().execute();
             } else {
