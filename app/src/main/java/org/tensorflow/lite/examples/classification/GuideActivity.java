@@ -95,6 +95,7 @@ public class GuideActivity extends AppCompatActivity {
         });
 
         MarkdownView markdownView = findViewById(R.id.markdown_view);
+        Log.i(TAG, "[INFO] Opening Markdown file: " + MainActivity.guidePath + monumentId + "/" + language + "/guide.md");
         markdownView.loadMarkdownFromAssets(MainActivity.guidePath + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
 
 
