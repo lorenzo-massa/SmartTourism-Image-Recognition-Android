@@ -63,8 +63,8 @@ guide_name = ap.parse_args().guides
 
 if guide_name:
     print('[INFO]: Using the guides for ' + guide_name)
-    pathGuides = "models/src/main/assets/guides/" + guide_name
-    pathCategories = "models/src/main/assets/categories/" + guide_name
+    pathGuides = "Python/guides/" + guide_name
+    pathCategories = "Python/categories/" + guide_name
     pathImages = "Python/imageDatasets/" + guide_name
     print("\n[INFO]: Using the guides in " + pathGuides)
     # Delete old guides
@@ -85,6 +85,7 @@ if guide_name:
             d = d.rstrip()
         shutil.copytree(pathGuides + "/" + d, "models/src/main/assets/currentGuide/" + d)
         landmark_names.add(d)
+    print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
     print("\n[INFO]: Using the categories in " + pathCategories)
     # Delete old categories
     if os.path.exists("models/src/main/assets/currentCategories"):
@@ -95,7 +96,6 @@ if guide_name:
     # Copy all the files from pathCategories in models/src/main/assets/currentCategories
     print("[INFO]: Copying categories from " + pathCategories + " in " + os.path.realpath('models/src/main/assets/currentCategories'))
     shutil.copytree(pathCategories + "/", "models/src/main/assets/currentCategories/")
-    print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
     print("[INFO]: Categories copied in " + os.path.realpath('models/src/main/assets/currentCategories'))
 else:
     print("\n[ERROR]: You must specify the path of the guides with the argument -g")

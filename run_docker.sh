@@ -16,25 +16,25 @@ COPY=${2:-false}
 CONTAINER_NAME=${3:-tfimage}
 CONTAINER_PATH_IMAGE_DB=/app/models/src/main/assets/databases
 LOCAL_PATH_CONTAINER_PATH_IMAGE_DB=./models/src/main/assets/
-CONTAINER_PATH_CATEGORIES=/app/models/src/main/assets/categories/${CITYNAME}/
+CONTAINER_PATH_CATEGORIES=/Python/categories/${CITYNAME}/
 LOCAL_PATH_CATEGORIES=./models/src/main/assets/currentCategories/
-CONTAINER_PATH_GUIDES=/app/models/src/main/assets/guides/${CITYNAME}/
+CONTAINER_PATH_GUIDES=/Python/guides/${CITYNAME}/
 LOCAL_PATH_GUIDES=./models/src/main/assets/currentGuide/
 
 echo "Creating guide for: $CITYNAME"
 
-if test -d "models/src/main/assets/categories/${CITYNAME}"; then
-    echo "Categories directory: " models/src/main/assets/categories/${CITYNAME} " exists."
+if test -d "Python/categories/${CITYNAME}"; then
+    echo "Categories directory: " Python/categories/${CITYNAME} " exists."
 else
-    echo "[ERROR] Categories directory " models/src/main/assets/categories/${CITYNAME} " does not exist."
+    echo "[ERROR] Categories directory " Python/categories/${CITYNAME} " does not exist."
     echo "[ERROR] Exiting..."
     exit 1
 fi
 
-if test -d "models/src/main/assets/guides/${CITYNAME}"; then
-    echo "Guides directory: " models/src/main/assets/guides/${CITYNAME} " exists."
+if test -d "Python/guides/${CITYNAME}"; then
+    echo "Guides directory: " Python/guides/${CITYNAME} " exists."
 else
-    echo "[ERROR] Categories directory: " models/src/main/assets/guides/${CITYNAME} " does not exist."
+    echo "[ERROR] Categories directory: " Python/guides/${CITYNAME} " does not exist."
     echo "[ERROR] Exiting..."
     exit 1
 fi
