@@ -58,25 +58,40 @@ ap = argparse.ArgumentParser()
 ap.add_argument('-g', '--guides', help='path of guides')
 # add optional argument to skip the creation of the test_set (default False)
 ap.add_argument('-f', '--fast', help='skip the creation of the features dataset', action='store_true')
+# add option argument verbose (dafault False)
+ap.add_argument('-v', '--verbose', help='verbose', action='store_true')
+verbose = ap.parse_args().verbose
+if verbose:
+    print("[INFO]: Verbose mode enabled")
+else:
+    widgets = ["[INFO]: Building dataset and processing monuments ...",
+            progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+    pbar = progressbar.ProgressBar(maxval=100, widgets=widgets).start()
+
 # parse args
 guide_name = ap.parse_args().guides
 
 if guide_name:
-    print('[INFO]: Using the guides for ' + guide_name)
+    if verbose:
+        print('[INFO]: Using the guides for ' + guide_name)
     pathGuides = "Python/guides/" + guide_name
     pathCategories = "Python/categories/" + guide_name
     pathImages = "Python/imageDatasets/" + guide_name
-    print("\n[INFO]: Using the guides in " + pathGuides)
+    if verbose:
+        print("\n[INFO]: Using the guides in " + pathGuides)
     # Delete old guides
     if os.path.exists("models/src/main/assets/currentGuide"):
-        print("[INFO]: Deleting old guides")
+        if verbose:
+            print("[INFO]: Deleting old guides")
         shutil.rmtree("models/src/main/assets/currentGuide")
     # Create new guides folder
     os.makedirs("models/src/main/assets/currentGuide")
     # Copy all the files from the provided path in models/src/main/assets/currentGuide
-    print("[INFO]: Copying guides from " + pathGuides + " in " + os.path.realpath('models/src/main/assets/currentGuide'))
+    if verbose:
+        print("[INFO]: Copying guides from " + pathGuides + " in " + os.path.realpath('models/src/main/assets/currentGuide'))
     dirs = os.listdir(pathGuides)
-    print("[INFO]: Found " + str(len(dirs)) + " guides")
+    if verbose:
+        print("[INFO]: Found " + str(len(dirs)) + " guides")
     for d in dirs:
         if has_trailing_spaces(d):
             print("[WARN]: Removing trailing spaces from '" + d + "'")
@@ -85,28 +100,33 @@ if guide_name:
             d = d.rstrip()
         shutil.copytree(pathGuides + "/" + d, "models/src/main/assets/currentGuide/" + d)
         landmark_names.add(d)
-    print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
-    print("\n[INFO]: Using the categories in " + pathCategories)
+    if verbose:
+        print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
+        print("\n[INFO]: Using the categories in " + pathCategories)
     # Delete old categories
     if os.path.exists("models/src/main/assets/currentCategories"):
-        print("[INFO]: Deleting old categories")
+        if verbose:
+            print("[INFO]: Deleting old categories")
         shutil.rmtree("models/src/main/assets/currentCategories")
     # Create new categories folder
     # os.makedirs("models/src/main/assets/currentCategories")  # XXX seems there's no need to create it as the copy will do it
     # Copy all the files from pathCategories in models/src/main/assets/currentCategories
-    print("[INFO]: Copying categories from " + pathCategories + " in " + os.path.realpath('models/src/main/assets/currentCategories'))
+    if verbose:
+        print("[INFO]: Copying categories from " + pathCategories + " in " + os.path.realpath('models/src/main/assets/currentCategories'))
     shutil.copytree(pathCategories + "/", "models/src/main/assets/currentCategories/")
-    print("[INFO]: Categories copied in " + os.path.realpath('models/src/main/assets/currentCategories'))
+    if verbose:
+        print("[INFO]: Categories copied in " + os.path.realpath('models/src/main/assets/currentCategories'))
 else:
     print("\n[ERROR]: You must specify the path of the guides with the argument -g")
     exit()
 
 if ap.parse_args().fast:
     print("\n\n[INFO]: Skipping the creation of the features dataset")
-    createDB()
+    createDB(verbose)
     exit()
 
-print("\n\n[INFO]: Using the images in " + pathImages)
+if verbose:
+    print("\n\n[INFO]: Using the images in " + pathImages)
 # eliminate trailing spaces in image directories to match the names fo the guide directories
 [remove_and_rename_trailing_spaces_dir(path) for path in os.listdir(pathImages)]
 
@@ -130,13 +150,14 @@ if not ALL_DATASET:
     dataImages = train_set
 
 # progress bar
-widgets = [
-    "Building dataset ...", progressbar.Percentage(), " ",
-    progressbar.Bar(), " ", progressbar.ETA()
-]
-pbar = progressbar.ProgressBar(
-    maxval=len(dataImages), widgets=widgets
-).start()
+if verbose:
+    widgets = [
+        "Building dataset ...", progressbar.Percentage(), " ",
+        progressbar.Bar(), " ", progressbar.ETA()
+    ]
+    pbar = progressbar.ProgressBar(
+        maxval=len(dataImages), widgets=widgets
+    ).start()
 
 if len(dataImages) == 0:
     print("\n\n[ERROR]: No images found in the specified path: " + pathImages + "\n\n")
@@ -156,17 +177,23 @@ for (i, path) in enumerate(dataImages):
         monuments[monument] = 1
     else:
         monuments[monument] += 1
-    pbar.update(i)
-pbar.finish()
+    if verbose:
+        pbar.update(i)
+if verbose:
+    pbar.finish()
+else:
+    pbar.update(10)
 
-check_guides_and_images(landmark_names, set(monuments.keys()))
+if verbose:
+    check_guides_and_images(landmark_names, set(monuments.keys()))
 
 IMAGE_PER_MONUMENT = 20
 
 # for each monument with less than 20 images, augment the dataset with the images of the same monument calling de function augment_images
 for monument in monuments.keys():
     if monuments[monument] < IMAGE_PER_MONUMENT:
-        print("\n\n[INFO]: Augmenting " + str(IMAGE_PER_MONUMENT - monuments[monument]) + " images of " + monument + " ..." )
+        if verbose:
+            print("\n\n[INFO]: Augmenting " + str(IMAGE_PER_MONUMENT - monuments[monument]) + " images of " + monument + " ..." )
         # Get n random images of the monument
         images = [path for (m, path) in dataset if m == monument and "_aug" not in path]
         images = np.random.choice(images, size=(IMAGE_PER_MONUMENT - monuments[monument]))
@@ -182,16 +209,22 @@ for monument in monuments.keys():
 iap = ImageToArrayPreprocessor()
 aap = AspectAwarePreprocessor(224, 224)
 
+if not verbose:
+    pbar.update(15)
+    actualPercentage = 15
+
 # loop over images
 for dType, modelPath in types:
-    print('[INFO]: Working with {} ...'.format(dType))
+    if verbose:
+        print('[INFO]: Working with {} ...'.format(dType))
     extractor = Extractor(dType, path=modelPath)
     db = []
-    widgets = [
-        "Extracting features ... ", progressbar.Percentage(), " ",
-        progressbar.Bar(), " ", progressbar.ETA()
-    ]
-    pbar = progressbar.ProgressBar(maxval=len(dataset), widgets=widgets).start()
+    if verbose:
+        widgets = [
+            "Extracting features ... ", progressbar.Percentage(), " ",
+            progressbar.Bar(), " ", progressbar.ETA()
+        ]
+        pbar = progressbar.ProgressBar(maxval=len(dataset), widgets=widgets).start()
 
     index = 0
 
@@ -257,8 +290,14 @@ for dType, modelPath in types:
                 db.append([featuresTile, monument])
 
         index += 1
-        pbar.update(index)
-    pbar.finish()
+        if verbose:
+            pbar.update(index)
+    if verbose:
+        pbar.finish()
+    else:
+        actualPercentage += 15
+        pbar.update(actualPercentage)
+
 
     # CREATING NEW SQL LITE DATABASE FOR VISUAL FEATURES
 
@@ -273,11 +312,12 @@ for dType, modelPath in types:
     cur.execute("DROP TABLE IF EXISTS monuments")
     cur.execute(""" CREATE TABLE monuments (monument, features) """)
 
-    widgets = [
-        "Saving database ... ", progressbar.Percentage(), " ",
-        progressbar.Bar(), " ", progressbar.ETA()
-    ]
-    pbar = progressbar.ProgressBar(maxval=len(db), widgets=widgets).start()
+    if verbose:
+        widgets = [
+            "Saving database ... ", progressbar.Percentage(), " ",
+            progressbar.Bar(), " ", progressbar.ETA()
+        ]
+        pbar = progressbar.ProgressBar(maxval=len(db), widgets=widgets).start()
 
     for i, (matrix, m) in enumerate(db):
         # Insert a row of data
@@ -289,14 +329,26 @@ for dType, modelPath in types:
 
         # Save (commit) the changes
         con.commit()
-        pbar.update(i)
+        if verbose:
+            pbar.update(i)
 
     con.close()
-    pbar.finish()
+    if verbose:
+        pbar.finish()
+    else:
+        actualPercentage += 10
+        pbar.update(actualPercentage)
 
 # print("\n\nDB Saved in " + os.path.realpath('../models/src/main/assets/databases'))
 
-print("\n\n[INFO]: Processing monuments")
-createDB()
+if verbose:
+    print("\n\n[INFO]: Processing monuments")
+else:
+    pbar.update(90)
+
+createDB(verbose)
+
+if not verbose:
+    pbar.finish()
 
 print("\n\n[INFO]: Build DB script terminated correctly")

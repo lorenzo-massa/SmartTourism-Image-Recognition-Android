@@ -23,7 +23,7 @@ def getImageLink(content):
         return None
 
 
-def createDB():
+def createDB(verbose=False):
     # Delete old databases
     if os.path.exists("models/src/main/assets/databases/monuments_db.sqlite"):
         os.remove("models/src/main/assets/databases/monuments_db.sqlite")
@@ -31,7 +31,8 @@ def createDB():
     # Get languages from names of folders in currentGuide folder
     languages = [name for name in os.listdir('models/src/main/assets/currentGuide/Template Monument') if
                  os.path.isdir(os.path.join('models/src/main/assets/currentGuide/Template Monument', name))]
-    print("Language found: ", languages)
+    if verbose:
+        print("Language found: ", languages)
     if len(languages) == 0:
         print("[ERROR] No languages found in currentGuide folder")
         exit()
@@ -48,7 +49,8 @@ def createDB():
         con.commit()
 
     for lang in languages:
-        print("\n\nCreating DB for " + lang + " language...")
+        if verbose:
+            print("\n\nCreating DB for " + lang + " language...")
 
         # GETTING DB NAMES
         db_name = f"monuments_db_{lang}.sqlite"
@@ -62,8 +64,9 @@ def createDB():
         path = f"models/src/main/assets/currentGuide/*/{lang}/guide.md"
         textPaths = glob.glob(path)
 
-        print("Path used for currentGuide: " + path + '\n' + "Number of files found: " + str(
-            len(textPaths)))
+        if verbose:
+            print("Path used for currentGuide: " + path + '\n' + "Number of files found: " + str(
+                len(textPaths)))
         if (len(textPaths) == 0):
             print("No files found in " + path + '\n' + "Please check the path and try again")
             exit()
@@ -170,18 +173,20 @@ def createDB():
         cur.execute(
             f""" CREATE TABLE {table_name_categories} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
 
-        widgets = ["[INFO]: Saving database (Categories - " + lang + ") ... ",
-                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-        pbar = progressbar.ProgressBar(maxval=len(categoriesList), widgets=widgets).start()
+        if verbose:
+            widgets = ["[INFO]: Saving database (Categories - " + lang + ") ... ",
+                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+            pbar = progressbar.ProgressBar(maxval=len(categoriesList), widgets=widgets).start()
 
         for i, attr in enumerate(categoriesList):
             sql = f''' INSERT INTO {table_name_categories} (name)
                     VALUES(?) '''
             cur.execute(sql, (attr,))
             con.commit()
-            pbar.update(i)
-
-        pbar.finish()
+            if verbose:
+                pbar.update(i)
+        if verbose:
+            pbar.finish()
 
         # ATTRIBUTES
         cur = con.cursor()
@@ -190,18 +195,21 @@ def createDB():
         cur.execute(
             f""" CREATE TABLE {table_name_attributes} (id INTEGER PRIMARY KEY AUTOINCREMENT, name) """)
 
-        widgets = ["[INFO]: Saving database (Attributes - " + lang + ") ... ",
-                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-        pbar = progressbar.ProgressBar(maxval=len(attributesList), widgets=widgets).start()
+        if verbose:
+            widgets = ["[INFO]: Saving database (Attributes - " + lang + ") ... ",
+                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+            pbar = progressbar.ProgressBar(maxval=len(attributesList), widgets=widgets).start()
 
         for i, attr in enumerate(attributesList):
             sql = f''' INSERT INTO {table_name_attributes} (name)
                     VALUES(?) '''
             cur.execute(sql, (attr,))
             con.commit()
-            pbar.update(i)
+            if verbose:
+                pbar.update(i)
 
-        pbar.finish()
+        if verbose:
+            pbar.finish()
 
         # RELATIONS BETWEEN MONUMENTS AND CATEGORIES  monumentsList[i][2], str(monumentsList[i][3])
         cur = con.cursor()
@@ -232,9 +240,10 @@ def createDB():
         cur.execute(
             f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, subtitle, path) """)
 
-        widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ",
-                   progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
-        pbar = progressbar.ProgressBar(maxval=len(desc_vectors), widgets=widgets).start()
+        if verbose:
+            widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ",
+                    progressbar.Percentage(), " ", progressbar.Bar(), " ", progressbar.ETA()]
+            pbar = progressbar.ProgressBar(maxval=len(desc_vectors), widgets=widgets).start()
 
         for i, v in enumerate(desc_vectors):
             # Insert a row of data
@@ -274,14 +283,17 @@ def createDB():
                     con.rollback()  # Rollback the transaction to avoid partially committed data
                     print(f"IntegrityError: {e} - MonumentID: {lastID}, AttributeID: {attributesList.index(attr) + 1} - Monument: {m}, Attribute: {attr}")
 
-            pbar.update(i)
+            if verbose:
+                pbar.update(i)
 
-        pbar.finish()
+        if verbose:
+            pbar.finish()
 
         # Close the connection
     con.close()
 
-    print("\n\nDatabases saved in " + os.path.realpath('models/src/main/assets/databases'))
+    if verbose:
+        print("\n\nDatabases saved in " + os.path.realpath('models/src/main/assets/databases'))
 
 
 # MAIN FUNCTION
