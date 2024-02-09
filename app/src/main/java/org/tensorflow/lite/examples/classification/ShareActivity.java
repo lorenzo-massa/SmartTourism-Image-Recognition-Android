@@ -117,7 +117,7 @@ public class ShareActivity extends AppCompatActivity {
             // Instantiate an intent
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/*");
-            Uri uri = getmageToShare(bitmap);
+            Uri uri = getImageToShare(bitmap);
 
             // Add the URI to the Intent.
             intent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -206,7 +206,7 @@ public class ShareActivity extends AppCompatActivity {
 
 
     // Retrieving the url to share
-    private Uri getmageToShare(Bitmap bitmap) {
+    private Uri getImageToShare(Bitmap bitmap) {
         // Get the image folder
         File imagefolder = new File(getCacheDir(), "images");
         Uri uri = null;
