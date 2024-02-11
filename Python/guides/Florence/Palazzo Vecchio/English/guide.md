@@ -1,7 +1,7 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.76933219048999 11.256124077775087
-historical monument
-museum, accessibility, guided tours, architecture
+Historical Building, Museum, Art
+museum, accessible, guided tours, architecture
 The symbol of the city
  -->
 
@@ -27,3 +27,5 @@ Your browser does not support the audio tag.
 </audio>
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?5" height=1 width=1>

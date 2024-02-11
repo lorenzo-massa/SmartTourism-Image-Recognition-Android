@@ -1,7 +1,7 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.772798252828416 11.255710464284064
-historical building
-Old Town, Museum
+Historical Building, Bell Tower
+city center, guided tours
 The cathedral's belltower
  -->
 
@@ -32,3 +32,5 @@ Your browser does not support the audio tag.
 </audio>
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?2" height=1 width=1>

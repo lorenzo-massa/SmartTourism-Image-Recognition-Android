@@ -26,3 +26,5 @@ Your browser does not support the audio tag.
 </audio>
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?2it" height=1 width=1>

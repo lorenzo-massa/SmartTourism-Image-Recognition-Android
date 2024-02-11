@@ -1,7 +1,7 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.77285868865991 11.255334864274364
-historical monument
-accessibility, art
+Historical Building, Museum
+museum, art
 A small museum next to the Duomo
  -->
 
@@ -28,3 +28,5 @@ Your browser does not support the audio tag.
 </audio>
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?4" height=1 width=1>

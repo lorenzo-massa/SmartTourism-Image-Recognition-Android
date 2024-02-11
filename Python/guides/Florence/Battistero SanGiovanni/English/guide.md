@@ -1,7 +1,7 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.773231606844895 11.255103666155096
-historical building, religious monument
-city center, accessibility, guided tours
+Historical Building, Religious Monument
+city center, accessible, guided tours
 The Florence Baptistery
  -->
 
@@ -38,3 +38,5 @@ Your browser does not support the audio tag.
 </audio>
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?1" height=1 width=1>

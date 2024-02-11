@@ -1,7 +1,7 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.7733076894411 11.25601920841498
 Religious Monument, Church
-accessibility, guided tours, art, architecture
+accessible, guided tours, art, architecture
 Brunelleschi's masterpiece
  -->
 
@@ -27,3 +27,5 @@ Your browser does not support the audio tag.
 </audio>
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?3" height=1 width=1>
