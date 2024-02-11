@@ -82,8 +82,8 @@ Template Monument included)
 Go to the `models/src/main/assets/categories/CITYNAME` folder and move inside it one image for each category
 present in at least one monument guide.
 
-IMPORTANT: Images must have the same name as the categories written in the monument guides. No
-images are needed for the attributes.
+IMPORTANT: Images must have the same name as the categories written in the monument guides. 
+No images are needed for the attributes.
 
 ## Database creation
 
@@ -138,15 +138,15 @@ otherwise run:
 
 ```sh
 1. ./run_docker.sh CITYNAME
-2. ./copy_assets.sh CITYNAME
+2. ./copy_guides.sh CITYNAME
 ```
 
-to run first the Docker and then copy the assets.
+to run first the Docker and then copy the guides and assets of the CITYNAME city (e.g. Florence, Nicosia, Athens).
 
 If you want to update the guide without updating the visual features of the images, run:
 
 ```sh
-1. ./copy_assets.sh CITYNAME
+1. ./copy_guides.sh CITYNAME
 ```
 
 after updating the guides of interest, to reduce the time needed to create the database.
