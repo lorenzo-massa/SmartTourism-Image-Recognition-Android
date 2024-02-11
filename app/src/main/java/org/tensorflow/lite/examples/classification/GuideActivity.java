@@ -140,13 +140,13 @@ public class GuideActivity extends AppCompatActivity {
 
         //Show hints
         //Wait few seconds to let the md file open
-        final Runnable r = this::showHInts;
+        final Runnable r = this::showHints;
         Handler handler = new Handler();
         handler.postDelayed(r, 2000);
 
     }
 
-    private void showHInts() {
+    private void showHints() {
         View hintsView = findViewById(R.id.hintsView);
 
         if (!recommendationsReceived) {
