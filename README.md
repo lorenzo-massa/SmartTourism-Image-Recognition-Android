@@ -40,7 +40,7 @@ You will find all the instructions you need just below.
 
 ## Monument guides creation
 
-Go to the `models/src/main/assets/guides/CITYNAME` folder. Inside it there is the folder `Template Monument`
+Go to the `Python/guides/CITYNAME` folder. Inside it there is the folder `Template Monument`
 which is to be used as a template,
 so without altering its structure. It is only possible to change the name of the folder with the
 name of the monument which, however,
@@ -79,7 +79,7 @@ Template Monument included)
 
 ### Categories
 
-Go to the `models/src/main/assets/categories/CITYNAME` folder and move inside it one image for each category
+Go to the `Python/categories/CITYNAME` folder and move inside it one image for each category
 present in at least one monument guide.
 
 IMPORTANT: Images must have the same name as the categories written in the monument guides. 
