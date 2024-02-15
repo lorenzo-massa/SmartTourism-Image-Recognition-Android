@@ -301,6 +301,10 @@ for dType, modelPath in types:
 
     # CREATING NEW SQL LITE DATABASE FOR VISUAL FEATURES
 
+    # if databases folder does not exist, create it
+    if not os.path.exists("models/src/main/assets/databases"):
+        os.makedirs("models/src/main/assets/databases")
+
     # Delete old database
     if os.path.exists("models/src/main/assets/databases/" + dType + "_db.sqlite"):
         os.remove("models/src/main/assets/databases/" + dType + "_db.sqlite")
