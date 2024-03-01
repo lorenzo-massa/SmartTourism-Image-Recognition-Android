@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -261,6 +262,11 @@ public class ShareActivity extends AppCompatActivity {
         else // Horizontal
             new_size = (int) (h * scaleFactor);
 
+        // Check if the new size is too small
+        if (new_size < 1)
+            Log.e(TAG, "Error in new_size: " + new_size + " w: " + w + " h: " + h + " scaleFactor: " + scaleFactor);
+            new_size = 1;
+
         bitmapLogo = BITMAP_RESIZER(bitmapLogo, new_size, new_size);
 
         //Draw Logo
@@ -271,6 +277,10 @@ public class ShareActivity extends AppCompatActivity {
 
     // Resize the image
     private Bitmap BITMAP_RESIZER(Bitmap bitmap, int newWidth, int newHeight) {
+
+        if (newWidth < 1 || newHeight < 1)
+            Log.e(TAG, "Error in new_size: " + newWidth + " w: " + bitmap.getWidth() + " h: " + bitmap.getHeight() + " newHeight: " + newHeight);
+
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
         // Calculate the scale
@@ -296,7 +306,12 @@ public class ShareActivity extends AppCompatActivity {
 
     private Bitmap adjustAspectRatio(Bitmap bitmap, float ratio) {
         int height = bitmap.getHeight();
-        return BITMAP_RESIZER(bitmap, (int) (height * ratio), height);
+        int width = (int) (height * ratio);
+        // Check if the new size is too small
+        if (width < 1)
+            Log.e(TAG, "Error in new_size: " + width + " w: " + bitmap.getWidth() + " h: " + bitmap.getHeight() + " ratio: " + ratio);
+            width = 1;
+        return BITMAP_RESIZER(bitmap, width, height);
     }
 
 }
