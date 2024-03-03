@@ -134,17 +134,19 @@ def createDB(verbose=False):
                         capitalized_attributes.append(attr)
 
             # SUBTITLE (Fifth line of the file)
-            subtitle = None
-            if lines[4] != '' and lines[4] != '-->': # --> added for compatibility with old guides
-                subtitle = lines[4]
+            subtitle = lines[4]
 
             # Find image link from the markdown file 
-            imgLink = getImageLink(content)
-            if (imgLink is None):
-                print(f"[ERROR]: Image not found for {textPaths[i]}")
+            #url = getImageLink(content)
+                
+            # LINK WEB PAGE (Sixth line of the file)
+            url = lines[5]
+            if url == '' or url == '-->':
+                url = None
+                raise Exception(f"No link found for guide {textPaths[i]}")
 
             # Create a tuple with the content, coordinates, categories, attributes and image link
-            obj = (content, coordinates, capitalized_categories, capitalized_attributes, subtitle, imgLink)
+            obj = (content, coordinates, capitalized_categories, capitalized_attributes, subtitle, url)
 
             # Check if the categories have the corresponding image
             for cat in capitalized_categories:
@@ -238,7 +240,7 @@ def createDB(verbose=False):
 
         cur.execute(f"DROP TABLE IF EXISTS {table_name_monuments}")
         cur.execute(
-            f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, subtitle, path) """)
+            f""" CREATE TABLE {table_name_monuments} (id INTEGER PRIMARY KEY AUTOINCREMENT, monument, vec, coordX, coordY, subtitle, url) """)
 
         if verbose:
             widgets = ["[INFO]: Saving database (Monuments - " + lang + ") ... ",
@@ -251,7 +253,7 @@ def createDB(verbose=False):
             pathSplitted = textPaths[i].split(os.path.sep)[-3].split(' ')
             m = ' '.join([str(elem) for elem in pathSplitted])
 
-            sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY, subtitle, path)
+            sql = f''' INSERT INTO {table_name_monuments} (monument, vec, coordX, coordY, subtitle, url)
                     VALUES(?,?,?,?,?,?) '''
 
             new = cur.execute(sql, (

@@ -7,8 +7,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
@@ -16,11 +18,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.mukesh.MarkdownView;
 
+import org.json.JSONException;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 import org.tensorflow.lite.examples.classification.tflite.Element;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 public class GuideActivity extends AppCompatActivity {
@@ -35,12 +37,12 @@ public class GuideActivity extends AppCompatActivity {
     private ArrayList<Element> hints = new ArrayList<>();
 
     public static double euclideanDistance(float[] vector1, float[] vector2) {
-        int minLenght = Math.min(vector1.length, vector2.length);
-        if (minLenght == 0) {
+        int minLength = Math.min(vector1.length, vector2.length);
+        if (minLength == 0) {
             throw new IllegalArgumentException("Vectors must not be empty");
         }
         double sumOfSquares = 0.0;
-        for (int i = 0; i < minLenght; i++) {
+        for (int i = 0; i < minLength; i++) {
             double diff = vector1[i] - vector2[i];
             sumOfSquares += diff * diff;
         }
@@ -94,10 +96,24 @@ public class GuideActivity extends AppCompatActivity {
 
         });
 
+        //Show markdown
+        /*
         MarkdownView markdownView = findViewById(R.id.markdown_view);
         Log.i(TAG, "[INFO] Opening Markdown file: " + MainActivity.guidePath + monumentId + "/" + language + "/guide.md");
         markdownView.loadMarkdownFromAssets(MainActivity.guidePath + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
+        */
 
+        //Show webView
+        WebView webView = findViewById(R.id.webview);
+        webView.setWebViewClient(new WebViewClient()); // Ensures that links are opened within WebView
+        //webView.getSettings().setJavaScriptEnabled(true); // Enable JavaScript if required
+
+        String url = DatabaseAccess.getUrl(monumentId);
+        if (url != null) {
+            webView.loadUrl(url);
+        } else {
+                Toast.makeText(this, "No URL found for " + monumentId, Toast.LENGTH_LONG).show();
+        }
 
         double[] coordinates = DatabaseAccess.getCoordinates(monumentId);
 
@@ -132,11 +148,13 @@ public class GuideActivity extends AppCompatActivity {
 
 
         //Send request to API server
+        /*
         TextView textView = findViewById(R.id.textView);
         if (internetIsConnected()) {
             //volley_request();
             //For the moment we use the local DocToVec
         }
+         */
 
         //Show hints
         //Wait few seconds to let the md file open
@@ -613,13 +631,13 @@ public class GuideActivity extends AppCompatActivity {
 
     }
     */
-    private ArrayList<Element> getHints(String monumendId) { //hints just calculating the distances
+    private ArrayList<Element> getHints(String monumentId) { //hints just calculating the distances
         float[] recognizedVec = new float[0];
         ArrayList<Element> listDocToVec = DatabaseAccess.getListMonuments();
 
         //find the vec of the recognized monument
         for (Element x : listDocToVec) {
-            if (x.getMonument().equals(monumendId)) {
+            if (x.getMonument().equals(monumentId)) {
                 recognizedVec = x.getMatrix();
             }
         }
@@ -630,7 +648,7 @@ public class GuideActivity extends AppCompatActivity {
         }
 
         //sort by distances
-        Collections.sort(listDocToVec, new Comparator<Element>() {
+        listDocToVec.sort(new Comparator<>() {
             public int compare(Element obj1, Element obj2) {
                 // ## Ascending order
                 return Double.compare(obj1.getDistance(), obj2.getDistance()); // To compare integer values
