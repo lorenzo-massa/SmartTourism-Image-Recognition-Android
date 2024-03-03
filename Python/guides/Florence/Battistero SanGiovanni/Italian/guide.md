@@ -2,6 +2,8 @@
 43.773231606844895 11.255103666155096
 museum
 palazzo ducale, accessibilità carrozzina, anni 1300
+
+https://it.wikipedia.org/wiki/Battistero_di_San_Giovanni_(Firenze)
  -->
 
 <h1 align="center">Battistero di San Giovanni</h1>

@@ -2,6 +2,8 @@
 43.77285868865991 11.255334864274364
 historical building, museum
 accessibilità, religione
+
+https://it.wikipedia.org/wiki/Loggia_del_Bigallo
  -->
 
 <h1 align="center">Loggia del Bigallo</h1>

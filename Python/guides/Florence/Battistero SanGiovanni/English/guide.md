@@ -3,6 +3,7 @@
 Historical Building, Religious Monument
 city center, accessible, guided tours
 The Florence Baptistery
+https://en.wikipedia.org/wiki/Florence_Baptistery
  -->
 
 <h1 align="center">Battistero di San Giovanni</h1>

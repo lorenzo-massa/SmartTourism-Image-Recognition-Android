@@ -2,6 +2,8 @@
 43.76933219048999 11.256124077775087
 historical building, art
 palazzo ducale, museo, accessibilità carrozzina
+
+https://it.wikipedia.org/wiki/Palazzo_Vecchio
  -->
 
 <h1 align="center">Palazzo Vecchio</h1>

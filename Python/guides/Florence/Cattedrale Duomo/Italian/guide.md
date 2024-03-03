@@ -2,6 +2,8 @@
 43.7733076894411 11.25601920841498
 cathedral, religion, historical building
 museo, accessibilità carrozzina
+
+https://it.wikipedia.org/wiki/Cattedrale_di_Santa_Maria_del_Fiore
  -->
  
 <h1 align="center">Cattedrale di Santa Maria del Fiore</h1>
