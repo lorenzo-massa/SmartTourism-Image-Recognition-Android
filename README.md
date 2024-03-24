@@ -51,15 +51,16 @@ using [Markdown format](https://www.markdownguide.org/basic-syntax/).
 
 ### Markdown
 
-Each guide has to be given as a Markdown file. The first 6 rows of each `.md` have to be completed
+Each guide has to be given as a Markdown file. The first 7 rows of each `.md` have to be completed
 as the following:
 
  ```
-<!-- Use the following commented lines to include monument coordinates, categories and attributes (leave empty lines if the monument has no additional info)
-Coordinate of the monument spaced by a blank space
-Categories of the monument spaced by commas
-Attributes of the monument spaced by commas (may be blank)
-Short description of the monument
+<!-- METADATA
+<Latitude> <Longitude>
+<Category1>, <Category2>, <Category3>
+<Attribute1>, <Attribute2>, <Attribute3>, <Attribute4>, <Attribute5>
+<Subtitle>
+<Guide Link>
  -->
 ```
 
