@@ -1,7 +1,9 @@
-<!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
-43.76943676239535 11.25619381345626
-
- 
+<!-- METADATA
+<latitude> <longitude>
+<Category1>, <Category2>, <Category3>
+<Attribute1>, <Attribute2>, <Attribute3>, <Attribute4>, <Attribute5>
+<Subtitle>
+<Guide Link>
  -->
 
 <h1 align="center">Palazzo Vecchio</h1>

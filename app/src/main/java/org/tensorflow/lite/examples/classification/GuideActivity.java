@@ -96,23 +96,21 @@ public class GuideActivity extends AppCompatActivity {
 
         });
 
-        //Show markdown
-        /*
-        MarkdownView markdownView = findViewById(R.id.markdown_view);
-        Log.i(TAG, "[INFO] Opening Markdown file: " + MainActivity.guidePath + monumentId + "/" + language + "/guide.md");
-        markdownView.loadMarkdownFromAssets(MainActivity.guidePath + monumentId + "/" + language + "/guide.md"); //Loads the markdown file from the assets folder
-        */
-
         //Show webView
         WebView webView = findViewById(R.id.webview);
-        webView.setWebViewClient(new WebViewClient()); // Ensures that links are opened within WebView
+        webView.setWebViewClient(new WebViewClient());
         //webView.getSettings().setJavaScriptEnabled(true); // Enable JavaScript if required
 
         String url = DatabaseAccess.getUrl(monumentId);
-        if (url != null) {
+        if (url != null && !url.isEmpty()) {
             webView.loadUrl(url);
-        } else {
-                Toast.makeText(this, "No URL found for " + monumentId, Toast.LENGTH_LONG).show();
+            Log.d(TAG, "URL: " + url);
+        } else { // If no URL is found, show markdown
+            Log.d(TAG, "No URL found for " + monumentId);
+            MarkdownView markdownView = findViewById(R.id.markdown_view);
+            markdownView.loadMarkdownFromAssets(MainActivity.guidePath + monumentId + "/" + language + "/guide.md");
+            markdownView.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.GONE);
         }
 
         double[] coordinates = DatabaseAccess.getCoordinates(monumentId);
