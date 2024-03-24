@@ -224,7 +224,7 @@ Lorenzo Massa - lorenzo.massa@unifi.it
 Marco Bertini - marco.bertini@unifi.it
 
 Project
-Link: [https://github.com/lorenzo-massa/SmartTourism](https://github.com/lorenzo-massa/SmartTourism)
+Link: [https://github.com/lorenzo-massa/SmartTourism](https://github.com/lorenzo-massa/SmartTourism-v2)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
