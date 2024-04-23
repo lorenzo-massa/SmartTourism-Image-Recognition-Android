@@ -7,3 +7,4 @@ gensim
 beautifulsoup4
 matplotlib
 albumentations
+scipy==1.11.0

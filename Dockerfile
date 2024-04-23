@@ -4,6 +4,7 @@ FROM python:3.11-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y libgl1 build-essential gcc g++ cmake libglib2.0-0
+RUN apt install pkg-config libhdf5-dev -y
 
 # Install TensorFlow
 RUN python -m pip install tensorflow
