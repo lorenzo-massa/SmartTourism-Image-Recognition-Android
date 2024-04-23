@@ -13,15 +13,17 @@ The cathedral's belltower
 
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
-    Giotto's Campanile is a free-standing campanile that is part of the complex of buildings that make up Florence Cathedral on the Piazza del Duomo in Florence, Italy.
+Giotto's Campanile is a free-standing campanile that is part of the complex of buildings that make up Florence Cathedral on the Piazza del Duomo in Florence, Italy.
 </p>
 <p align="justify">
 Standing adjacent to the Basilica of Santa Maria del Fiore and the Baptistry of St. John, the tower is one of the showpieces of Florentine Gothic architecture with its design by Giotto, its rich sculptural decorations and its polychrome marble encrustations.
 </p>
 <p align="justify">
-The slender structure is square in plan with 14.45 metre (47.41 ft) sides. It is 84.7 metres (277.9 ft) tall and has polygonal buttresses at each corner.[1] The tower is divided horizontally into five stages.
+The slender structure is square in plan with 14.45 metre (47.41 ft) sides. It is 84.7 metres (277.9 ft) tall and has polygonal buttresses at each corner. The tower is divided horizontally into five stages.
 </p>
-
+<p>
+Official website: <a href="https://tickets.duomo.firenze.it/en/store#/en/buy?skugroup_id=3006">https://tickets.duomo.firenze.it/en/store#/en/buy?skugroup_id=3006</a>
+</p>
 <center>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OSLX7LlJKv4?si=AH0GY6Zs00dMmdGZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

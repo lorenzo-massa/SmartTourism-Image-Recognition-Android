@@ -18,6 +18,10 @@ Florence Cathedral (Italian: Duomo di Firenze), formally the Cathedral of Saint 
 The cathedral complex, in Piazza del Duomo, includes the Baptistery and Giotto's Campanile. These three buildings are part of the UNESCO World Heritage Site covering the historic centre of Florence and are a major tourist attraction of Tuscany. The basilica is one of Italy's largest churches, and until the development of new structural materials in the modern era, the dome was the largest in the world. It remains the largest brick dome ever constructed.
 </p>
 
+<p>
+Official website: <a href="https://duomo.firenze.it/it/scopri/cattedrale-di-santa-maria-del-fiore">https://duomo.firenze.it/it/scopri/cattedrale-di-santa-maria-del-fiore</a>
+</p>
+
 <center>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/QdbT0I4G6ds?si=hmOIb_E42YfLYnth" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></br>

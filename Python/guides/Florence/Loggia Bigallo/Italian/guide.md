@@ -13,10 +13,14 @@ Un piccolo museo accanto al Duomo
 
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
-La Loggia del Bigallo è un edificio tardo gotico a Firenze, nella regione Toscana, in Italia. Si trova all'angolo tra piazza San Giovanni e via Calzaioli; la tradizione vuole che il sito vicino al Battistero di Firenze sia stato donato da un benefattore.</p>
-
-<p align="justify">Questo edificio è una delle dodici logge pubbliche della città ed è collegato a due confraternite o società che si occupano di beneficenza locale.</p>
-
+La Loggia del Bigallo è un edificio tardo gotico a Firenze, nella regione Toscana, in Italia. Si trova all'angolo tra piazza San Giovanni e via Calzaioli; la tradizione vuole che il sito vicino al Battistero di Firenze sia stato donato da un benefattore.
+</p>
+<p align="justify">
+Questo edificio è una delle dodici logge pubbliche della città ed è collegato a due confraternite o società che si occupano di beneficenza locale.
+</p>
+<p>
+Sito web ufficiale: <a href="https://www.beniculturali.it/luogo/museo-del-bigallo">https://www.beniculturali.it/luogo/museo-del-bigallo</a>
+</p>
 <center>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/7GUCXPQIxnQ?si=eVt5veRkSROWLvLb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

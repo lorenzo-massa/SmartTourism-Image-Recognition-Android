@@ -15,7 +15,12 @@ Il capolavoro di Brunelleschi
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 Il Duomo di Firenze (italiano: Duomo di Firenze), formalmente Cattedrale di Santa Maria del Fiore (italiano: Cattedrale di Santa Maria del Fiore), è la cattedrale di Firenze, Italia. Fu iniziata nel 1296 in stile gotico su progetto di Arnolfo di Cambio e fu completata strutturalmente nel 1436, con la cupola progettata da Filippo Brunelleschi. L'esterno della basilica è rivestito con pannelli di marmo policromo in varie tonalità di verde e rosa, bordati di bianco, e presenta un'elaborata facciata neogotica del XIX secolo di Emilio De Fabris.
 
-Il complesso della cattedrale, in Piazza del Duomo, comprende il Battistero e il Campanile di Giotto. Questi tre edifici fanno parte del patrimonio mondiale dell'UNESCO che copre il centro storico di Firenze e rappresentano una delle principali attrazioni turistiche della Toscana. La basilica è una delle chiese più grandi d'Italia e, fino allo sviluppo di nuovi materiali strutturali in epoca moderna, la cupola era la più grande del mondo. Rimane la più grande cupola in mattoni mai costruita.</p>
+Il complesso della cattedrale, in Piazza del Duomo, comprende il Battistero e il Campanile di Giotto. Questi tre edifici fanno parte del patrimonio mondiale dell'UNESCO che copre il centro storico di Firenze e rappresentano una delle principali attrazioni turistiche della Toscana. La basilica è una delle chiese più grandi d'Italia e, fino allo sviluppo di nuovi materiali strutturali in epoca moderna, la cupola era la più grande del mondo. Rimane la più grande cupola in mattoni mai costruita.
+</p>
+
+<p>
+Sito web dell'opera del Duomo: <a href="https://duomo.firenze.it/it/scopri/cattedrale-di-santa-maria-del-fiore">https://duomo.firenze.it/it/scopri/cattedrale-di-santa-maria-del-fiore</a>
+</p>
 
 <center>
 

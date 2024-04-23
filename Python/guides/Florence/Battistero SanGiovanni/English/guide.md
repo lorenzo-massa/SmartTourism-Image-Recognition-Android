@@ -13,7 +13,7 @@ The Florence Baptistery
 
 
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
-    The Florence Baptistery, also known as the Baptistery of Saint John (Italian: Battistero di San Giovanni), is a religious building in Florence, Italy, and has the status of a minor basilica. The octagonal baptistery stands in both the Piazza del Duomo and the Piazza San Giovanni, across from Florence Cathedral and the Campanile di Giotto.
+The Florence Baptistery, also known as the Baptistery of Saint John (Italian: Battistero di San Giovanni), is a religious building in Florence, Italy, and has the status of a minor basilica. The octagonal baptistery stands in both the Piazza del Duomo and the Piazza San Giovanni, across from Florence Cathedral and the Campanile di Giotto.
 </p>
 <p align="justify">
 The Baptistery is one of the oldest buildings in the city, constructed between 1059 and 1128 in the Florentine Romanesque style. Although the Florentine style did not spread across Italy as widely as the Pisan Romanesque or Lombard styles, its influence was decisive for the subsequent development of architecture, as it formed the basis from which Francesco Talenti, Leon Battista Alberti, Filippo Brunelleschi, and other master architects of their time created Renaissance architecture. In the case of the Florentine Romanesque, one can speak of "proto-renaissance",[2] but at the same time an extreme survival of the late antique architectural tradition in Italy, as in the cases of the Basilica of San Salvatore, Spoleto, the Temple of Clitumnus, and the church of Sant'Alessandro in Lucca.
@@ -27,6 +27,10 @@ Up to 1935, the Baptistery was the only place where Florentines were baptized. A
 <p align="justify">
 The building contains the monumental tomb of Antipope John XXIII, by Donatello.
 </p>
+<p>
+Website to buy tickets: <a href="https://duomo.firenze.it/it/scopri/battistero-di-san-giovanni">https://duomo.firenze.it/it/scopri/battistero-di-san-giovanni</a>
+</p>
+
 
 <center>
 

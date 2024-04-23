@@ -17,8 +17,10 @@ Il Campanile di Giotto è un campanile indipendente che fa parte del complesso d
 <p align="justify">
 Adiacente alla Basilica di Santa Maria del Fiore e al Battistero di San Giovanni, la torre è uno dei fiori all'occhiello dell'architettura gotica fiorentina con il suo disegno giottesco, le sue ricche decorazioni scultoree e le sue incrostazioni di marmi policromi.</p>
 <p align="justify">
-La struttura snella è a pianta quadrata con lati di 14,45 metri. È alto 84,7 metri e presenta contrafforti poligonali ad ogni angolo.[1] La torre è divisa orizzontalmente in cinque palchi.</p>
-
+La struttura snella è a pianta quadrata con lati di 14,45 metri. È alto 84,7 metri e presenta contrafforti poligonali ad ogni angolo. La torre è divisa orizzontalmente in cinque palchi.</p>
+<p>
+Sito web ufficiale: <a href="https://tickets.duomo.firenze.it/it/negozio#/it/acquista?skugroup_id=3006">https://tickets.duomo.firenze.it/it/negozio#/it/acquista?skugroup_id=3006</a>
+</p>
 <center>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OSLX7LlJKv4?si=AH0GY6Zs00dMmdGZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
