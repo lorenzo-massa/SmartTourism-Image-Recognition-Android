@@ -1,7 +1,8 @@
 <!-- Use the following commented lines to include monument coordinates and attributes (leave empty lines if the monument has no additional info)
 43.76933219048999 11.256124077775087
-historical building, art
-palazzo ducale, museo, accessibilità carrozzina
+Historical Building, Museum, Art
+museum, accessible, guided tours, architecture
+Il simbolo della città
  -->
 
 <h1 align="center">Palazzo Vecchio</h1>
@@ -11,9 +12,8 @@ palazzo ducale, museo, accessibilità carrozzina
 </center>
 
 
-<p align="center" style="margin-top:20px;margin-bottom:20px;">
-    Palazzo Vecchio [ITA] is located in Piazza della Signoria in Florence and is the seat of the City Council. It represents the best synthesis of the city's 14th-century civil architecture and is one of the best-known civic palaces in the world. Originally called Palazzo dei Priori, it was later identified in the 15th century as Palazzo della Signoria, after the name of the principal body of the Republic of Florence; in 1540 it became "Palazzo Ducale," when Duke Cosimo I de' Medici made it his residence; and finally the name Vecchio when, in 1565, Grand Duke Cosimo I elected Palazzo Pitti as his palace (although the court would be moved there, officially, in 1588 by Grand Duke Ferdinand). There are no doors or openings for the security of those who administered power. It could only be accessed from the courtyard.From 1865 to 1871 it was the seat of the Parliament of the Kingdom of Italy, while today it houses the Mayor of Florence and various municipal offices. There is also a museum there, which allows visitors to visit the magnificent rooms where Agnolo Bronzino, Ghirlandaio, Giorgio Vasari, among others, worked, and where works by Michelangelo Buonarroti, Donatello, and Verrocchio are displayed. The building gradually expanded eastward, coming to occupy an entire block and lengthening the initial 14th-century parallelepiped to four times its size, with a plan resembling a trapezoid of which the facade is only the shortest side. On the main ashlar facade, the Arnolfo Tower is one of the city's emblems.
-</p>
+<p align="justify" style="margin-top:20px;margin-bottom:20px;">
+Palazzo Vecchio si trova in Piazza della Signoria a Firenze ed è la sede del Consiglio Comunale. Rappresenta la migliore sintesi dell'architettura civile trecentesca della città ed è uno dei palazzi civici più conosciuti al mondo. Chiamato in origine Palazzo dei Priori, fu poi identificato nel XV secolo come Palazzo della Signoria, dal nome dell'organo principale della Repubblica di Firenze; nel 1540 divenne "Palazzo Ducale", quando il duca Cosimo I de' Medici ne fece la sua residenza; e infine il nome Vecchio quando, nel 1565, il granduca Cosimo I elesse Palazzo Pitti a propria reggia (anche se la corte vi sarà trasferita, ufficialmente, nel 1588 dal granduca Ferdinando). Non ci sono porte né aperture per la sicurezza di chi amministrava il potere. Vi si accedeva solo dal cortile. Dal 1865 al 1871 fu sede del Parlamento del Regno d'Italia, mentre oggi ospita il Sindaco di Firenze e vari uffici comunali. C'è anche un museo che permette ai visitatori di visitare le magnifiche sale dove lavorarono, tra gli altri, Agnolo Bronzino, Ghirlandaio, Giorgio Vasari e dove sono esposte opere di Michelangelo Buonarroti, Donatello e Verrocchio. L'edificio si espanse progressivamente verso est, arrivando a occupare un intero isolato e allungando fino a quattro volte la sua dimensione l'iniziale parallelepipedo trecentesco, con una pianta somigliante a un trapezio di cui la facciata è solo il lato più corto. Sulla facciata principale bugnata, la Torre di Arnolfo è uno degli emblemi della città.</p>
 
 <center>
 
@@ -21,8 +21,12 @@ palazzo ducale, museo, accessibilità carrozzina
 
 </br>
 
+<!--
 <audio style="margin-top:20px;margin-bottom:20px;max-width:100%;" src="https://dl.dropboxusercontent.com/s/ujmvjjwy7s4iode/audio.mp3" controls>
 Your browser does not support the audio tag.
 </audio>
+-->
 
 </center>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?5" height=1 width=1>

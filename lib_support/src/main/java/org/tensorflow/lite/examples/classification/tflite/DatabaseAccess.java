@@ -1,7 +1,6 @@
 package org.tensorflow.lite.examples.classification.tflite;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
