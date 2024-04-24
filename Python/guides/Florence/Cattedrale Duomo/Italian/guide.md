@@ -3,7 +3,7 @@
 Religious Monument, Church
 accessible, guided tours, art, architecture
 Il capolavoro di Brunelleschi
- -->
+-->
 
 <h1 align="center">Cattedrale di Santa Maria del Fiore</h1>
 

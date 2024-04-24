@@ -3,8 +3,7 @@
 Religious Monument, Church
 accessible, guided tours, art, architecture
 Brunelleschi's masterpiece
-https://en.wikipedia.org/wiki/Florence_Cathedral
- -->
+-->
 
 <h1 align="center">Cattedrale di Santa Maria del Fiore</h1>
 

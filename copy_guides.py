@@ -2,6 +2,7 @@ import argparse
 import os
 import shutil
 from Python.utils.files_dirs_utils import has_trailing_spaces, remove_and_rename_trailing_spaces_dir
+from Python.processing_monuments import createDB
 
 print("\n\n[INFO]: Build guide/categories DB started")
 
@@ -54,6 +55,9 @@ if guide_name:
     shutil.copytree(sourceCategories + "/", "models/src/main/assets/currentCategories/")
     print("\n[INFO]: Guides copied in " + os.path.realpath('models/src/main/assets/currentGuide'))
     print("[INFO]: Categories copied in " + os.path.realpath('models/src/main/assets/currentCategories'))
+
+    #print("\n[INFO]: creating monuments DB in " + os.path.realpath('models/src/main/assets/databases/monuments_db.sqlite'))
+    #createDB(True)  ## FIXME deal with imports... this script is not launched in the Docker, some imports may not be there
 else:
     print("\n[ERROR]: You must specify the path of the guides with the argument -g")
     exit(1)

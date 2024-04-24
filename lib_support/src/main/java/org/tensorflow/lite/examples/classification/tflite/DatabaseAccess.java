@@ -54,6 +54,9 @@ public class DatabaseAccess {
     public static void setLanguage(String language) {
         DatabaseAccess.language = language;
     }
+    public static String getLanguage() {
+        return language;
+    }
 
     /**
      * Return a singleton instance of DatabaseAccess.
@@ -241,8 +244,19 @@ public class DatabaseAccess {
     public static String getUrl(String monument){
         for (Element e : listMonuments) {
             if (Objects.equals(e.getMonument(), monument)) {
+                String query = "SELECT url FROM monuments_" + language + " WHERE monument = ?";
+                String[] selectionArgs = {monument};
+                databaseMonuments = openHelperMonuments.getWritableDatabase();
+                Cursor cursor = databaseMonuments.rawQuery(query, selectionArgs);
+                cursor.moveToFirst();
+                String url = cursor.getString(0).stripLeading().stripTrailing();
+                cursor.close();
+                databaseMonuments.close();
+                if (url.equals("-->"))
+                    url = "";
+                Log.d(TAG, "DB URL: " + url);
                 Log.d(TAG, "URL: " + e.getUrl());
-                return e.getUrl();
+                return url;
             }
         }
 
@@ -525,7 +539,7 @@ public class DatabaseAccess {
             String vec = cursorMonuments.getString(1);
             double coordX = cursorMonuments.getFloat(2);
             double coordY = cursorMonuments.getFloat(3);
-            String url = cursorMonuments.getString(4);
+            String url = cursorMonuments.getString(4).stripTrailing().stripLeading();
 
             //Convert vec string to Float
             String[] splittedVec = vec.substring(1, vec.length() - 1).split("\\s+");
@@ -543,6 +557,9 @@ public class DatabaseAccess {
             //element with converted matrix
             Element e = new Element(monument, listVec, -1);
             e.setCoordinates(coordX, coordY);
+
+            if (url.equals("-->"))
+                url = "";
             e.setUrl(url);
 
             listMonuments.add(e);

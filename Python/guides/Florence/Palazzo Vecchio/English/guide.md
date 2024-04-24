@@ -3,8 +3,7 @@
 Historical Building, Museum, Art
 museum, accessible, guided tours, architecture
 The symbol of the city
-https://en.wikipedia.org/wiki/Palazzo_Vecchio
- -->
+-->
 
 <h1 align="center">Palazzo Vecchio</h1>
 

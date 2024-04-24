@@ -62,6 +62,8 @@ public class GuideActivity extends AppCompatActivity {
         if (language == null) {
             // Set a default language
             Log.e(TAG, "[ERROR] Language is null");
+            getIntent().putExtra("language", DatabaseAccess.getLanguage());
+            language = DatabaseAccess.getLanguage();
         }
         user_id = getIntent().getStringExtra("user_id");
 

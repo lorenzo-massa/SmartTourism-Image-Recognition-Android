@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements MonumentAdapter.O
 
     @Override
     public void onButtonClick(String monument) {
+        if (PreferencesActivity.language != null) {
+            language = PreferencesActivity.language;
+        }
         Intent intent = new Intent(MainActivity.this, GuideActivity.class);
         intent.putExtra("monument_id", monument);
         intent.putExtra("language", language);

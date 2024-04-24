@@ -20,6 +20,7 @@ import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 public class PreferencesActivity extends AppCompatActivity {
 
     private static final String TAG = "PreferencesActivity";
+    public static String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
             if (key.equals("pref_key_language")) {
                 DatabaseAccess.setLanguage(sharedPreferences.getString(key, "English"));
+                language = sharedPreferences.getString(key, "English");
             }
 
             if (key.equals("pref_key_num_threads")) {
