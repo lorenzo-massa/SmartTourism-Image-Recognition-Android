@@ -13,7 +13,7 @@ public class Element {
     private ArrayList<String> categories = new ArrayList<>();
     private ArrayList<String> attributes = new ArrayList<>();
 
-    private String path;
+    private String url;
 
 
     public Element(String monument, float[] matrix, double distance) {
@@ -72,12 +72,12 @@ public class Element {
         return coordinates;
     }
 
-    public String getPath() {
-        return path;
+    public String getUrl() {
+        return url;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public ArrayList<String> getCategories() {

@@ -3,6 +3,7 @@
 Historical Building, Museum
 museum, art
 A small museum next to the Duomo
+
  -->
 
 <h1 align="center">Loggia del Bigallo</h1>

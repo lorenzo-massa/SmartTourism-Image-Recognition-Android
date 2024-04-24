@@ -238,6 +238,17 @@ public class DatabaseAccess {
         return null;
     }
 
+    public static String getUrl(String monument){
+        for (Element e : listMonuments) {
+            if (Objects.equals(e.getMonument(), monument)) {
+                Log.d(TAG, "URL: " + e.getUrl());
+                return e.getUrl();
+            }
+        }
+
+        return null;
+    }
+
     public static float distance2Positions(double[] m1, double[] m2) {
         Location location1 = new Location("");
         location1.setLatitude(m1[0]);
@@ -310,8 +321,8 @@ public class DatabaseAccess {
     public static String getImageLink(String monument) {
         for (Element e : listMonuments) {
             if (Objects.equals(e.getMonument(), monument)) {
-                Log.d(TAG, "Image link: " + e.getPath());
-                return e.getPath();
+                Log.d(TAG, "Image link: " + e.getUrl());
+                return e.getUrl();
             }
         }
 
@@ -507,14 +518,14 @@ public class DatabaseAccess {
 
         Log.d(TAG, "[INFO] updateDatabase: updating monuments...");
 
-        Cursor cursorMonuments = databaseMonuments.rawQuery("SELECT monument,vec,coordX,coordY,path FROM monuments_" + language, null);
+        Cursor cursorMonuments = databaseMonuments.rawQuery("SELECT monument,vec,coordX,coordY,url FROM monuments_" + language, null);
         cursorMonuments.moveToFirst();
         while (!cursorMonuments.isAfterLast()) {
             String monument = cursorMonuments.getString(0);
             String vec = cursorMonuments.getString(1);
             double coordX = cursorMonuments.getFloat(2);
             double coordY = cursorMonuments.getFloat(3);
-            String path = cursorMonuments.getString(4);
+            String url = cursorMonuments.getString(4);
 
             //Convert vec string to Float
             String[] splittedVec = vec.substring(1, vec.length() - 1).split("\\s+");
@@ -532,7 +543,7 @@ public class DatabaseAccess {
             //element with converted matrix
             Element e = new Element(monument, listVec, -1);
             e.setCoordinates(coordX, coordY);
-            e.setPath(path);
+            e.setUrl(url);
 
             listMonuments.add(e);
 

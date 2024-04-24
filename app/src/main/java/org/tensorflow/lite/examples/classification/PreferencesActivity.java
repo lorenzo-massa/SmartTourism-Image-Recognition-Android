@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +15,10 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.DatabaseAccess;
 
 public class PreferencesActivity extends AppCompatActivity {
 
-    private static final Logger LOGGER = new Logger();
     private static final String TAG = "PreferencesActivity";
 
     @Override
@@ -38,7 +37,6 @@ public class PreferencesActivity extends AppCompatActivity {
             onBackPressed();
             finish();
         });
-
 
     }
 
@@ -86,6 +84,21 @@ public class PreferencesActivity extends AppCompatActivity {
 
             if (key.equals("pref_key_language")) {
                 DatabaseAccess.setLanguage(sharedPreferences.getString(key, "English"));
+            }
+
+            if (key.equals("pref_key_num_threads")) {
+                int minThreads = 1;
+                int maxThreads = 8;
+
+                int numThreads = Integer.parseInt(sharedPreferences.getString(key, "1"));
+                if (numThreads < minThreads){
+                    sharedPreferences.edit().putString(key, String.valueOf(minThreads)).apply();
+                    Toast.makeText(requireContext(), "Minimum number of threads is 1", Toast.LENGTH_SHORT).show();
+                } else if (numThreads > maxThreads) {
+                    sharedPreferences.edit().putString(key, String.valueOf(maxThreads)).apply();
+                    Toast.makeText(requireContext(), "Maximum number of threads is 8", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         }
