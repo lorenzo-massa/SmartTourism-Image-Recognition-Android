@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/lorenzo-massa/SmartTourism">
-    <img src="images/logo_name.jpg" alt="Logo" width="400" height="80">
+    <img src="images/logo_name.jpg" alt="Logo" width="512" height="512">
   </a>
 
   <p align="center">
@@ -22,9 +22,9 @@
 # Getting Started
 
 <div align="center">
-  <img src="images/Mockup/Screenshot_20230720_134708_google-pixel4xl-justblack-portrait.png" alt="Logo" width="246" height="531">
+  <img src="images/reinherit_screen_athens.png" alt="example screenshot for Athens app">
   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="images/Mockup/Screenshot_20230720_134744_google-pixel4xl-justblack-portrait.png" alt="Logo" width="246" height="531"> 
+  <img src="images/reinherit_screen_florence.jpg" alt="example screenshot for Florence app"> 
 </div>
 
 The repository consists of two parts:
