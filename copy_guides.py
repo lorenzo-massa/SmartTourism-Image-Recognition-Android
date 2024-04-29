@@ -2,7 +2,7 @@ import argparse
 import os
 import shutil
 from Python.utils.files_dirs_utils import has_trailing_spaces, remove_and_rename_trailing_spaces_dir
-from Python.processing_monuments import createDB
+#from Python.processing_monuments import createDB
 
 print("\n\n[INFO]: Build guide/categories DB started")
 

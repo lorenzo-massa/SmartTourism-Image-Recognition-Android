@@ -36,3 +36,5 @@ Tickets for the cinema can be bought at the cinema booth after 8 pm. A canteen i
 <p align="center" style="margin-top:20px;margin-bottom:20px;">
 More information is available here: <a href="https://cinedexameni.gr/">Website</a>.
 </p>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?2a" height=1 width=1>

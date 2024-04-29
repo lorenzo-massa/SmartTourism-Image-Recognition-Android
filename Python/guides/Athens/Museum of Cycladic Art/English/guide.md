@@ -43,3 +43,5 @@ Opening Days and Hours are Everyday 10.00-17.00, Thursday 10.00-20.00, Sunday 11
 More information is available here: <a href="https://cycladic.gr/en">Museum website</a> <br/>
 Ticket purchase: <a href="https://cycladic.gr/en/page/isitiria">Tickets</a> 
 </p>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?4a" height=1 width=1>

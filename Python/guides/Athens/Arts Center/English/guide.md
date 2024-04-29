@@ -19,3 +19,5 @@ This contemporary Arts Centre serves as a dynamic exhibition space, playing host
 <p align="center" style="margin-top:20px;margin-bottom:20px;">
 <a href="https://www.opanda.gr/index.php/ipodomes-opanda/item/kentro-texnon">Website</a>
 </p>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?1a" height=1 width=1>

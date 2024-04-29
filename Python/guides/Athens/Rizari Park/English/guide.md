@@ -22,3 +22,5 @@ Apart from Roman remains, works by top contemporary artists like Giorgos Zogolop
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 The park was initially a donation of the benefactor Georgios Rizaris who donated a variety of Mediterranean plants to the park in 1844.
 </p>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?6a" height=1 width=1>

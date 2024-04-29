@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/lorenzo-massa/SmartTourism">
-    <img src="images/logo_1.png" alt="Logo" width="400" height="80">
+    <img src="images/logo_name.jpg" alt="Logo" width="400" height="80">
   </a>
 
   <p align="center">
@@ -224,7 +224,7 @@ Lorenzo Massa - lorenzo.massa@unifi.it
 Marco Bertini - marco.bertini@unifi.it
 
 Project
-Link: [https://github.com/lorenzo-massa/SmartTourism](https://github.com/lorenzo-massa/SmartTourism-v2)
+Link: [https://github.com/ReInHerit/SmartTourism](https://github.com/ReInHerit/SmartTourism)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

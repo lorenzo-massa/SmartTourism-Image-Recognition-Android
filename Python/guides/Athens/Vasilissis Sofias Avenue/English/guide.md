@@ -22,3 +22,5 @@ Today, the Vasilissis Sofias avenue continues to play an important role in the l
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 As in the past, the area is connected with the political life of the country as the Presidential Mansion and the Parliament are located in the area. It is still one of the most expensive areas of Athens. Housing the National Garden, it is also a quite popular and diachronic spot for long walks for the Athenians.
 </p>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?9a" height=1 width=1>

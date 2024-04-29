@@ -38,3 +38,5 @@ Exhibitions, actions for the protection of the environment as well as initiative
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 More information is available here: <a href="https://www.cityofathens.gr/thema/ethnikos-kipos/">Website</a>.
 </p>
+
+<img src="https://solaris.micc.unifi.it/pixel.png?5a" height=1 width=1>

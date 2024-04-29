@@ -34,5 +34,5 @@ Apart from the main, Kolonaki square (Google Maps: https://shorturl.at/hzN34), a
 <p align="justify" style="margin-top:20px;margin-bottom:20px;">
 Easily accessible, Kolonaki is near the Vasilissis Sofias avenue, a main avenue in Athens named after Queen Sofia and approximately 10 minutes’ walk from the Greek Parliament and Syntagma Square, Greece’s most famous and legendary square. The closest metro station is Evangelismos Station – line 3. Another metro line is expanding into the famous Kolonaki square and is currently under construction. The Lycabettus Funicular, a funicular railway, links Kolonaki to the summit of Mount Lycabettus.
 </p>
- 
 
+<img src="https://solaris.micc.unifi.it/pixel.png?3a" height=1 width=1>
