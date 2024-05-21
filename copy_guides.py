@@ -42,7 +42,12 @@ if guide_name:
             source_dir = sourceGuides + "/" + d
             os.rename(source_dir, source_dir.rstrip())
             d = d.rstrip()
-        shutil.copytree(sourceGuides + "/" + d, "models/src/main/assets/currentGuide/" + d)
+        # Check if .DS_Store file exists in the directory
+        dir_path = sourceGuides + "/" + d
+        if os.path.exists(os.path.join(dir_path, ".DS_Store")):
+            # If it exists, remove it
+            os.remove(os.path.join(dir_path, ".DS_Store"))
+        shutil.copytree(dir_path, "models/src/main/assets/currentGuide/" + d)
     print("\n[INFO]: Using the categories in " + sourceCategories)
     # Delete old categories
     if os.path.exists("models/src/main/assets/currentCategories"):
