@@ -220,7 +220,7 @@ to the app's support documentation or contact me. Enjoy your journey!
 
 ## Contact
 
-Lorenzo Massa - lorenzo.massa@unifi.it
+Lorenzo Massa - loremassa00@gmail.com
 Marco Bertini - marco.bertini@unifi.it
 
 Project
